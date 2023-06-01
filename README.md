@@ -41,4 +41,4 @@ npm run build
 
 cwh try push3
 czb try push1
-sh try push1
+sh try push2
