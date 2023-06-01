@@ -1,7 +1,9 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div id="app"></div>
+  <div id="app">
+    <router-view></router-view>
+  </div>
 </template>
 
 <style lang="scss" scoped></style>
