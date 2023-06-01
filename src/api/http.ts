@@ -1,8 +1,6 @@
 // 安装axios
 // $cnpm i axios -S
-
 import axios from "axios";
-
 // 创建axios 初始化
 const service = axios.create({
   baseURL: "https://apis.netstart.cn/bcomic/", // 基本URL
