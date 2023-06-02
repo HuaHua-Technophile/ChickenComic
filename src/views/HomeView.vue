@@ -6,10 +6,11 @@
   const S = useGlobalStore();
   const { changeTheme } = S;
   let result: any = ref<object | null>(null);
-  onMounted(async () => {
+  const getHomeFeedData = async () => {
     result.value = await getHomeFeed({ pageNum: 1, pageSize: 20 });
     console.log(result.value.data.feeds[0].image);
-  });
+  };
+  getHomeFeedData();
 </script>
 
 <template>
