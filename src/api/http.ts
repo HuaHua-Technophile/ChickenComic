@@ -8,7 +8,7 @@ const service = axios.create({
   headers: {
     "Content-Type": "application/json;charset=utf-8",
   },
-  withCredentials: true, //自动获取cookie信息
+  // withCredentials: true, //自动获取cookie信息
 });
 
 // request 拦截器 发送数据到后台拦截器
