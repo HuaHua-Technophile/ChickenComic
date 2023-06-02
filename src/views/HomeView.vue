@@ -8,7 +8,7 @@
   let result: any = ref<object | null>(null);
   const getHomeFeedData = async () => {
     result.value = await getHomeFeed({ pageNum: 1, pageSize: 20 });
-    console.log(result.value.data.feeds[0].image);
+    console.log(result.value.data.feeds);
   };
   getHomeFeedData();
 </script>
