@@ -1,7 +1,10 @@
 <script setup lang="ts">
   import { onMounted, ref } from "vue";
   import { getHomeFeed } from "@/api/home";
-
+  import { useGlobalStore } from "@/stores/counter";
+  // ----主题测试-------
+  const S = useGlobalStore();
+  const { changeTheme } = S;
   let result: any = ref<object | null>(null);
   onMounted(async () => {
     result.value = await getHomeFeed({ pageNum: 1, pageSize: 20 });
@@ -13,7 +16,7 @@
   <div class="home">
     <!-- <img :src="result.value.data.feeds[0].image" alt="" /> -->
     <h1>Home</h1>
-    <div class="alert alert-danger">bs测试</div>
+    <div class="alert alert-danger" @click="changeTheme">bs测试</div>
     <div>
       <img :src="result?.data.feeds[0].image" alt="" />
     </div>
