@@ -14,11 +14,7 @@
 
 <template>
   <div class="home">
-    <h1>Home</h1>
     <div class="alert alert-danger" @click="changeTheme">bs测试</div>
-    <div>
-      <img :src="result?.data.feeds[0].image" alt="" />
-    </div>
   </div>
 </template>
 

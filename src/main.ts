@@ -7,8 +7,9 @@ import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
 
-//---------自定义样式--------------------------
+//---------预设常用样式/自定义样式--------------------------
 import "@/scss/PresetStyle.scss";
+import "@/scss/index.scss";
 const app = createApp(App);
 
 app.use(createPinia()).use(router).mount("#app");
