@@ -13,10 +13,15 @@ const router = createRouter({
       component: () => import("@/views/HomeView.vue"),
     },
     {
-      path: "/settingAbout",
-      name: "settingAbout",
-      component: () => import("@/views/SettingAbout.vue")
-    }
+      path: "/comicCover",
+      name: "comicCover",
+      component: () => import("@/views/comicCover.vue"),
+    },
+    {
+      path: "/content",
+      name: "content",
+      component: () => import("@/views/ContentView.vue"),
+    },
   ],
 });
 
