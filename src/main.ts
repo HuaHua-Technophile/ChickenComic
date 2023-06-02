@@ -15,4 +15,6 @@ import "@/scss/index.scss";
 import "@/scss/icon.scss";
 const app = createApp(App);
 
+//---------vant按需加载--------------------------
+
 app.use(createPinia()).use(router).mount("#app");
