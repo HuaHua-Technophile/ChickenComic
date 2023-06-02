@@ -2,9 +2,16 @@ html,
 body {
   position: relative; //不定位会导致swiper轮播图竖向播放的异常
 }
+
 body.darkBg {
   background: url(../img/darkBg.png) center/cover;
 }
+
 body.lightBg {
   background: url(../img/lightBg.png) center/cover;
+}
+
+#app {
+  width: calc(100% - 1px) !important;
+  height: calc(100% - 1px) !important;
 }
