@@ -11,6 +11,7 @@
 <template>
   <div class="home">
     <h1>Home</h1>
+    <div class="alert alert-danger">bs测试</div>
   </div>
 </template>
 
