@@ -65,7 +65,8 @@ body {
 
 @for $i from 2 through 15 {
   .transition-#{$i} {
-    transition: all unquote("#{$i/10}s");
+    // transition: all unquote("#{$i/10}s");
+    transition: all unquote(calc($i / 10) + "s");
   }
 }
 
