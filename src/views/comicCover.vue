@@ -16,5 +16,9 @@
   <div class="comicCover">
     <!-- 头部返回按钮 -->
     <div class="ps-3"><i class="bi bi-arrow-left-short"></i></div>
+    <!-- 漫画封面 -->
+    <div>
+      <img src="" alt="" />
+    </div>
   </div>
 </template>
