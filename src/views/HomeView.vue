@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { onMounted, ref } from "vue";
+  import { onMounted, ref, toRefs } from "vue";
   import { getHomeFeed } from "@/api/home";
 
   let result: any = ref<object | null>(null);
@@ -11,7 +11,6 @@
 
 <template>
   <div class="home">
-    <!-- <img :src="result.value.data.feeds[0].image" alt="" /> -->
     <h1>Home</h1>
     <div class="alert alert-danger">bs测试</div>
     <div>
