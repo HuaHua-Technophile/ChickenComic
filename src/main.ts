@@ -6,10 +6,17 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
+import { Switch,Button } from 'vant';
 
 //---------预设常用样式/自定义样式--------------------------
 import "@/scss/PresetStyle.scss";
 import "@/scss/index.scss";
 const app = createApp(App);
+
+//---------vant按需加载--------------------------
+import 'vant/es/toast/style';
+import 'vant/es/dialog/style';
+app.use(Switch)
+app.use(Button)
 
 app.use(createPinia()).use(router).mount("#app");

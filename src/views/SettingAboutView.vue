@@ -4,12 +4,16 @@
     setup() {
       let show: any = ref(false);
       console.log(show.value);
+
+      return {};
     },
   });
 </script>
 
 <template>
   <div class="installView">
+    <van-button type="primary">主要按钮</van-button>
+    <van-button type="success">成功按钮</van-button>
     <div class="content">
       <ul class="list-group">
         <li class="list-group-item">
