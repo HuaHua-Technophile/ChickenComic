@@ -1,11 +1,11 @@
 <script setup lang="ts">
-  import { ref, onMounted } from "vue";
+  import {ref, onMounted} from "vue"
 
-  let settingAbout = ref(null);
+    let settingAbout = ref(null)
 
-  onMounted(() => {
-    console.log(settingAbout.value);
-  }),
+    onMounted(() => {
+      console.log(settingAbout.value)
+    }),
 </script>
 
 <template>
