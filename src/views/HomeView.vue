@@ -4,8 +4,8 @@
 
   let result: any = ref<object | null>(null);
   onMounted(async () => {
-    result = await getHomeFeed({ pageNum: 1, pageSize: 20 });
-    console.log(result.data.feeds[0].image);
+    result.value = await getHomeFeed({ pageNum: 1, pageSize: 20 });
+    console.log(result.value.data.feeds[0].image);
   });
 </script>
 
@@ -14,6 +14,9 @@
     <!-- <img :src="result.value.data.feeds[0].image" alt="" /> -->
     <h1>Home</h1>
     <div class="alert alert-danger">bs测试</div>
+    <div>
+      <img :src="result?.data.feeds[0].image" alt="" />
+    </div>
   </div>
 </template>
 
