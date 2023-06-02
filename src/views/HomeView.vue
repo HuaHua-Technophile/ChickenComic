@@ -2,10 +2,10 @@
   import { onMounted, ref } from "vue";
   import { getHomeFeed } from "@/api/home";
 
+  let result: any = ref<object>(
+    await getHomeFeed({ pageNum: 1, pageSize: 20 })
+  );
   onMounted(async () => {
-    let result: any = ref<object>(
-      await getHomeFeed({ pageNum: 1, pageSize: 20 })
-    );
     console.log(result.value.data.feeds[0].image);
   });
 </script>

@@ -2,21 +2,27 @@ html,
 body {
   position: relative; //不定位会导致swiper轮播图竖向播放的异常
 }
+
 .blur {
   backdrop-filter: blur(6px);
 }
+
 .noScrollBar {
   overflow: hidden;
 }
+
 .noScrollBar::-webkit-scrollbar {
   display: none !important;
 }
+
 .lh-100 {
   line-height: 100% !important;
 }
+
 .pb-100 {
   padding-bottom: 100%;
 }
+
 // [class^="t-overflow"] {
 //   display: -webkit-box;
 //   -webkit-box-orient: vertical;
@@ -30,31 +36,39 @@ body {
 .fs-7 {
   font-size: 0.9rem !important;
 }
+
 .fs-8 {
   font-size: 0.8rem !important;
 }
+
 .fs-9 {
   font-size: 0.7rem !important;
 }
+
 .fs-10 {
   font-size: 0.6rem !important;
 }
+
 @for $i from 1 through 10 {
   .t-shadow-#{$i} {
     text-shadow: 1px 1px #{$i}px rgba(0, 0, 0, 0.5);
   }
 }
+
 .cardHr.light {
   border-bottom: 1px solid #e5e6eb;
 }
+
 .cardHr.dark {
   border-bottom: 1px solid #24242c;
 }
+
 @for $i from 2 through 15 {
   .transition-#{$i} {
     transition: all unquote("#{$i/10}s");
   }
 }
+
 .fadeIn-enter-active,
 .fadeIn-leave-active,
 .sideUp-enter-active,
@@ -63,15 +77,18 @@ body {
 .sideUp100-leave-active {
   transition: all 0.8s;
 }
+
 .fadeIn-enter,
 .fadeIn-leave-to {
   opacity: 0;
 }
+
 .sideUp-enter,
 .sideUp-leave-to {
   transform: translateY(20px);
   opacity: 0;
 }
+
 .sideUp100-enter,
 .sideUp100-leave-to {
   transform: translateY(100%);
@@ -82,6 +99,7 @@ body {
 .bounce-leave-active {
   transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
+
 .bounce-enter,
 .bounce-leave-to {
   transform: scale(0);
