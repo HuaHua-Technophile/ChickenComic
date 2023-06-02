@@ -17,6 +17,11 @@ const router = createRouter({
       name: "comicCover",
       component: () => import("@/views/comicCover.vue"),
     },
+    {
+      path: "/content",
+      name: "content",
+      component: () => import("@/views/ContentView.vue"),
+    },
   ],
 });
 
