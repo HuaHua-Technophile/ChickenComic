@@ -12,9 +12,9 @@
 
 <template>
   <div class="home">
-    这是一个home
-    <img :src="result.value.data.feeds[0].image" alt="" />
+    <!-- <img :src="result.value.data.feeds[0].image" alt="" /> -->
     <h1>Home</h1>
+    <div class="alert alert-danger">bs测试</div>
   </div>
 </template>
 
