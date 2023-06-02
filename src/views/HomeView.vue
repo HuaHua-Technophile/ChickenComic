@@ -9,7 +9,9 @@
 </script>
 
 <template>
-  <div class="home">这是一个home</div>
+  <div class="home">
+    <h1>Home</h1>
+  </div>
 </template>
 
 <style lang="scss"></style>
