@@ -67,11 +67,12 @@
       pullUpLoad: {
         threshold: 20,
       },
+      observeImage: true, // 开启 observe-image 插件
     });
-    // 每500ms重载一次
-    timer = setInterval(() => {
+    // 每1000ms重载一次
+    nextTick(() => {
       bs.value.refresh();
-    }, 500);
+    });
     // 监听上拉事件，执行相应回调函数
     bs.value.on("pullingUp", pullingUpHandler);
   });
@@ -90,7 +91,7 @@
       <v-lazy
         v-for="(item, index) in imgUrlTokenAll"
         :key="index"
-        :min-height="300">
+        :min-height="200">
         <div class="imgItem w-100">
           <img :src="item.url + '?token=' + item.token" class="w-100" />
         </div>
