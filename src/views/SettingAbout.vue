@@ -111,7 +111,7 @@
     <van-overlay :show="overlayShow" @click="overlayShow = false">
       <div class="w-100 h-100 overflow-scroll blur-5 noScrollBar">
         <div
-          class="ps-5 pe-5 text-light min-vh-100 d-flex align-items-center"
+          class="ps-5 pe-5 text-light min-vh-100 d-flex align-items-center opacity-75"
           style="white-space: pre-line">
           {{ overlayInfo }}
         </div>
