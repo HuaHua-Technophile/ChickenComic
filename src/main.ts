@@ -1,12 +1,12 @@
 //---------Vuetify--------------------------
 import "vuetify/styles";
 import { createVuetify } from "vuetify";
-import * as components from "vuetify/components";
-import * as directives from "vuetify/directives";
+import { VLazy } from "vuetify/components";
 
 const vuetify = createVuetify({
-  components,
-  directives,
+  components: {
+    VLazy,
+  },
 });
 
 //----bootstrap---------------------------
