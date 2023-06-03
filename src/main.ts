@@ -1,14 +1,3 @@
-//---------Vuetify--------------------------
-import "vuetify/styles";
-import { createVuetify } from "vuetify";
-import { VLazy } from "vuetify/components";
-
-const vuetify = createVuetify({
-  components: {
-    VLazy,
-  },
-});
-
 //----bootstrap---------------------------
 import "@/scss/customBootStrap.scss"; //优先引入bootstrap入口文件，使其可以被后续自定义样式与自定义主题覆盖
 import "bootstrap/js/index.esm.js";
