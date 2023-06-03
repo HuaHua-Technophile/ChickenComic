@@ -31,8 +31,8 @@
       </div>
       <!-- 夜间模式切换 -->
       <div
-        class="form-check form-switch pt-3 pb-3 bg-body-secondary rounded-pill fs-5 mb-3 insetShadow"
-        style="margin-top: 30%; --bs-bg-opacity: 0.5">
+        class="form-check form-switch pt-3 pb-3 bg-body-secondary rounded-pill fs-5 mb-3 insetShadow bg-opacity-50"
+        style="margin-top: 30%">
         <input
           class="form-check-input"
           type="checkbox"
@@ -47,8 +47,7 @@
       </div>
       <!-- 关于 -->
       <div
-        class="ps-3 pe-3 bg-body-secondary rounded-pill fs-5 pt-2 pb-2 mb-3"
-        style="--bs-bg-opacity: 0.5"
+        class="ps-3 pe-3 bg-body-secondary rounded-pill fs-5 pt-2 pb-2 mb-3 bg-opacity-50"
         @click="
           overlayShow = true;
           overlayInfo =
@@ -59,8 +58,7 @@
       </div>
       <!-- 隐私协议 -->
       <div
-        class="ps-3 pe-3 bg-body-secondary rounded-pill fs-5 pt-2 pb-2 mb-3"
-        style="--bs-bg-opacity: 0.5"
+        class="ps-3 pe-3 bg-body-secondary rounded-pill fs-5 pt-2 pb-2 mb-3 bg-opacity-50"
         @click="
           overlayShow = true;
           overlayInfo = `「紙さくらコミック」ではユーザーのプライバシーとセキュリティを非常に重視しており、以下のようなプライバシープロトコルを作成していますので、よく読んで了承してください。
@@ -98,14 +96,17 @@
       </div>
       <!-- 检查更新 -->
       <div
-        class="ps-3 pe-3 bg-body-secondary rounded-pill fs-5 pt-2 pb-2 mb-3"
-        style="--bs-bg-opacity: 0.5"
+        class="ps-3 pe-3 bg-body-secondary rounded-pill fs-5 pt-2 pb-2 mb-3 bg-opacity-50"
         @click="showToast('さいしんばんです')">
         <i class="bi bi-arrow-repeat fs-3 ms-3 me-4"></i>
         <span>更新をチェックします</span>
       </div>
       <!-- 版本号 -->
       <div class="text-center opacity-50">Versions 1.0.1 Beta</div>
+    </div>
+    <!-- 头部返回按钮 -->
+    <div class="ps-3 position-fixed top-0 w-100">
+      <i class="bi bi-arrow-left-short" @click="$router.go(-1)"></i>
     </div>
     <!-- 弹出层 -->
     <van-overlay :show="overlayShow" @click="overlayShow = false">
