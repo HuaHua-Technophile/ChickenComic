@@ -27,7 +27,7 @@
     <div style="min-height: 105vh">
       <!-- 漫画封面 -->
       <div class="mx-auto rounded-3" style="width: 80%">
-        <img :src="res.data.vertical_cover" class="w-100" />
+        <img :src="res.data?.vertical_cover" class="w-100" />
       </div>
     </div>
     <!-- 头部返回按钮 -->
