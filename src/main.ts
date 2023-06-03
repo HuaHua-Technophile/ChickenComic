@@ -16,5 +16,6 @@ import "@/scss/icon.scss";
 const app = createApp(App);
 
 //---------vant按需加载--------------------------
-
-app.use(createPinia()).use(router).mount("#app");
+import { Overlay, Toast } from "vant";
+import "vant/lib/index.css"; //引入全部组件样式
+app.use(createPinia()).use(router).use(Overlay).use(Toast).mount("#app");
