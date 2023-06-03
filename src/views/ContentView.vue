@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import BScroll from "better-scroll"; //导入Better scroll核心
   import Pullup from "@better-scroll/pull-up";
-  import { nextTick, onMounted, ref } from "vue";
+  import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
   import { getImageIndex, getImageToken } from "@/api/content";
   import { getComicDetail } from "@/api/comicCover";
 
@@ -48,17 +48,19 @@
   let contentVeiw: { value: object } = ref<object>({});
   let isPullUpLoad: any = ref<boolean>(false);
   // 上拉加载调用此函数，发送下一章请求
-  let epListindex: { value: number } = ref<number>(1);
+  let epListindex: { value: number } = ref<number>(1); // 章节计数
   const pullingUpHandler = async () => {
     isPullUpLoad.value = true;
-    await getContentData(imgEpList.value[epListindex.value].id);
+    await getContentData(imgEpList.value[epListindex.value].id); // 上拉加载请求下一章数据
     epListindex.value++;
     bs.value.finishPullUp();
     bs.value.refresh();
     isPullUpLoad.value = false;
   };
 
+  let timer: any = null;
   onMounted(() => {
+    // 实例化bscroll并配置其配置项
     bs.value = new BScroll(contentVeiw.value as HTMLElement, {
       scrollY: true,
       click: true,
@@ -66,13 +68,17 @@
         threshold: 20,
       },
     });
-    // 重载bscroll
-    nextTick(() => {
-      setInterval(() => {
-        bs.value.refresh();
-      }, 500);
-    });
+    // 每500ms重载一次
+    timer = setInterval(() => {
+      bs.value.refresh();
+    }, 500);
+    // 监听上拉事件，执行相应回调函数
     bs.value.on("pullingUp", pullingUpHandler);
+  });
+
+  onBeforeUnmount(() => {
+    // 清除延时器
+    clearInterval(timer);
   });
 </script>
 
@@ -85,11 +91,13 @@
         class="imgItem w-100"
         v-for="(item, index) in imgUrlTokenAll"
         :key="index">
-        <img :src="item.url + '?token=' + item.token" class="w-100" />
+        <van-image lazy-load :src="item.url + '?token=' + item.token" />
+        <!-- <img :src="item.url + '?token=' + item.token" class="w-100" /> -->
       </div>
+      <!-- 上拉提示 -->
       <div class="pullup-tips text-center">
         <div v-if="!isPullUpLoad" class="before-trigger">
-          <span class="pullup-txt">上拉加载下一章</span>
+          <span class="pullup-txt">上拉进入下一章</span>
         </div>
         <div v-else class="after-trigger">
           <span class="pullup-txt">Loading...</span>
