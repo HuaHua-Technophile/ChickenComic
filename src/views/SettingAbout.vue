@@ -68,7 +68,4 @@
     </div>
   </div>
 </template>
-<style lang="scss">
-  .insetShadow {
-  }
-</style>
+<style lang="scss"></style>
