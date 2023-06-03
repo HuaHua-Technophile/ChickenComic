@@ -43,7 +43,13 @@
         ]"
         class="rounded-5">
         <!-- 主要信息 -->
-        <div class="d-flex align-items-center pt-5 mb-4">
+        <div class="position-relative d-flex align-items-center pt-5 mb-4">
+          <!-- 收藏按钮 -->
+          <div
+            class="position-absolute top-0 translate-middle-y bg- d-flex align-items-center justify-content-center bg-light rounded-3"
+            style="width: 10vw; height: 10vw; right: 10%">
+            <i class="bi bi-heart text-danger fs-3 t-shadow-2"></i>
+          </div>
           <!-- 图 -->
           <div
             class="ms-5 me-4 w-25 position-relative rounded-4 overflow-hidden"
@@ -69,17 +75,30 @@
           </div>
         </div>
         <!-- 介绍 -->
-        <div class="ms-3 me-3 t-shadow-3">
-          <div class="fs-5 mb-2">
+        <div class="ms-3 me-3 t-shadow-3 mb-3">
+          <div class="fs-5 mb-2 d-flex align-items-center">
             <span>漫畫のあらすじ</span>
-            <i class="bi bi-chevron-down ms-2"></i>
+            <i class="bi bi-chevron-down fs-7 ms-3"></i>
           </div>
-          <div class="opacity-50">{{ res.data.evaluate }}</div>
+          <div class="opacity-50">{{ res.data?.evaluate }}</div>
+        </div>
+        <!-- 开始阅读/加入书架 -->
+        <div class="d-flex align-items-center justify-content-evenly">
+          <div
+            class="pt-3 pb-3 fs-5 fw-bold bg-primary rounded-4 text-center t-shadow-5 bg-opacity-25"
+            style="width: 40%">
+            読み始めます
+          </div>
+          <div
+            class="pt-3 pb-3 fs-5 fw-bold bg-secondary rounded-4 text-center t-shadow-5 bg-opacity-25"
+            style="width: 40%">
+            本棚に入れます
+          </div>
         </div>
       </div>
     </div>
     <!-- 头部返回按钮 -->
-    <div class="ps-3 position-fixed top-0 w-100">
+    <div class="ps-3 position-fixed top-0 w-100 text-light t-shadow-3">
       <i class="bi bi-arrow-left-short"></i>
     </div>
     <!-- 背景 -->
