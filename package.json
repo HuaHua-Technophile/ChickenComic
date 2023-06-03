@@ -10,6 +10,7 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false"
   },
   "dependencies": {
+    "@better-scroll/pull-up": "^2.5.1",
     "@popperjs/core": "^2.11.8",
     "axios": "^1.4.0",
     "better-scroll": "^2.5.1",
