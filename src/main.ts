@@ -1,3 +1,14 @@
+//---------Vuetify--------------------------
+import "vuetify/styles";
+import { createVuetify } from "vuetify";
+import * as components from "vuetify/components";
+import * as directives from "vuetify/directives";
+
+const vuetify = createVuetify({
+  components,
+  directives,
+});
+
 //----bootstrap---------------------------
 import "@/scss/customBootStrap.scss"; //优先引入bootstrap入口文件，使其可以被后续自定义样式与自定义主题覆盖
 import "bootstrap/js/index.esm.js";
@@ -15,17 +26,5 @@ import "@/scss/index.scss";
 import "@/scss/icon.scss";
 const app = createApp(App);
 
-//---------Vuetify--------------------------
-import "vuetify/styles";
-import { createVuetify } from "vuetify";
-import * as components from "vuetify/components";
-import * as directives from "vuetify/directives";
-
-const vuetify = createVuetify({
-  components,
-  directives,
-});
-
 //---------vant按需加载--------------------------
-import { Lazyload } from "vant";
 app.use(createPinia()).use(router).use(vuetify).mount("#app");

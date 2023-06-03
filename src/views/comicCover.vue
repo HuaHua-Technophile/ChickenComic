@@ -57,7 +57,7 @@
           <!-- 作者,漫画名 -->
           <div class="t-shadow-3">
             <div class="mb-2 opacity-50">
-              人気しすー : {{ res.data.interact_value }}
+              人気しすー : {{ res.data?.interact_value }}
             </div>
             <div class="fs-2 fw-bold mb-1" style="letter-spacing: 2.5px">
               {{ res.data?.title }}
