@@ -17,8 +17,13 @@ export const useGlobalStore = defineStore("global", () => {
       document.body.classList.remove("lightBg");
     }
   };
+  //全局遮罩层
+  let popupShow = ref(false);
+  let popupInfo = ref("");
   return {
     theme,
     changeTheme,
+    popupShow,
+    popupInfo,
   };
 });

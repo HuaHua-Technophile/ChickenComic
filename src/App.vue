@@ -1,11 +1,12 @@
-<script setup lang="ts">
-  import { useGlobalStore } from "@/stores/counter";
-  const S = useGlobalStore();
-  const { theme } = S;
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <div class="w-100 h-100 main">
+  <div class="w-100 h-100">
+    <!-- <router-view v-slot="{ Component }">
+      <transition name="view">
+        <component :is="Component" />
+      </transition>
+    </router-view> -->
     <router-view></router-view>
   </div>
 </template>

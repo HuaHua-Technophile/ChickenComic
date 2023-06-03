@@ -10,6 +10,8 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false"
   },
   "dependencies": {
+    "@better-scroll/observe-image": "^2.5.1",
+    "@better-scroll/pull-up": "^2.5.1",
     "@popperjs/core": "^2.11.8",
     "axios": "^1.4.0",
     "better-scroll": "^2.5.1",
@@ -18,8 +20,10 @@
     "pinia": "^2.0.36",
     "sass": "^1.62.1",
     "vant": "^4.4.1",
+    "vite-plugin-vuetify": "^1.0.2",
     "vue": "^3.3.2",
-    "vue-router": "^4.2.0"
+    "vue-router": "^4.2.0",
+    "vuetify": "^3.3.2"
   },
   "devDependencies": {
     "@tsconfig/node18": "^2.0.1",
