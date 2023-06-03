@@ -87,13 +87,14 @@
     <!-- 滚动内容 -->
     <div class="w-100">
       <!-- 每一页内容 -->
-      <div
-        class="imgItem w-100"
+      <v-lazy
         v-for="(item, index) in imgUrlTokenAll"
-        :key="index">
-        <van-image lazy-load :src="item.url + '?token=' + item.token" />
-        <!-- <img :src="item.url + '?token=' + item.token" class="w-100" /> -->
-      </div>
+        :key="index"
+        :min-height="300">
+        <div class="imgItem w-100">
+          <img :src="item.url + '?token=' + item.token" class="w-100" />
+        </div>
+      </v-lazy>
       <!-- 上拉提示 -->
       <div class="pullup-tips text-center">
         <div v-if="!isPullUpLoad" class="before-trigger">
