@@ -3,6 +3,7 @@
   import BScroll from "better-scroll"; //导入Better scroll核心
   import { useGlobalStore } from "../stores/counter";
   import { showToast } from "vant";
+  import "vant/es/toast/style";
   let settingAbout: any = ref<object | null>(null);
   let bs = ref({}); //Better scroll实例化后对象的存储
   onMounted(() => {
