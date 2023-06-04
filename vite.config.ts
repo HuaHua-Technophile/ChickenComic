@@ -21,15 +21,4 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
-
-  // 配置代理，解决跨域请求问题
-  // server: {
-  //   proxy: {
-  //     "/": {
-  //       target: "https://apis.netstart.cn/bcomic/",
-  //       changeOrigin: true,
-  //       ws: false,
-  //     },
-  //   },
-  // },
 });

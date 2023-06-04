@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import BScroll from "better-scroll"; //导入Better scroll核心
   import Pullup from "@better-scroll/pull-up";
+  import ObserveImage from "@better-scroll/observe-image";
   import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
   import { getImageIndex, getImageToken } from "@/api/content";
   import { getComicDetail } from "@/api/comicCover";
@@ -44,6 +45,7 @@
 
   // 实例化bscroll并给阅读页添加滚动处理
   BScroll.use(Pullup); // 注册上拉懒加载插件
+  BScroll.use(ObserveImage);
   let bs: any = ref<object>({});
   let contentVeiw: { value: object } = ref<object>({});
   let isPullUpLoad: any = ref<boolean>(false);
@@ -54,7 +56,6 @@
     await getContentData(imgEpList.value[epListindex.value].id); // 上拉加载请求下一章数据
     epListindex.value++;
     bs.value.finishPullUp();
-    bs.value.refresh();
     isPullUpLoad.value = false;
   };
 
@@ -62,16 +63,11 @@
   onMounted(() => {
     // 实例化bscroll并配置其配置项
     bs.value = new BScroll(contentVeiw.value as HTMLElement, {
-      scrollY: true,
       click: true,
       pullUpLoad: {
-        threshold: 20,
+        threshold: 0,
       },
       observeImage: true, // 开启 observe-image 插件
-    });
-    // 每1000ms重载一次
-    nextTick(() => {
-      bs.value.refresh();
     });
     // 监听上拉事件，执行相应回调函数
     bs.value.on("pullingUp", pullingUpHandler);
