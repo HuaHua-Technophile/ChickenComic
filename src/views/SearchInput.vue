@@ -6,7 +6,6 @@
 
   //搜索框
   const value = ref("");
-
   // watchEffect(() => {
   //   console.log(value.value);
   // });
@@ -46,16 +45,18 @@
 
   //获取热门搜索
   let searchReferral: any = ref([]);
-  const getSearchReferralFun = () => {
-    getSearchReferral({ num: 12 }).then((data: any) => {
-      searchReferral = data.data.splice(1, 10);
-    });
+  let defaultKeyword: any = ref([]);
+  const getSearchReferralFun = async () => {
+    let data = await getSearchReferral({ num: 12 });
+    defaultKeyword.value = data.data[0].title;
+    searchReferral.value = data.data?.slice(1, 11);
   };
 
   getSearchReferralFun();
-  onMounted(() => {
+  /* onMounted(() => {
     getSearchReferralFun();
-  });
+    console.log("热门搜索数据========>", searchReferral.value);
+  }); */
   //主题切换
   let { theme, changeTheme }: any = useGlobalStore();
 
@@ -63,7 +64,7 @@
   let router: any = useRouter();
   let route: any = useRoute();
   const backHome = () => {
-    router.push("/home");
+    router.go(-1);
   };
 </script>
 
