@@ -1,71 +1,139 @@
 <script setup lang="ts">
-  import { ref } from "vue";
-  import { showToast } from "vant";
+  import { ref, onMounted, watchEffect } from "vue";
   import { useGlobalStore } from "../stores/counter";
-  const value = ref("");
-  const onSearch = (val: any) => showToast(val);
-  const onCancel = () => showToast("取消");
+  import { getSearchReferral } from "@/api/search";
+  import { useRouter, useRoute } from "vue-router";
 
+  //搜索框
+  const value = ref("");
+  // watchEffect(() => {
+  //   console.log(value.value);
+  // });
+
+  // 搜索历史
+  let searchHistoryData: any = ref([]);
+  //获取历史记录数据;
+  const starHistory = () => {
+    if (!localStorage.getItem("searchHistory")) {
+      localStorage.setItem(
+        "searchHistory",
+        JSON.stringify(searchHistoryData.value)
+      );
+    } else {
+      searchHistoryData.value = JSON.parse(
+        localStorage.getItem("searchHistory") || "[]"
+      );
+    }
+  };
+  starHistory();
+  //添加搜索历史
+  const searchFun = () => {
+    searchHistoryData.value.push(value.value);
+    localStorage.setItem(
+      "searchHistory",
+      JSON.stringify(searchHistoryData.value)
+    );
+  };
+  //清除历史记录
+  const clearHistory = () => {
+    searchHistoryData.value = [];
+    localStorage.setItem(
+      "searchHistory",
+      JSON.stringify(searchHistoryData.value)
+    );
+  };
+
+  //获取热门搜索
+  let searchReferral: any = ref([]);
+  let defaultKeyword: any = ref([]);
+  const getSearchReferralFun = async () => {
+    let data = await getSearchReferral({ num: 12 });
+    defaultKeyword.value = data.data[0].title;
+    searchReferral.value = data.data?.slice(1, 11);
+  };
+
+  getSearchReferralFun();
+  /* onMounted(() => {
+    getSearchReferralFun();
+    console.log("热门搜索数据========>", searchReferral.value);
+  }); */
+  //主题切换
   let { theme, changeTheme }: any = useGlobalStore();
+
+  // 返回home主页
+  let router: any = useRouter();
+  let route: any = useRoute();
+  const backHome = () => {
+    router.go(-1);
+  };
 </script>
 
 <template>
-  <div ref="SearchInput" class="SearchInput w-100 h-100 noScrollBar">
+  <div ref="SearchInputView" class="SearchInput w-100 h-100 noScrollBar">
     <!-- 搜索框 -->
-    <div
-      class="bg-body rounded-pill mt-3"
-      :class="[theme === 'light' ? 'bg-opacity-75' : 'bg-opacity-50']">
-      <form action="/">
-        <van-search
-          v-model="value"
-          placeholder="请输入搜索关键词"
-          @search="onSearch"
-          @cancel="onCancel"
-          background="transparent"
-          :shape="'round'"
-          :class="[theme == 'dark' ? 'searchDark' : 'searchLight']" />
-      </form>
+    <div class="search d-flex align-items-center">
+      <i class="bi bi-arrow-left-short" @click="backHome"></i>
+      <div
+        class="searchInput bg-body rounded-pill flex-grow-1 me-3 pl-2"
+        :class="[theme === 'light' ? 'bg-opacity-75' : 'bg-opacity-50']">
+        <form action="/">
+          <van-search
+            v-model="value"
+            placeholder="请输入搜索关键词"
+            :autofocus="true"
+            background="transparent"
+            @search="searchFun"
+            :shape="'round'"
+            :class="[theme == 'dark' ? 'searchDark' : 'searchLight']" />
+        </form>
+      </div>
     </div>
-    <div class="searchHistory px-3">
+    <!-- 搜索历史 -->
+    <div class="searchHistory px-3" v-if="!value">
       <div class="d-flex justify-content-between align-items-center">
         <p class="my-2">搜索历史</p>
-        <i class="bi bi-trash3"></i>
+        <i class="bi bi-trash3 opacity-50" @click="clearHistory"></i>
       </div>
       <ul class="d-flex flex-wrap">
         <li
-          class="bg-body px-3 py-2 rounded-pill fs-10 bg-opacity-75 me-2 mt-2">
-          历史一
+          class="bg-body px-3 py-2 rounded-pill fs-10 bg-opacity-75 me-2 mt-2"
+          v-for="(item, index) in searchHistoryData"
+          :key="index">
+          {{ item }}
         </li>
+      </ul>
+    </div>
+    <!-- 热门搜索 -->
+    <div class="searchReferral mt-5" v-if="!value">
+      <div class="d-flex justify-content-between align-items-center">
+        <p class="my-2 ml-3">热门搜索</p>
+      </div>
+      <ul class="mt-3 text-body d-flex flex-wrap w-100">
         <li
-          class="bg-body px-3 py-2 rounded-pill fs-10 bg-opacity-75 me-2 mt-2">
-          历史一
-        </li>
-        <li
-          class="bg-body px-3 py-2 rounded-pill fs-10 bg-opacity-75 me-2 mt-2">
-          历史一
-        </li>
-        <li
-          class="bg-body px-3 py-2 rounded-pill fs-10 bg-opacity-75 me-2 mt-2">
-          历史一
-        </li>
-        <li
-          class="bg-body px-3 py-2 rounded-pill fs-10 bg-opacity-75 me-2 mt-2">
-          历史一
-        </li>
-        <li
-          class="bg-body px-3 py-2 rounded-pill fs-10 bg-opacity-75 me-2 mt-2">
-          历史一
-        </li>
-        <li
-          class="bg-body px-3 py-2 rounded-pill fs-10 bg-opacity-75 me-2 mt-2">
-          历史一
+          class="d-flex align-items-center mb-3 px-3 noScrollBar w-50"
+          v-for="(item, index) in searchReferral"
+          :key="item.season_id">
+          <span class="index fs-2">{{ index + 1 }}</span>
+          <img
+            :src="item.vertical_cover + '@100w_100h.jpg'"
+            alt=""
+            class="pr-3 d-block" />
+          <div class="synopsis flex-group-1 noScrollBar">
+            <h4 class="fs-9 m-0 one-txt-cut">{{ item.title }}</h4>
+            <p class="fs-10 m-0 mt-1 opacity-50 one-txt-cut">
+              {{ item.styles[0] }}
+            </p>
+          </div>
         </li>
       </ul>
     </div>
   </div>
 </template>
-<style lang="scss"></style>
-<style lang="scss" scoped>
+<style lang="scss">
+  .search {
+    box-sizing: border-box;
+    padding: 10px 0;
+  }
   .searchDark {
     --van-search-content-background: transparent;
     --van-field-input-text-color: rgb(254, 254, 254);
@@ -73,5 +141,37 @@
   .searchLight {
     --van-search-content-background: transparent;
     --van-field-input-text-color: rgb(1, 1, 1);
+  }
+  .van-search {
+    padding: 0;
+  }
+  .searchReferral {
+    img {
+      width: 4rem;
+    }
+    h4 {
+      width: 5rem;
+    }
+    span.index {
+      display: block;
+      width: 2rem;
+    }
+    li {
+      &:nth-child(1) {
+        .index {
+          color: red;
+        }
+      }
+      &:nth-child(2) {
+        .index {
+          color: rgb(241, 132, 7);
+        }
+      }
+      &:nth-child(3) {
+        .index {
+          color: rgb(238, 185, 87);
+        }
+      }
+    }
   }
 </style>
