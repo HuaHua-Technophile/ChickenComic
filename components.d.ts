@@ -9,7 +9,11 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    NImage: typeof import('naive-ui')['NImage']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    VanImage: typeof import('vant/es')['Image']
+    VanPopup: typeof import('vant/es')['Popup']
+    VanSlider: typeof import('vant/es')['Slider']
   }
 }

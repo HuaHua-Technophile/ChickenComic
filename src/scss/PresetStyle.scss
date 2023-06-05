@@ -1,12 +1,15 @@
 .noScrollBar {
   overflow: hidden;
 }
+
 .noScrollBar::-webkit-scrollbar {
   display: none !important;
 }
+
 .lh-100 {
   line-height: 100% !important;
 }
+
 .pb-100 {
   padding-bottom: 100%;
 }
@@ -24,31 +27,38 @@
 .fs-7 {
   font-size: 0.9rem !important;
 }
+
 .fs-8 {
   font-size: 0.8rem !important;
 }
+
 .fs-9 {
   font-size: 0.7rem !important;
 }
+
 .fs-10 {
   font-size: 0.6rem !important;
 }
+
 @for $i from 1 through 10 {
   .t-shadow-#{$i} {
     text-shadow: 1px 1px #{$i}px rgba(0, 0, 0, 0.5);
   }
 }
+
 @for $i from 2 through 15 {
   .transition-#{$i} {
     // transition: all unquote("#{$i/10}s");
     transition: all unquote(calc($i / 10) + "s");
   }
 }
+
 @for $i from 2 through 15 {
   .blur-#{$i} {
     backdrop-filter: blur($i + px);
   }
 }
+
 .fadeIn-enter-active,
 .fadeIn-leave-active,
 .sideUp-enter-active,
@@ -57,24 +67,29 @@
 .sideUp100-leave-active {
   transition: all 0.8s;
 }
-.fadeIn-enter,
+
+.fadeIn-enter-from,
 .fadeIn-leave-to {
   opacity: 0;
 }
-.sideUp-enter,
+
+.sideUp-enter-from,
 .sideUp-leave-to {
   transform: translateY(20px);
   opacity: 0;
 }
-.sideUp100-enter,
+
+.sideUp100-enter-from,
 .sideUp100-leave-to {
   transform: translateY(100%);
   opacity: 0;
 }
+
 .bounce-enter-active,
 .bounce-leave-active {
   transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
+
 .bounce-enter,
 .bounce-leave-to {
   transform: scale(0);
