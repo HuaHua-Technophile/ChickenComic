@@ -4,6 +4,7 @@
   import { getComicDetail } from "@/api/comicCover";
   import BScroll from "better-scroll"; //导入Better scroll核心  // 从路由传参获取当前页面漫画的id
   import { useGlobalStore } from "@/stores/counter";
+  import { nextTick } from "vue";
   //数据请求---------------------------------
   let route = useRoute();
   let { id }: { id?: string } = route.query;
@@ -14,11 +15,14 @@
   getData();
   // Better scroll实例化相关------------------
   let comicCover = ref<object>({});
-  let bs: { value: object } = ref({});
+  let bs: any = ref({});
   onMounted(() => {
     // 挂载后获取原生dom对象,进行bs初始化
     bs.value = new BScroll(comicCover.value as HTMLElement, {
       click: true,
+    });
+    nextTick(() => {
+      bs.value.refresh();
     });
   });
   //------主题色-------
@@ -36,12 +40,11 @@
       </div>
       <!-- 下方内容区域 -->
       <div
-        style="min-height: 80vh"
         :class="[
           { darkBg: GlobalStore.theme == 'dark' },
           { lightBg: GlobalStore.theme == 'light' },
         ]"
-        class="rounded-5">
+        class="rounded-top-5">
         <!-- 主要信息 -->
         <div class="position-relative d-flex align-items-center pt-5 mb-4">
           <!-- 收藏按钮 -->
@@ -83,18 +86,29 @@
           <div class="opacity-50">{{ res.data?.evaluate }}</div>
         </div>
         <!-- 开始阅读/加入书架 -->
-        <div class="d-flex align-items-center justify-content-evenly">
+        <div class="d-flex align-items-center justify-content-evenly mb-3">
           <div
-            class="pt-3 pb-3 fs-5 fw-bold bg-primary rounded-4 text-center t-shadow-5 bg-opacity-25"
+            class="pt-3 pb-3 fs-5 fw-bold bg-primary rounded-4 text-center t-shadow-3 bg-opacity-25 insetShadow"
             style="width: 40%">
             読み始めます
           </div>
           <div
-            class="pt-3 pb-3 fs-5 fw-bold bg-secondary rounded-4 text-center t-shadow-5 bg-opacity-25"
+            class="pt-3 pb-3 fs-5 fw-bold bg-secondary rounded-4 text-center t-shadow-3 bg-opacity-25 insetShadow"
             style="width: 40%">
             本棚に入れます
           </div>
         </div>
+        <!-- 标签 -->
+        <div class="d-flex align-items-center ps-3 pe-3 opacity-75">
+          <div class="me-3 t-shadow-3">ラベル :</div>
+          <div
+            v-for="item in res.data.story_elems"
+            class="bg-body-tertiary rounded me-3 pt-1 pb-1 ps-3 pe-3">
+            {{ item.name }}
+          </div>
+        </div>
+        <!-- 章节 -->
+        <div></div>
       </div>
     </div>
     <!-- 头部返回按钮 -->
@@ -113,3 +127,8 @@
     </div>
   </div>
 </template>
+<style lang="scss">
+  .insetShadow {
+    box-shadow: inset 0px 0px 4px rgba(255, 255, 255, 0.4);
+  }
+</style>

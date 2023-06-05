@@ -5,15 +5,17 @@
 // Read more: https://github.com/vuejs/core/pull/3399
 import '@vue/runtime-core'
 
-export {}
+export {};
 
-declare module '@vue/runtime-core' {
+declare module "@vue/runtime-core" {
   export interface GlobalComponents {
-    NImage: typeof import('naive-ui')['NImage']
-    RouterLink: typeof import('vue-router')['RouterLink']
-    RouterView: typeof import('vue-router')['RouterView']
-    VanImage: typeof import('vant/es')['Image']
-    VanPopup: typeof import('vant/es')['Popup']
-    VanSlider: typeof import('vant/es')['Slider']
+    NImage: typeof import("naive-ui")["NImage"];
+    RouterLink: typeof import("vue-router")["RouterLink"];
+    RouterView: typeof import("vue-router")["RouterView"];
+    VanImage: typeof import("vant/es")["Image"];
+    VanPopup: typeof import("vant/es")["Popup"];
+    VanSlider: typeof import("vant/es")["Slider"];
+    VanOverlay: typeof import("vant/es")["Overlay"];
+    VanSearch: typeof import("vant/es")["Search"];
   }
 }
