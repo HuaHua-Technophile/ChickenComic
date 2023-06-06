@@ -7,6 +7,14 @@
   import NestedScroll from "@better-scroll/nested-scroll"; //导入betterscroll嵌套
   import { useGlobalStore } from "@/stores/counter";
   import chapterComponent from "@/components/chapterComponent.vue"; //引入组件
+  //定义方法---------------------
+  let updateTime = (str: string) => {
+    str = str
+      .replace("卷", "いつでも")
+      .replace("每周", "毎週")
+      .replace("更新", "更新します");
+    return str;
+  };
   //数据请求---------------------------------
   let route = useRoute();
   let { id }: { id?: string } = route.query;
@@ -14,10 +22,9 @@
   let chapterList: Array<number> = [];
   let getData = async () => {
     res.value = await getComicDetail(id!);
-    chapterList = res.value.data?.ep_list.map((i: { id: number }) => i.id);
+    chapterList = res.value.data?.ep_list;
   };
   getData();
-
   // Better scroll实例化相关------------------
   BScroll.use(ObserveImage);
   BScroll.use(NestedScroll);
@@ -36,7 +43,6 @@
         groupId: 1, // string or number
       },
     });
-    console.log(chapterComponentDom.value.$el);
     bs2.value = new BScroll(chapterComponentDom.value.$el, {
       click: true,
       observeImage: {
@@ -62,12 +68,12 @@
 <template>
   <div ref="comicCover" class="comicCover w-100 h-100 noScrollBar">
     <!-- 滚动内容 -->
-    <div style="min-height: 101vh; padding-top: 67.5px" :class="{}">
+    <div style="min-height: 101vh; padding-top: 67.5px">
       <!-- 漫画封面 -->
       <div
         class="mx-auto mb-5 rounded-5 overflow-hidden"
         style="width: 70%; box-shadow: 0px 0px 30px rgba(255, 255, 255, 0.5)">
-        <img :src="res.data?.vertical_cover" class="w-100" />
+        <img v-lazy="res.data?.vertical_cover" class="w-100" />
       </div>
       <!-- 下方内容区域 -->
       <div
@@ -75,18 +81,18 @@
           { darkBg: GlobalStore.theme == 'dark' },
           { lightBg: GlobalStore.theme == 'light' },
         ]"
-        class="rounded-top-5">
+        class="rounded-top-5 position-relative">
+        <!-- 收藏按钮 -->
+        <div
+          class="position-absolute top-0 translate-middle-y bg- d-flex align-items-center justify-content-center bg-light rounded-3"
+          style="width: 10vw; height: 10vw; right: 10%">
+          <i class="bi bi-heart text-danger fs-3 t-shadow-2"></i>
+        </div>
         <!-- 主要信息 -->
-        <div class="position-relative d-flex align-items-center pt-5 mb-4">
-          <!-- 收藏按钮 -->
-          <div
-            class="position-absolute top-0 translate-middle-y bg- d-flex align-items-center justify-content-center bg-light rounded-3"
-            style="width: 10vw; height: 10vw; right: 10%">
-            <i class="bi bi-heart text-danger fs-3 t-shadow-2"></i>
-          </div>
+        <div class="d-flex align-items-center pt-5 mb-4">
           <!-- 图 -->
           <div
-            class="ms-5 me-4 w-25 position-relative rounded-4 overflow-hidden"
+            class="ms-5 me-4 w-25 position-relative rounded-4 overflow-hidden flex-shrink-0"
             style="padding-bottom: 25%">
             <div class="position-absolute top-0 bottom-0 start-0 end-0">
               <img
@@ -95,11 +101,13 @@
             </div>
           </div>
           <!-- 作者,漫画名 -->
-          <div class="t-shadow-3">
+          <div class="t-shadow-3 flex-grow-1 overflow">
             <div class="mb-2 opacity-50">
               人気しすー : {{ res.data?.interact_value }}
             </div>
-            <div class="fs-2 fw-bold mb-1" style="letter-spacing: 2.5px">
+            <div
+              class="fs-2 fw-bold mb-1 van-multi-ellipsis--l2"
+              style="letter-spacing: 2.5px">
               {{ res.data?.title }}
             </div>
             <div>
@@ -120,7 +128,8 @@
         <div class="d-flex align-items-center justify-content-evenly mb-3">
           <div
             class="pt-3 pb-3 fs-5 fw-bold bg-primary rounded-4 text-center t-shadow-3 bg-opacity-25 insetShadow"
-            style="width: 40%">
+            style="width: 40%"
+            @click="readThisChapter(0)">
             読み始めます
           </div>
           <div
@@ -132,14 +141,20 @@
         <!-- 标签 -->
         <div
           class="d-flex align-items-center flex-wrap ps-3 pe-3 mb-3 opacity-75">
-          <div class="me-3 t-shadow-3">ラベル :</div>
+          <div class="me-3 mb-3 t-shadow-3">ラベル :</div>
           <div
             v-for="item in res.data?.story_elems"
-            class="bg-body-tertiary rounded me-3 pt-1 pb-1 ps-3 pe-3">
+            class="bg-body-tertiary rounded me-3 mb-3 pt-1 pb-1 ps-3 pe-3">
             {{ item.name }}
           </div>
         </div>
         <!-- 章节 -->
+        <div class="ms-3 me-3 mb-3">
+          <span class="fs-3 me-3">全{{ res.data?.ep_list.length }}ページ</span>
+          <span class="opacity-75" v-if="res.data?.renewal_time">{{
+            updateTime(res.data.renewal_time)
+          }}</span>
+        </div>
         <chapterComponent
           :detailList="res.data?.ep_list"
           class="ms-3 me-3"
