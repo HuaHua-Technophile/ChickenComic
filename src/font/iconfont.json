@@ -1,0 +1,16 @@
+{
+  "id": "4107893",
+  "name": "纸樱漫画",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "5831385",
+      "name": "放大镜",
+      "font_class": "fangdajing",
+      "unicode": "e66b",
+      "unicode_decimal": 58987
+    }
+  ]
+}
