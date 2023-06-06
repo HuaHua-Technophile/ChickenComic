@@ -3,8 +3,8 @@
   import { useRoute } from "vue-router";
   import { getComicDetail } from "@/api/comicCover";
   import BScroll from "better-scroll"; //导入Better scroll核心  // 从路由传参获取当前页面漫画的id
+  import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
   import { useGlobalStore } from "@/stores/counter";
-  import { nextTick } from "vue";
   //数据请求---------------------------------
   let route = useRoute();
   let { id }: { id?: string } = route.query;
@@ -14,15 +14,24 @@
   };
   getData();
   // Better scroll实例化相关------------------
-  let comicCover = ref<object>({});
-  let bs: any = ref({});
+  BScroll.use(ObserveImage);
+  let comicCover = ref<HTMLElement | object>({});
+  let chapterCover = ref<HTMLElement | object>({});
+  let bs1: any = ref({});
+  let bs2: any = ref({});
   onMounted(() => {
     // 挂载后获取原生dom对象,进行bs初始化
-    bs.value = new BScroll(comicCover.value as HTMLElement, {
+    bs1.value = new BScroll(comicCover.value as HTMLElement, {
       click: true,
+      observeImage: {
+        debounceTime: 500, // ms
+      },
     });
-    nextTick(() => {
-      bs.value.refresh();
+    bs2.value = new BScroll(chapterCover.value as HTMLElement, {
+      click: true,
+      observeImage: {
+        debounceTime: 500, // ms
+      },
     });
   });
   //------主题色-------
@@ -99,16 +108,43 @@
           </div>
         </div>
         <!-- 标签 -->
-        <div class="d-flex align-items-center ps-3 pe-3 opacity-75">
+        <div class="d-flex align-items-center ps-3 pe-3 mb-3 opacity-75">
           <div class="me-3 t-shadow-3">ラベル :</div>
           <div
-            v-for="item in res.data.story_elems"
+            v-for="item in res.data?.story_elems"
             class="bg-body-tertiary rounded me-3 pt-1 pb-1 ps-3 pe-3">
             {{ item.name }}
           </div>
         </div>
         <!-- 章节 -->
-        <div></div>
+        <div
+          ref="chapter_swiper"
+          class="ps-3 pe-3 pt-5 position-relative"
+          style="max-height: 100vh">
+          <!-- 章节滚动内容 -->
+          <div class="chapter_content">
+            <div
+              v-for="(item, index) in res.data.ep_list"
+              :key="index"
+              class="d-flex align-items-center mb-3">
+              <!-- 封面 -->
+              <div class="me-3">
+                <img :src="`${item.cover}@150w`" class="rounded-3" />
+              </div>
+              <!-- 章节信息 -->
+              <div>
+                <!-- 第几章 -->
+                <div>チャプター{{ index + 1 }}{{ item.title.slice(5) }}</div>
+              </div>
+            </div>
+          </div>
+          <!-- 章节标题 -->
+          <div class="position-absolute top-0 w-100">
+            <span class="fs-3"
+              >{{ res.data.ep_list.length }}章に更新しました</span
+            >
+          </div>
+        </div>
       </div>
     </div>
     <!-- 头部返回按钮 -->
