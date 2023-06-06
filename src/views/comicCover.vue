@@ -11,11 +11,12 @@
   let route = useRoute();
   let { id }: { id?: string } = route.query;
   let res = ref<any>({});
+  let chapterList: Array<number> = [];
   let getData = async () => {
     res.value = await getComicDetail(id!);
+    chapterList = res.value.data?.ep_list.map((i: { id: number }) => i.id);
   };
   getData();
-  let chapterList = res.value.data?.ep_list.map((i: { id: number }) => i.id);
 
   // Better scroll实例化相关------------------
   BScroll.use(ObserveImage);
