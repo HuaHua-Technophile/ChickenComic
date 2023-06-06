@@ -14,7 +14,7 @@
   let chapterList: Array<number> = [];
   let getData = async () => {
     res.value = await getComicDetail(id!);
-    chapterList = res.value.data?.ep_list.map((i: { id: number }) => i.id);
+    chapterList = res.value.data?.ep_list;
   };
   getData();
 
@@ -36,7 +36,6 @@
         groupId: 1, // string or number
       },
     });
-    console.log(chapterComponentDom.value.$el);
     bs2.value = new BScroll(chapterComponentDom.value.$el, {
       click: true,
       observeImage: {
