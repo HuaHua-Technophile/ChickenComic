@@ -47,7 +47,7 @@
   };
 
   const getComicEpList = async () => {
-    comicDetail.value = await getComicDetail("25900");
+    comicDetail.value = await getComicDetail("30125");
     imgEpList.value = comicDetail.value.data.ep_list;
     imgEpList.value.reverse();
     // 调用getContentData方法获取章节数据并对数据做处理
@@ -153,6 +153,26 @@
   const likeIt = () => {
     isLike.value = !isLike.value;
   };
+
+  // 自动播放
+  let autoPlayShow = ref(false);
+  let autoTimer: any = null;
+  const autoScroll = () => {
+    autoPlayShow.value = true;
+    if (bs.value.y >= bs.value.maxScrollY) {
+      clearInterval(autoTimer);
+      pullingUpHandler();
+    }
+    autoTimer = setInterval(() => {
+      downScroll();
+    }, 3000);
+  };
+
+  // 停止自动播放
+  const stopAutoScroll = () => {
+    autoPlayShow.value = false;
+    clearInterval(autoTimer);
+  };
 </script>
 
 <template>
@@ -239,7 +259,11 @@
           class="slider fs-3 d-flex justify-content-evenly align-items-center bg-dark rounded-5 blur-5 bg-opacity-75">
           <i class="bi bi-brightness-high" @click="showSlider"></i>
           <i class="bi bi-list"></i>
-          <i class="bi bi-play-circle"></i>
+          <i
+            class="bi bi-play-circle"
+            v-show="!autoPlayShow"
+            @click="autoScroll"></i>
+          <i class="bi bi-pause-circle" v-show="autoPlayShow"></i>
         </div>
       </div>
     </transition>
@@ -249,7 +273,9 @@
       style="width: 100vw; height: 101%; pointer-events: none"
       ref="mask"></div>
     <!-- 点击判断 -->
-    <div class="w-100 h-100 position-absolute z-1 top-0 d-flex flex-column">
+    <div
+      class="w-100 h-100 position-absolute z-1 top-0 d-flex flex-column"
+      @touchstart="stopAutoScroll">
       <div class="headClickArea w-100 flex-grow-1" @click="upScroll"></div>
       <div class="middleClickArea w-100 flex-grow-1" @click="showPopup"></div>
       <div class="footClickArea w-100 flex-grow-1" @click="downScroll"></div>
