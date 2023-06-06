@@ -1,12 +1,20 @@
 <script setup lang="ts">
-  import { ref } from "vue";
+  import { ref, onMounted } from "vue";
   import { useGlobalStore } from "../stores/counter";
+  import BScroll from "better-scroll"; //导入Better scroll核心
   import {
     getSearchReferral,
     getSuggestedWord,
     getSearchResult,
   } from "@/api/search";
   import { useRouter, useRoute } from "vue-router";
+  let SearchInput: any = ref<object | null>(null);
+  let bs = ref({}); //Better scroll实例化后对象的存储
+  onMounted(() => {
+    bs.value = new BScroll(SearchInput.value, {
+      click: true,
+    });
+  });
 
   //搜索框
   let value = ref("");
@@ -118,92 +126,92 @@
 </script>
 
 <template>
-  <div
-    ref="SearchInputView"
-    class="SearchInput w-100 h-100 noScrollBar position-relative">
-    <!-- 搜索框 -->
-    <div class="search d-flex flex-column align-items-star">
-      <i class="bi bi-arrow-left-short w-25 mr-5" @click="backHome"></i>
+  <div ref="SearchInput" class="SearchInput w-100 h-100 noScrollBar">
+    <div style="min-height: 105vh">
+      <!-- 搜索框 -->
+      <div class="search d-flex flex-column align-items-star position-relative">
+        <i class="bi bi-arrow-left-short w-25 mr-5" @click="backHome"></i>
+        <div
+          class="ms-4 transition-5 mt-2"
+          :class="[isFocus ? 'opacity-0' : 'opacity-1']">
+          <h3 class="fs-3">你想搜</h3>
+          <h3 class="fs-3">什么作品呢？</h3>
+        </div>
+        <div
+          class="searchInput position-absolute flex-grow-1 py-2 transition-5"
+          :class="[
+            theme == 'dark' ? 'bg-black' : 'bg-white',
+            isFocus ? 'focus' : '',
+          ]">
+          <form action="/">
+            <van-search
+              v-model.trim="value"
+              placeholder="请输入作者名/作品名/类型"
+              background="transparent"
+              @search="searchFun"
+              @focus="focusFun"
+              @blur="blurFun"
+              autocomplete="off"
+              @update:model-value="inputKeyWord"
+              :class="[theme == 'dark' ? 'searchDark' : 'searchLight']" />
+          </form>
+        </div>
+      </div>
+      <!-- 搜索历史 -->
       <div
-        class="ms-4 transition-5 mt-2"
-        :class="[isFocus ? 'opacity-0' : 'opacity-1']">
-        <h3 class="fs-3">你想搜</h3>
-        <h3 class="fs-3">什么作品呢？</h3>
+        class="searchHistory mt-5 px-3"
+        :class="[isFocus ? 'opacity-0' : 'opacity-1']"
+        v-if="!value && searchHistoryData.length != 0">
+        <div class="d-flex justify-content-between align-items-center">
+          <p class="my-2">搜索历史</p>
+          <i class="bi bi-trash3 opacity-50" @click="clearHistory"></i>
+        </div>
+        <ul class="d-flex flex-wrap">
+          <li
+            class="bg-body px-3 py-2 rounded-pill fs-10 bg-opacity-75 me-2 mt-2"
+            v-for="(item, index) in searchHistoryData"
+            :key="index">
+            {{ item }}
+          </li>
+        </ul>
       </div>
+      <!-- 热门搜索 -->
       <div
-        class="searchInput position-absolute flex-grow-1 py-2 transition-5"
-        :class="[
-          theme == 'dark' ? 'bg-black' : 'bg-white',
-          isFocus ? 'focus' : '',
-        ]">
-        <form action="/">
-          <van-search
-            v-model.trim="value"
-            placeholder="请输入作者名/作品名/类型"
-            background="transparent"
-            @search="searchFun"
-            @focus="focusFun"
-            @blur="blurFun"
-            autocomplete="off"
-            @update:model-value="inputKeyWord"
-            :class="[theme == 'dark' ? 'searchDark' : 'searchLight']" />
-        </form>
+        class="searchReferral mt-5 transition-5"
+        :class="[isFocus ? 'opacity-0' : 'opacity-1']"
+        v-if="!value">
+        <div class="d-flex justify-content-between align-items-center">
+          <p class="my-2 ms-3">热门搜索</p>
+        </div>
+        <ul class="mt-3 text-body d-flex flex-wrap w-100">
+          <li
+            class="d-flex align-items-center mb-3 ps-3 noScrollBar w-50"
+            v-for="(item, index) in searchReferral"
+            :key="item.season_id"
+            @click="openContentView(item.season_id)">
+            <div class="index fs-2">{{ index + 1 }}</div>
+            <img
+              :src="item.vertical_cover + '@100w_100h.jpg'"
+              alt=""
+              class="pe-2 d-block" />
+            <div class="synopsis fles-group-1 noScrollBar">
+              <h4 class="fs-9 m-0 van-ellipsis">{{ item.title }}</h4>
+              <p class="fs-10 m-0 mt-1 opacity-50 van-ellipsis">
+                {{ item.styles[0] }}
+              </p>
+            </div>
+          </li>
+        </ul>
       </div>
-    </div>
-    <!-- 搜索历史 -->
-    <div
-      class="searchHistory mt-5 px-3"
-      :class="[isFocus ? 'opacity-0' : 'opacity-1']"
-      v-if="!value && searchHistoryData.length != 0">
-      <div class="d-flex justify-content-between align-items-center">
-        <p class="my-2">搜索历史</p>
-        <i class="bi bi-trash3 opacity-50" @click="clearHistory"></i>
+      <!-- 搜索建议词 -->
+      <div class="SearchSuggestWord position-absolute" v-if="isFocus">
+        <ul>
+          <li class="py-3" v-for="(item, index) in suggestedWord" :key="index">
+            <i class="bi bi-search"></i>
+            <span class="ps-2" v-html="item"></span>
+          </li>
+        </ul>
       </div>
-      <ul class="d-flex flex-wrap">
-        <li
-          class="bg-body px-3 py-2 rounded-pill fs-10 bg-opacity-75 me-2 mt-2"
-          v-for="(item, index) in searchHistoryData"
-          :key="index">
-          {{ item }}
-        </li>
-      </ul>
-    </div>
-    <!-- 热门搜索 -->
-    <div
-      class="searchReferral mt-5 transition-5"
-      :class="[isFocus ? 'opacity-0' : 'opacity-1']"
-      v-if="!value">
-      <div class="d-flex justify-content-between align-items-center">
-        <p class="my-2 ms-3">热门搜索</p>
-      </div>
-      <ul class="mt-3 text-body d-flex flex-wrap w-100">
-        <li
-          class="d-flex align-items-center mb-3 ps-3 noScrollBar w-50"
-          v-for="(item, index) in searchReferral"
-          :key="item.season_id"
-          @click="openContentView(item.season_id)">
-          <div class="index fs-2">{{ index + 1 }}</div>
-          <img
-            :src="item.vertical_cover + '@100w_100h.jpg'"
-            alt=""
-            class="pe-2 d-block" />
-          <div class="synopsis fles-group-1 noScrollBar">
-            <h4 class="fs-9 m-0 van-ellipsis">{{ item.title }}</h4>
-            <p class="fs-10 m-0 mt-1 opacity-50 van-ellipsis">
-              {{ item.styles[0] }}
-            </p>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <!-- 搜索建议词 -->
-    <div class="SearchSuggestWord position-absolute" v-if="isFocus">
-      <ul>
-        <li class="py-3" v-for="(item, index) in suggestedWord" :key="index">
-          <i class="bi bi-search"></i>
-          <span class="ps-2" v-html="item"></span>
-        </li>
-      </ul>
     </div>
   </div>
 </template>

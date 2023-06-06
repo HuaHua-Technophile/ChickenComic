@@ -1,10 +1,12 @@
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
-  import { useRoute } from "vue-router";
+  import { useRoute, useRouter } from "vue-router";
   import { getComicDetail } from "@/api/comicCover";
   import BScroll from "better-scroll"; //导入Better scroll核心  // 从路由传参获取当前页面漫画的id
   import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
+  import NestedScroll from "@better-scroll/nested-scroll"; //导入betterscroll嵌套
   import { useGlobalStore } from "@/stores/counter";
+  import chapterComponent from "@/components/chapterComponent.vue"; //引入组件
   //数据请求---------------------------------
   let route = useRoute();
   let { id }: { id?: string } = route.query;
@@ -13,29 +15,48 @@
     res.value = await getComicDetail(id!);
   };
   getData();
+  let chapterList = res.value.data?.ep_list.map((i: { id: number }) => i.id);
+
   // Better scroll实例化相关------------------
   BScroll.use(ObserveImage);
-  let comicCover = ref<HTMLElement | object>({});
-  let chapterCover = ref<HTMLElement | object>({});
-  let bs1: any = ref({});
+  BScroll.use(NestedScroll);
+  let comicCover = ref<HTMLElement | object>({}); //待实例化的DOM元素
+  let chapterComponentDom = ref<any>({}); //待实例化的DOM元素
+  let bs: any = ref({});
   let bs2: any = ref({});
   onMounted(() => {
     // 挂载后获取原生dom对象,进行bs初始化
-    bs1.value = new BScroll(comicCover.value as HTMLElement, {
+    bs.value = new BScroll(comicCover.value as HTMLElement, {
       click: true,
       observeImage: {
         debounceTime: 500, // ms
       },
+      nestedScroll: {
+        groupId: 1, // string or number
+      },
     });
-    bs2.value = new BScroll(chapterCover.value as HTMLElement, {
+    console.log(chapterComponentDom.value.$el);
+    bs2.value = new BScroll(chapterComponentDom.value.$el, {
       click: true,
       observeImage: {
         debounceTime: 500, // ms
+      },
+      nestedScroll: {
+        groupId: 1, // string or number
       },
     });
   });
   //------主题色-------
   let GlobalStore = useGlobalStore();
+  //子组件点击传出方法,阅读不同章节
+  let router = useRouter();
+  let readThisChapter = (index: number) => {
+    let params = JSON.stringify({
+      index,
+      chapterList,
+    });
+    router.push({ name: "content", state: { params } }); //注意：此处一定要用params
+  };
 </script>
 <template>
   <div ref="comicCover" class="comicCover w-100 h-100 noScrollBar">
@@ -68,7 +89,7 @@
             style="padding-bottom: 25%">
             <div class="position-absolute top-0 bottom-0 start-0 end-0">
               <img
-                :src="res.data?.horizontal_cover"
+                v-lazy="res.data?.horizontal_cover"
                 class="w-100 h-100 object-fit-cover" />
             </div>
           </div>
@@ -108,7 +129,8 @@
           </div>
         </div>
         <!-- 标签 -->
-        <div class="d-flex align-items-center ps-3 pe-3 mb-3 opacity-75">
+        <div
+          class="d-flex align-items-center flex-wrap ps-3 pe-3 mb-3 opacity-75">
           <div class="me-3 t-shadow-3">ラベル :</div>
           <div
             v-for="item in res.data?.story_elems"
@@ -117,34 +139,11 @@
           </div>
         </div>
         <!-- 章节 -->
-        <div
-          ref="chapter_swiper"
-          class="ps-3 pe-3 pt-5 position-relative"
-          style="max-height: 100vh">
-          <!-- 章节滚动内容 -->
-          <div class="chapter_content">
-            <div
-              v-for="(item, index) in res.data.ep_list"
-              :key="index"
-              class="d-flex align-items-center mb-3">
-              <!-- 封面 -->
-              <div class="me-3">
-                <img :src="`${item.cover}@150w`" class="rounded-3" />
-              </div>
-              <!-- 章节信息 -->
-              <div>
-                <!-- 第几章 -->
-                <div>チャプター{{ index + 1 }}{{ item.title.slice(5) }}</div>
-              </div>
-            </div>
-          </div>
-          <!-- 章节标题 -->
-          <div class="position-absolute top-0 w-100">
-            <span class="fs-3"
-              >{{ res.data.ep_list.length }}章に更新しました</span
-            >
-          </div>
-        </div>
+        <chapterComponent
+          :detailList="res.data?.ep_list"
+          class="ms-3 me-3"
+          @readThisChapter="readThisChapter"
+          ref="chapterComponentDom"></chapterComponent>
       </div>
     </div>
     <!-- 头部返回按钮 -->

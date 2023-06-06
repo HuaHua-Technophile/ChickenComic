@@ -9,6 +9,7 @@ export {};
 
 declare module "@vue/runtime-core" {
   export interface GlobalComponents {
+    ChapterComponent: typeof import("./src/components/chapterComponent.vue")["default"];
     RouterLink: typeof import("vue-router")["RouterLink"];
     RouterView: typeof import("vue-router")["RouterView"];
     VanDropdownItem: typeof import("vant/es")["DropdownItem"];
