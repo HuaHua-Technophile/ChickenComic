@@ -8,3 +8,15 @@ export function getSearchReferral(params: any): any {
     params,
   });
 }
+
+
+// 搜索建议词
+// ?term=天&num=20
+export function getSuggestedWord(params: any): any {
+  console.log(params);
+  return service({
+    url: "/bcomic/SearchSug",
+    method: "get",
+    params,
+  });
+}
