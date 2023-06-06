@@ -1,7 +1,11 @@
 <script setup lang="ts">
   import { ref } from "vue";
   import { useGlobalStore } from "../stores/counter";
-  import { getSearchReferral, getSuggestedWord } from "@/api/search";
+  import {
+    getSearchReferral,
+    getSuggestedWord,
+    getSearchResult,
+  } from "@/api/search";
   import { useRouter, useRoute } from "vue-router";
 
   //搜索框
@@ -30,7 +34,7 @@
       clearTimeout(time);
       time = setTimeout(() => {
         getSuggestedWordFun();
-      }, 500);
+      }, 400);
     } else {
       suggestedWord.value = null;
     }
@@ -54,11 +58,17 @@
   starHistory();
   //添加搜索历史
   const searchFun = () => {
-    searchHistoryData.value.push(value.value);
-    localStorage.setItem(
-      "searchHistory",
-      JSON.stringify(searchHistoryData.value)
+    getSearchResultFun();
+    let index = searchHistoryData.value.findIndex(
+      (item: any) => item == value.value
     );
+    if (index === -1) {
+      searchHistoryData.value.push(value.value);
+      localStorage.setItem(
+        "searchHistory",
+        JSON.stringify(searchHistoryData.value)
+      );
+    }
   };
   //清除历史记录
   const clearHistory = () => {
@@ -77,17 +87,33 @@
     defaultKeyword.value = data.data[0].title;
     searchReferral.value = data.data?.slice(1, 11);
   };
-
   getSearchReferralFun();
 
   //主题切换
   let { theme, changeTheme }: any = useGlobalStore();
 
+  //获取搜索结果
+  const getSearchResultFun = async () => {
+    let data = await getSearchResult({
+      keyWord: value.value,
+      order: -1,
+    });
+    console.log("data==》", data);
+  };
   // 返回home主页
   let router: any = useRouter();
   let route: any = useRoute();
   const backHome = () => {
     router.go(-1);
+  };
+  // 点击热搜跳转
+  const openContentView = (id: number) => {
+    router.push({
+      path: "/comicCover",
+      query: {
+        id: id,
+      },
+    });
   };
 </script>
 
@@ -97,7 +123,7 @@
     class="SearchInput w-100 h-100 noScrollBar position-relative">
     <!-- 搜索框 -->
     <div class="search d-flex flex-column align-items-star">
-      <i class="bi bi-arrow-left-short" @click="backHome"></i>
+      <i class="bi bi-arrow-left-short w-25 mr-5" @click="backHome"></i>
       <div
         class="ms-4 transition-5 mt-2"
         :class="[isFocus ? 'opacity-0' : 'opacity-1']">
@@ -154,15 +180,16 @@
         <li
           class="d-flex align-items-center mb-3 ps-3 noScrollBar w-50"
           v-for="(item, index) in searchReferral"
-          :key="item.season_id">
+          :key="item.season_id"
+          @click="openContentView(item.season_id)">
           <div class="index fs-2">{{ index + 1 }}</div>
           <img
             :src="item.vertical_cover + '@100w_100h.jpg'"
             alt=""
             class="pe-2 d-block" />
           <div class="synopsis fles-group-1 noScrollBar">
-            <h4 class="fs-9 m-0 one-txt-cut">{{ item.title }}</h4>
-            <p class="fs-10 m-0 mt-1 opacity-50 one-txt-cut">
+            <h4 class="fs-9 m-0 van-ellipsis">{{ item.title }}</h4>
+            <p class="fs-10 m-0 mt-1 opacity-50 van-ellipsis">
               {{ item.styles[0] }}
             </p>
           </div>
