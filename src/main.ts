@@ -12,7 +12,16 @@ import router from "./router";
 const app = createApp(App);
 
 //---------vant按需加载--------------------------
-app.use(createPinia()).use(router).mount("#app");
+import { Lazyload } from "vant";
+const errorimage = new URL("./img/no-find.png", import.meta.url).href;
+app
+  .use(createPinia())
+  .use(router)
+  .use(Lazyload, {
+    error: errorimage,
+    attempt: 1,
+  })
+  .mount("#app");
 //----bootstrap---------------------------
 import "@/scss/customBootStrap.scss"; //优先引入bootstrap入口文件，使其可以被后续自定义样式与自定义主题覆盖
 import "bootstrap/js/index.esm.js";
