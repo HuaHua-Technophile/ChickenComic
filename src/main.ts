@@ -14,6 +14,7 @@ const app = createApp(App);
 //---------vant按需加载--------------------------
 import { Lazyload } from "vant";
 const errorimage = new URL("./img/no-find.png", import.meta.url).href;
+//vue原生官方
 app
   .use(createPinia())
   .use(router)
