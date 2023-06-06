@@ -34,20 +34,20 @@
   };
 
   const getComicEpList = async () => {
-    comicDetail.value = await getComicDetail("30125");
+    comicDetail.value = await getComicDetail("26431");
     imgEpList.value = comicDetail.value.data.ep_list;
     imgEpList.value.reverse();
     // 调用getContentData方法获取章节数据并对数据做处理
     getContentData(imgEpList.value[0].id);
   };
 
-  getComicEpList();
+  getComicEpList(); // 请求所有章节数据并做处理
 
   // 实例化bscroll并给阅读页添加滚动处理
   BScroll.use(Pullup); // 注册上拉懒加载插件
   BScroll.use(ObserveImage);
   let bs: any = ref<object>({});
-  let contentVeiw: { value: object } = ref<object>({});
+  let contentVeiw: any = ref<object>({});
   let isPullUpLoad: any = ref<boolean>(false);
   // 上拉加载调用此函数，发送下一章请求
   let epListindex: { value: number } = ref<number>(1); // 章节计数
@@ -67,16 +67,56 @@
       pullUpLoad: {
         threshold: 0,
       },
-      observeImage: true, // 开启 observe-image 插件
+      // 开启 observe-image 插件
+      observeImage: {
+        debounceTime: 500,
+      },
+      freeScroll: true,
+      scrollX: true,
+      scrollY: true,
+      zoom: {
+        start: 1,
+        min: 0.5,
+        max: 2,
+      },
     });
     // 监听上拉事件，执行相应回调函数
     bs.value.on("pullingUp", pullingUpHandler);
+    bs.value.on("scrollStart", () => {
+      showBottom.value = false;
+    });
   });
 
   onBeforeUnmount(() => {
     // 清除延时器
     clearInterval(timer);
   });
+
+  // 操作面板显示与隐藏
+  let showBottom: any = ref<object | boolean>(false);
+  const showPopup = () => {
+    showBottom.value = !showBottom.value;
+  };
+  // 控制滑块调节亮度
+  const value = ref<number>(0);
+  let mask: any = ref<object | null>(null);
+  const onChange = (value: any) => {
+    mask.value.style.backgroundColor = `rgba(0, 0, 0, ${-value / 100})`;
+  };
+
+  // 根据点击区域触发不同效果
+  let contentVeiwHeight = document.body.offsetHeight;
+  const upScroll = () => {
+    showBottom.value = false;
+    if (bs.value.y < -(contentVeiwHeight / 2)) {
+      console.log(bs.value.y);
+      bs.value.scrollBy(0, contentVeiwHeight, 500);
+    }
+  };
+  const downScroll = () => {
+    showBottom.value = false;
+    bs.value.scrollBy(0, -contentVeiwHeight, 500);
+  };
 </script>
 
 <template>
@@ -84,14 +124,12 @@
     <!-- 滚动内容 -->
     <div class="w-100">
       <!-- 每一页内容 -->
-      <v-lazy
+      <div
+        class="imgItem w-100"
         v-for="(item, index) in imgUrlTokenAll"
-        :key="index"
-        :min-height="200">
-        <div class="imgItem w-100">
-          <img :src="item.url + '?token=' + item.token" class="w-100" />
-        </div>
-      </v-lazy>
+        :key="index">
+        <img v-lazy="item.url + '?token=' + item.token" class="w-100" />
+      </div>
       <!-- 上拉提示 -->
       <div class="pullup-tips text-center">
         <div v-if="!isPullUpLoad" class="before-trigger">
@@ -103,8 +141,65 @@
       </div>
     </div>
 
-    <!-- 顶栏 -->
+    <!-- 底栏 -->
+
+    <transition name="sideUp100">
+      <div
+        class="popup position-absolute start-0 end-0 bottom-0 mx-auto mb-3 z-3 bg-dark rounded-3 blur-5 bg-opacity-75"
+        style="width: calc(100vw - 2rem); height: 40vw"
+        v-show="showBottom">
+        <div
+          class="slider d-flex fs-9 justify-content-center align-items-center"
+          style="height: 10vw">
+          <span>輝度の設定</span>
+          <div style="width: 30vw">
+            <van-slider
+              class="ms-2"
+              v-model="value"
+              bar-height="2.5vh"
+              :min="-75"
+              :max="0"
+              inactive-color="rgba(0, 0, 0, .2)"
+              active-color="#fff"
+              @update:model-value="onChange">
+              <template #button>
+                <div
+                  class="custom-button"
+                  style="width: 3vw; height: 3vh"></div>
+              </template>
+            </van-slider>
+          </div>
+        </div>
+      </div>
+    </transition>
+
+    <!-- 阴影蒙版 -->
+    <div
+      class="mask position-absolute top-0"
+      style="width: 100vw; height: 101%; pointer-events: none"
+      ref="mask"></div>
+    <!-- 点击判断 -->
+    <div class="w-100 h-100 position-absolute z-1 top-0 d-flex flex-column">
+      <div class="headClickArea w-100 flex-grow-1" @click="upScroll"></div>
+      <div class="middleClickArea w-100 flex-grow-1" @click="showPopup"></div>
+      <div class="footClickArea w-100 flex-grow-1" @click="downScroll"></div>
+    </div>
   </div>
 </template>
 
-<style lang="scss"></style>
+<style lang="scss">
+  img[lazy="loading"] {
+    /*your style here*/
+    opacity: 0;
+  }
+  img[lazy="error"] {
+    /*your style here*/
+    opacity: 1;
+    transition: 0.6s;
+  }
+  img[lazy="loaded"] {
+    /*your style here*/
+    opacity: 1;
+    transition: 0.6s;
+  }
+</style>
