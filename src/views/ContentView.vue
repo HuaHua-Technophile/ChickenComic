@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import BScroll from "better-scroll"; //导入Better scroll核心
   import Pullup from "@better-scroll/pull-up";
+  import Zoom from "@better-scroll/zoom";
   import ObserveImage from "@better-scroll/observe-image";
   import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
   import { getImageIndex, getImageToken } from "@/api/content";
@@ -46,6 +47,7 @@
   // 实例化bscroll并给阅读页添加滚动处理
   BScroll.use(Pullup); // 注册上拉懒加载插件
   BScroll.use(ObserveImage);
+  BScroll.use(Zoom); // 注册缩放插件
   let bs: any = ref<object>({});
   let contentVeiw: any = ref<object>({});
   let isPullUpLoad: any = ref<boolean>(false);
