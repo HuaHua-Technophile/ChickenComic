@@ -159,11 +159,11 @@
   let autoTimer: any = null;
   const autoScroll = () => {
     autoPlayShow.value = true;
-    if (bs.value.y >= bs.value.maxScrollY) {
-      clearInterval(autoTimer);
-      pullingUpHandler();
-    }
     autoTimer = setInterval(() => {
+      if (bs.value.y <= bs.value.maxScrollY) {
+        clearInterval(autoTimer);
+        pullingUpHandler();
+      }
       downScroll();
     }, 3000);
   };
