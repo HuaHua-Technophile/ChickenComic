@@ -78,8 +78,11 @@
       scrollY: true,
       zoom: {
         start: 1,
-        min: 0.5,
+        min: 1,
         max: 2,
+        initialOrigin: ["center", "center"],
+        minimalZoomDistance: 3,
+        bounceTime: 800, // ms
       },
     });
     // 监听上拉事件，执行相应回调函数
