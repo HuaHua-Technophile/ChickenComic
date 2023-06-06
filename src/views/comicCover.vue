@@ -119,7 +119,8 @@
         <div class="d-flex align-items-center justify-content-evenly mb-3">
           <div
             class="pt-3 pb-3 fs-5 fw-bold bg-primary rounded-4 text-center t-shadow-3 bg-opacity-25 insetShadow"
-            style="width: 40%">
+            style="width: 40%"
+            @click="readThisChapter(0)">
             読み始めます
           </div>
           <div
@@ -139,6 +140,12 @@
           </div>
         </div>
         <!-- 章节 -->
+        <div class="ms-3 me-3 mb-3">
+          <span class="fs-3 me-3">全{{ res.data?.ep_list.length }}ページ</span>
+          <span class="opacity-75"
+            >毎週{{ res.data?.renewal_time.slice(2, -2) }}日に更新です!</span
+          >
+        </div>
         <chapterComponent
           :detailList="res.data?.ep_list"
           class="ms-3 me-3"
