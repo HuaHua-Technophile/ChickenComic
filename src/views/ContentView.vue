@@ -34,7 +34,7 @@
   };
 
   const getComicEpList = async () => {
-    comicDetail.value = await getComicDetail("25717");
+    comicDetail.value = await getComicDetail("26431");
     imgEpList.value = comicDetail.value.data.ep_list;
     imgEpList.value.reverse();
     // 调用getContentData方法获取章节数据并对数据做处理
@@ -70,6 +70,14 @@
       // 开启 observe-image 插件
       observeImage: {
         debounceTime: 500,
+      },
+      freeScroll: true,
+      scrollX: true,
+      scrollY: true,
+      zoom: {
+        start: 1,
+        min: 0.5,
+        max: 2,
       },
     });
     // 监听上拉事件，执行相应回调函数
