@@ -35,7 +35,7 @@
   };
 
   const getComicEpList = async () => {
-    comicDetail.value = await getComicDetail("26431");
+    comicDetail.value = await getComicDetail("30125");
     imgEpList.value = comicDetail.value.data.ep_list;
     imgEpList.value.reverse();
     // 调用getContentData方法获取章节数据并对数据做处理
@@ -89,6 +89,7 @@
     bs.value.on("pullingUp", pullingUpHandler);
     bs.value.on("scrollStart", () => {
       showBottom.value = false;
+      isShowSlider.value = false;
     });
   });
 
@@ -99,8 +100,15 @@
 
   // 操作面板显示与隐藏
   let showBottom: any = ref<object | boolean>(false);
+  let isShowSlider: any = ref<object | boolean>(false);
   const showPopup = () => {
     showBottom.value = !showBottom.value;
+    if (!showBottom.value) {
+      isShowSlider.value = false;
+    }
+  };
+  const showSlider = () => {
+    isShowSlider.value = !isShowSlider.value;
   };
   // 控制滑块调节亮度
   const value = ref<number>(0);
@@ -146,20 +154,22 @@
       </div>
     </div>
 
+    <!-- 头部 -->
+    <div class="contentHead"></div>
+
     <!-- 底栏 -->
 
-    <transition name="sideUp100">
+    <transition name="contract">
       <div
-        class="popup position-absolute start-0 end-0 bottom-0 mx-auto mb-3 z-3 bg-dark rounded-3 blur-5 bg-opacity-75"
-        style="width: calc(100vw - 2rem); height: 40vw"
+        class="popup position-absolute start-0 end-0 bottom-0 mx-auto mb-3 z-3 overflow-x-hidden text-nowrap"
+        style="width: calc(12rem)"
         v-show="showBottom">
-        <div
-          class="slider d-flex fs-9 justify-content-center align-items-center"
-          style="height: 10vw">
-          <span>輝度の設定</span>
-          <div style="width: 30vw">
+        <transition name="sideUp">
+          <div
+            class="slider mb-2 mx-auto"
+            style="width: calc(100% - 1.5rem)"
+            v-show="isShowSlider">
             <van-slider
-              class="ms-2"
               v-model="value"
               bar-height="2.5vh"
               :min="-75"
@@ -174,6 +184,12 @@
               </template>
             </van-slider>
           </div>
+        </transition>
+        <div
+          class="slider fs-3 d-flex justify-content-evenly align-items-center bg-dark rounded-5 blur-5 bg-opacity-75">
+          <i class="bi bi-brightness-high" @click="showSlider"></i>
+          <i class="bi bi-list"></i>
+          <i class="bi bi-play-circle"></i>
         </div>
       </div>
     </transition>
@@ -206,5 +222,15 @@
     /*your style here*/
     opacity: 1;
     transition: 0.6s;
+  }
+
+  .contract-enter-active,
+  .contract-leave-active {
+    transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  }
+
+  .contract-enter-from,
+  .contract-leave-to {
+    width: 0px !important;
   }
 </style>

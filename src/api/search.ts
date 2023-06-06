@@ -20,3 +20,14 @@ export function getSuggestedWord(params: any): any {
     params,
   });
 }
+
+// 漫画搜搜
+// keyWord
+export function getSearchResult(params: any): any {
+  console.log(params);
+  return service({
+    url: "/Search",
+    method: "get",
+    params,
+  });
+}
