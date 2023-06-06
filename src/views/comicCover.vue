@@ -15,11 +15,19 @@
   getData();
   // Better scroll实例化相关------------------
   BScroll.use(ObserveImage);
-  let comicCover = ref<object>({});
-  let bs: any = ref({});
+  let comicCover = ref<HTMLElement | object>({});
+  let chapterCover = ref<HTMLElement | object>({});
+  let bs1: any = ref({});
+  let bs2: any = ref({});
   onMounted(() => {
     // 挂载后获取原生dom对象,进行bs初始化
-    bs.value = new BScroll(comicCover.value as HTMLElement, {
+    bs1.value = new BScroll(comicCover.value as HTMLElement, {
+      click: true,
+      observeImage: {
+        debounceTime: 500, // ms
+      },
+    });
+    bs2.value = new BScroll(chapterCover.value as HTMLElement, {
       click: true,
       observeImage: {
         debounceTime: 500, // ms
