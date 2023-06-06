@@ -2,11 +2,7 @@
   import { ref, onMounted } from "vue";
   import { useGlobalStore } from "../stores/counter";
   import BScroll from "better-scroll"; //导入Better scroll核心
-  import {
-    getSearchReferral,
-    getSuggestedWord,
-    getSearchResult,
-  } from "@/api/search";
+  import { getSearchReferral, getSuggestedWord } from "@/api/search";
   import { useRouter, useRoute } from "vue-router";
   let SearchInput: any = ref<object | null>(null);
   let bs = ref({}); //Better scroll实例化后对象的存储
@@ -66,7 +62,6 @@
   starHistory();
   //添加搜索历史
   const searchFun = () => {
-    getSearchResultFun();
     let index = searchHistoryData.value.findIndex(
       (item: any) => item == value.value
     );
@@ -100,14 +95,6 @@
   //主题切换
   let { theme, changeTheme }: any = useGlobalStore();
 
-  //获取搜索结果
-  const getSearchResultFun = async () => {
-    let data = await getSearchResult({
-      keyWord: value.value,
-      order: -1,
-    });
-    console.log("data==》", data);
-  };
   // 返回home主页
   let router: any = useRouter();
   let route: any = useRoute();
@@ -123,6 +110,7 @@
       },
     });
   };
+  const getSearchResult = () => {};
 </script>
 
 <template>
@@ -206,7 +194,11 @@
       <!-- 搜索建议词 -->
       <div class="SearchSuggestWord position-absolute" v-if="isFocus">
         <ul>
-          <li class="py-3" v-for="(item, index) in suggestedWord" :key="index">
+          <li
+            class="py-3"
+            v-for="(item, index) in suggestedWord"
+            :key="index"
+            @click="getSearchResult">
             <i class="bi bi-search"></i>
             <span class="ps-2" v-html="item"></span>
           </li>
