@@ -8,6 +8,14 @@
   import { getComicDetail } from "@/api/comicCover";
   import { useRouter } from "vue-router";
 
+  const etid_data = history.state.params;
+  console.log(etid_data);
+
+  if (etid_data != undefined) {
+    const value = JSON.parse(etid_data);
+    const { index, chapterList } = value;
+    console.log(index, chapterList);
+  }
   // 定义router
   const router = useRouter();
 
