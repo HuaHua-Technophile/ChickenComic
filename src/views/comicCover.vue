@@ -97,7 +97,7 @@
         <div class="d-flex align-items-center pt-5 mb-4">
           <!-- 图 -->
           <div
-            class="ms-5 me-4 w-25 position-relative rounded-4 overflow-hidden flex-shrink-0"
+            class="ms-4 me-4 w-25 position-relative rounded-4 overflow-hidden flex-shrink-0"
             style="padding-bottom: 25%">
             <div class="position-absolute top-0 bottom-0 start-0 end-0">
               <img
@@ -115,9 +115,21 @@
               style="letter-spacing: 2.5px">
               {{ res.data?.title }}
             </div>
-            <div>
-              <span class="opacity-75">絵師 : </span>
-              <span class="fs-5">{{ res.data?.author_name[0] }}</span>
+            <div class="pe-3">
+              <span class="fs-7 opacity-75">絵師 : </span>
+              <span>
+                <span
+                  v-for="(item, index) in res.data?.author_name"
+                  :key="index"
+                  :class="[
+                    {
+                      'me-2 position-relative 分隔符':
+                        index < res.data?.author_name.length - 1,
+                    },
+                  ]"
+                  >{{ item }}</span
+                >
+              </span>
             </div>
           </div>
         </div>
@@ -145,11 +157,11 @@
         </div>
         <!-- 标签 -->
         <div
-          class="d-flex align-items-center flex-wrap ps-3 pe-3 mb-3 opacity-75">
-          <div class="me-3 mb-3 t-shadow-3">ラベル :</div>
+          class="d-flex justify-content-between align-items-center flex-wrap ps-3 pe-3 mb-3 opacity-75">
+          <div class="mb-3 t-shadow-3">ラベル :</div>
           <div
             v-for="item in res.data?.story_elems"
-            class="bg-body-tertiary rounded me-3 mb-3 pt-1 pb-1 ps-3 pe-3">
+            class="bg-body-tertiary rounded mb-3 pt-1 pb-1 ps-3 pe-3">
             {{ item.name }}
           </div>
         </div>
@@ -186,5 +198,16 @@
 <style lang="scss">
   .insetShadow {
     box-shadow: inset 0px 0px 4px rgba(255, 255, 255, 0.4);
+  }
+  .分隔符::after {
+    content: "";
+    display: block;
+    position: absolute;
+    right: -0.5rem * 0.6;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 80%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.548);
   }
 </style>

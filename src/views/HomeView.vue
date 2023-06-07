@@ -7,7 +7,11 @@
 
 <template>
   <div class="home">
-    <div class="alert alert-danger" @click="changeTheme">bs测试</div>
+    <!-- 滚动内容 -->
+    <div style="min-height: calc(100% + 2px)">
+      <!-- 用户信息/设置 -->
+      <div></div>
+    </div>
   </div>
 </template>
 

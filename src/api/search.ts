@@ -9,7 +9,6 @@ export function getSearchReferral(params: any): any {
   });
 }
 
-
 // 搜索建议词
 // ?term=天&num=20
 export function getSuggestedWord(params: any): any {

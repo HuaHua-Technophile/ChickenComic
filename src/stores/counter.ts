@@ -4,7 +4,6 @@ export const useGlobalStore = defineStore("global", () => {
   // 主题修改
   let theme = ref("dark");
   let changeTheme = () => {
-    console.log(theme);
     if (theme.value === "dark") {
       theme.value = "light";
       document.documentElement.dataset.bsTheme = "light";

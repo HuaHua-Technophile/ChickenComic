@@ -17,7 +17,6 @@
   let overlayShow = ref(false);
   let overlayInfo = ref("");
 </script>
-
 <template>
   <div ref="settingAbout" class="settingAbout w-100 h-100 noScrollBar">
     <!-- 滚动内容 -->
