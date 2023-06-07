@@ -1,8 +1,12 @@
 <script setup lang="ts">
   import { useGlobalStore } from "@/stores/counter";
-  // ----主题测试-------
+  import { storeToRefs } from "pinia";
+  // ---------用户信息-------------
   const S = useGlobalStore();
-  const { changeTheme } = S;
+  let { userInfo } = storeToRefs(S);
+  if (localStorage.getItem("userInfo")) {
+    userInfo.value = JSON.parse(localStorage.getItem("userInfo") + "");
+  }
 </script>
 
 <template>
