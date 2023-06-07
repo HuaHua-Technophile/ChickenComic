@@ -115,7 +115,7 @@
 
 <template>
   <div ref="SearchInput" class="SearchInput w-100 h-100 noScrollBar">
-    <div style="min-height: 105vh">
+    <div style="min-height: calc(100vh + 2px)">
       <!-- 搜索框 -->
       <div class="search d-flex flex-column align-items-star position-relative">
         <i class="bi bi-arrow-left-short w-25 mr-5" @click="backHome"></i>
