@@ -64,6 +64,11 @@
     });
     router.push({ name: "content", state: { params } }); //注意：此处一定要用params
   };
+
+  // 返回上一页
+  const toBack = () => {
+    router.go(-1);
+  };
 </script>
 <template>
   <div ref="comicCover" class="comicCover w-100 h-100 noScrollBar">
@@ -176,7 +181,7 @@
     </div>
     <!-- 头部返回按钮 -->
     <div class="ps-3 position-fixed top-0 w-100 text-light t-shadow-3">
-      <i class="bi bi-arrow-left-short"></i>
+      <i class="bi bi-arrow-left-short" @click="toBack"></i>
     </div>
     <!-- 背景 -->
     <div
