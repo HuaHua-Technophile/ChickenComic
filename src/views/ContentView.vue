@@ -3,9 +3,21 @@
   import Pullup from "@better-scroll/pull-up";
   import Zoom from "@better-scroll/zoom";
   import ObserveImage from "@better-scroll/observe-image";
-  import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
+  import { onBeforeUnmount, onMounted, ref } from "vue";
   import { getImageIndex, getImageToken } from "@/api/content";
   import { getComicDetail } from "@/api/comicCover";
+  import { useRouter } from "vue-router";
+
+  const etid_data = history.state.params;
+  console.log(etid_data);
+
+  if (etid_data != undefined) {
+    const value = JSON.parse(etid_data);
+    const { index, chapterList } = value;
+    console.log(index, chapterList);
+  }
+  // 定义router
+  const router = useRouter();
 
   // 获取漫画章节内容图片&索引
   let comicDetail: any = ref<object>({}); // 漫画详情数据
@@ -35,7 +47,7 @@
   };
 
   const getComicEpList = async () => {
-    comicDetail.value = await getComicDetail("30125");
+    comicDetail.value = await getComicDetail("25900");
     imgEpList.value = comicDetail.value.data.ep_list;
     imgEpList.value.reverse();
     // 调用getContentData方法获取章节数据并对数据做处理
@@ -130,6 +142,17 @@
     showBottom.value = false;
     bs.value.scrollBy(0, -contentVeiwHeight, 500);
   };
+
+  // 返回上一页
+  const toBack = () => {
+    router.go(-1);
+  };
+
+  // 收藏漫画
+  let isLike = ref(false);
+  const likeIt = () => {
+    isLike.value = !isLike.value;
+  };
 </script>
 
 <template>
@@ -155,10 +178,37 @@
     </div>
 
     <!-- 头部 -->
-    <div class="contentHead"></div>
-
+    <!-- 头部返回按钮 -->
+    <transition name="fadeIn">
+      <div
+        class="contentHead position-fixed top-0 w-100 z-3"
+        style="
+          background-image: linear-gradient(
+            rgba(0, 0, 0, 0.75),
+            transparent 87%,
+            transparent
+          );
+        "
+        v-show="showBottom">
+        <div
+          class="ps-3 pe-3 d-flex justify-content-between align-items-center text-light t-shadow-3"
+          v-show="isShowSlider">
+          <i class="bi bi-arrow-left-short" @click="toBack"></i>
+          <div
+            class="rightIcon fs-3 d-flex justify-content-between align-items-center"
+            style="width: 30%">
+            <i class="bi bi-heart" v-show="!isLike" @click="likeIt"></i>
+            <i
+              class="bi bi-heart-fill text-danger"
+              v-show="isLike"
+              @click="likeIt"></i>
+            <i class="bi bi-share"></i>
+            <i class="iconfont icon-fangdajing fs-3"></i>
+          </div>
+        </div>
+      </div>
+    </transition>
     <!-- 底栏 -->
-
     <transition name="contract">
       <div
         class="popup position-absolute start-0 end-0 bottom-0 mx-auto mb-3 z-3 overflow-x-hidden text-nowrap"
@@ -193,7 +243,6 @@
         </div>
       </div>
     </transition>
-
     <!-- 阴影蒙版 -->
     <div
       class="mask position-absolute top-0"

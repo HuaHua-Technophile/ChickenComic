@@ -1,20 +1,49 @@
 <script setup lang="ts">
-  import { ref, onMounted } from "vue";
+  import { ref, onMounted, computed } from "vue";
   import { useGlobalStore } from "../stores/counter";
   import { getSearchResult } from "../api/search";
+  import BScroll from "better-scroll"; //导入Better scroll核心
+
+  let searchResultList: any = ref<object | null>(null);
+  let bs = ref({}); //Better scroll实例化后对象的存储
+  onMounted(() => {
+    bs.value = new BScroll(searchResultList.value, {
+      click: true,
+    });
+  });
   //主题切换
   let { theme, changeTheme }: any = useGlobalStore();
-  let keyWord: any = ref(null);
-  keyWord.value = "我退的孩子";
+  let keyWord: any = ref("我推的孩子");
 
   //获取搜索结果
+  let SearchResult: any = ref(null);
   const getSearchResultFun = async () => {
     let data = await getSearchResult({
       keyWord: "我退的孩子",
       order: -1,
     });
-    console.log("data==》", data);
+    console.log(data.data.list);
+    SearchResult.value = data.data.list;
+    // console.log("data==》", SearchResult.value);
   };
+
+  //作者数据格式处理
+
+  const allAuthors = computed(() => {
+    return function (val: Array<string>) {
+      let authors: string = "";
+      val.forEach((item: string, index) => {
+        if (val.length - 1 === index) {
+          authors += item;
+          return;
+        }
+        authors += item + "-";
+      });
+      return authors;
+    };
+  });
+  console.log(allAuthors.value);
+
   onMounted(() => {
     getSearchResultFun();
   });
@@ -59,7 +88,7 @@
   ];
 </script>
 <template>
-  <div class="SearchCategories">
+  <div class="SearchCategories w-100 h-100 d-flex flex-column">
     <!-- :class="[theme == 'dark' ? 'bg-black' : 'bg-white']" -->
     <div class="searchInput" @click="reSearch">
       <form action="/">
@@ -76,19 +105,28 @@
       <van-dropdown-item v-model="value2" :options="option2" />
       <van-dropdown-item v-model="value3" :options="option3" />
     </van-dropdown-menu>
-    <div class="searchResultList">
-      <ul>
-        <li class="d-flex mt-4">
+    <div
+      class="searchResultList w-100 flex-grow-1 overflow-hidden"
+      ref="searchResultList">
+      <ul style="min-height: calc(100% + 5px)">
+        <li
+          class="d-flex mt-4 overflow-hidden"
+          v-for="item in SearchResult"
+          :key="item.id">
           <div class="img-box mx-3">
-            <img
-              src="https://i0.hdslb.com/bfs/manga-static/8cc4d8b73742d255c3e5d8843fdff9eaff4ead19.jpg@100w_100h.jpg"
-              alt="" />
+            <img :src="item.vertical_cover + '@100w_100h.jpg'" alt="" />
           </div>
-          <div class="details d-fles">
-            <div class="name my-2">我推的孩子</div>
-            <div class="fs-10">作者列表</div>
-            <div class="fs-10">都市</div>
-            <div class="fs-10">连载中</div>
+          <div class="details d-fles w-100">
+            <div class="name my-2 van-ellipsis" v-html="item.title"></div>
+            <div class="fs-10 opacity-75 van-ellipsis w-50">
+              {{ allAuthors(item.author_name) }}
+            </div>
+            <div class="fs-10 opacity-75 van-ellipsis">
+              {{ allAuthors(item.styles) }}
+            </div>
+            <div class="fs-10 opacity-75">
+              {{ item.is_finish === 0 ? "连载中" : "完结" }}
+            </div>
           </div>
         </li>
       </ul>
@@ -105,8 +143,11 @@
       display: none;
     }
   }
-  .searchResultList {
-    .keywords {
+  .details {
+    em {
+      font-style: normal;
+    }
+    em.keyword {
       color: red;
     }
   }

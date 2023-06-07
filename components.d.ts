@@ -9,14 +9,12 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    ChapterComponent: typeof import('./src/components/chapterComponent.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     VanDropdownItem: typeof import('vant/es')['DropdownItem']
     VanDropdownMenu: typeof import('vant/es')['DropdownMenu']
-    VanImage: typeof import("vant/es")["Image"]
     VanOverlay: typeof import('vant/es')['Overlay']
-    VanPopup: typeof import("vant/es")["Popup"]
     VanSearch: typeof import('vant/es')['Search']
-    VanSlider: typeof import("vant/es")["Slider"]
   }
 }

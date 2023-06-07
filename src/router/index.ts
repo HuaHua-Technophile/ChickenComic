@@ -28,16 +28,15 @@ const router = createRouter({
       component: () => import("@/views/SettingAbout.vue"),
     },
     {
-      path: '/SearchInput',
-      name: 'SearchInput',
+      path: "/SearchInput",
+      name: "SearchInput",
       component: () => import("@/views/SearchInput.vue"),
     },
     {
-      path: '/SearchCategories',
-      name: 'SearchCategories',
+      path: "/SearchCategories",
+      name: "SearchCategories",
       component: () => import("@/views/SearchCategories.vue"),
-    }
-
+    },
   ],
 });
 
