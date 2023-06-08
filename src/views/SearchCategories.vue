@@ -1,34 +1,46 @@
 <script setup lang="ts">
-  import { ref, onMounted, computed } from "vue";
+  import { ref, onMounted, computed, watchEffect } from "vue";
   import { useGlobalStore } from "../stores/counter";
   import { getSearchResult } from "../api/search";
   import BScroll from "better-scroll"; //导入Better scroll核心
+  import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
+  import Pullup from "@better-scroll/pull-up";
 
+  let handelFunction = () => {
+    console.log("上拉了");
+    bs.value.finishPullUp();
+    bs.value.refresh();
+  };
+  //------------------better scroll实例化相关-----------
+  BScroll.use(Pullup);
+  BScroll.use(ObserveImage);
   let searchResultList: any = ref<object | null>(null);
-  let bs = ref({}); //Better scroll实例化后对象的存储
+  let bs: { on: Function } | any = ref({}); //Better scroll实例化后对象的存储
   onMounted(() => {
-    bs.value = new BScroll(searchResultList.value, {
+    bs.value = new BScroll(searchResultList.value as HTMLElement, {
       click: true,
+      observeImage: {
+        debounceTime: 500, // ms
+      },
+      pullUpLoad: true,
     });
+    console.log(bs.value);
+    bs.value.on("pullingUp", handelFunction);
   });
-  //主题切换
-  let { theme, changeTheme }: any = useGlobalStore();
+
   let keyWord: any = ref("我推的孩子");
 
   //获取搜索结果
-  let SearchResult: any = ref(null);
+  let SearchResult: any = ref([]);
   const getSearchResultFun = async () => {
     let data = await getSearchResult({
       keyWord: "我退的孩子",
       order: -1,
     });
-    console.log(data.data.list);
-    SearchResult.value = data.data.list;
-    // console.log("data==》", SearchResult.value);
+    SearchResult.value = SearchResult.value.concat(data.data.list);
   };
 
   //作者数据格式处理
-
   const allAuthors = computed(() => {
     return function (val: Array<string>) {
       let authors: string = "";
@@ -47,6 +59,7 @@
   onMounted(() => {
     getSearchResultFun();
   });
+  let { theme, changeTheme }: any = useGlobalStore();
 
   const reSearch = () => {
     console.log("click");
@@ -124,7 +137,7 @@
             <div class="fs-10 opacity-75 van-ellipsis">
               {{ allAuthors(item.styles) }}
             </div>
-            <div class="fs-10 opacity-75">
+            <div class="fs-10 opacity-75 mt-1">
               {{ item.is_finish === 0 ? "连载中" : "完结" }}
             </div>
           </div>
