@@ -3,24 +3,20 @@
   import Pullup from "@better-scroll/pull-up";
   import Zoom from "@better-scroll/zoom";
   import ObserveImage from "@better-scroll/observe-image";
-  import { onBeforeUnmount, onMounted, ref } from "vue";
+  import { showToast } from "vant";
+  import { onBeforeUnmount, onMounted, ref, toRefs } from "vue";
   import { getImageIndex, getImageToken } from "@/api/content";
-  import { getComicDetail } from "@/api/comicCover";
   import { useRouter } from "vue-router";
 
-  const etid_data = history.state.params;
-  console.log(etid_data);
-
-  if (etid_data != undefined) {
-    const value = JSON.parse(etid_data);
-    const { index, chapterList } = value;
-    console.log(index, chapterList);
-  }
   // 定义router
   const router = useRouter();
 
+  // 接收路由信息（包含当前漫画index和所有章节信息）
+  const etid_data = history.state.params;
+  let { index, chapterList } = toRefs(JSON.parse(etid_data));
+  let nowEp = ref(chapterList.value[index.value]);
+
   // 获取漫画章节内容图片&索引
-  let comicDetail: any = ref<object>({}); // 漫画详情数据
   let imgEpList: any = ref<Array<number>>([]); // 章节id数组集合
   let imgIndexUrl: any = ref<object>({}); // 漫画章节内容图片&索引 api数据
   let imgBaseUrl: any = ref<string>("https://manga.hdslb.com"); // 漫画章节内容图片拼接地址
@@ -46,29 +42,42 @@
     console.log(imgUrlToken.value);
   };
 
-  const getComicEpList = async () => {
-    comicDetail.value = await getComicDetail("30125");
-    imgEpList.value = comicDetail.value.data.ep_list;
+  // 初始化章节内容及计数
+  let epListindex = 0; // 章节计数
+  const getComicEpList = () => {
+    imgEpList.value = chapterList.value;
     imgEpList.value.reverse();
     // 调用getContentData方法获取章节数据并对数据做处理
-    getContentData(imgEpList.value[0].id);
+    getContentData(nowEp.value.id);
+    epListindex = imgEpList.value.findIndex((item: { id: any }) => {
+      return item.id == nowEp.value.id;
+    });
   };
 
-  getComicEpList(); // 请求所有章节数据并做处理
+  getComicEpList(); // 进入内容页调用初始化方法
 
   // 实例化bscroll并给阅读页添加滚动处理
   BScroll.use(Pullup); // 注册上拉懒加载插件
   BScroll.use(ObserveImage);
   BScroll.use(Zoom); // 注册缩放插件
+  let zoomOption: any = false; // Zoom插件配置项（false为不启用缩放）
   let bs: any = ref<object>({});
   let contentVeiw: any = ref<object>({});
   let isPullUpLoad: any = ref<boolean>(false);
   // 上拉加载调用此函数，发送下一章请求
-  let epListindex: { value: number } = ref<number>(1); // 章节计数
+  let endList = ref("上拉进入下一章");
   const pullingUpHandler = async () => {
     isPullUpLoad.value = true;
-    await getContentData(imgEpList.value[epListindex.value].id); // 上拉加载请求下一章数据
-    epListindex.value++;
+    if (
+      epListindex < imgEpList.value.length &&
+      imgEpList.value[epListindex + 1]
+    ) {
+      epListindex++;
+      await getContentData(imgEpList.value[epListindex].id); // 上拉加载请求下一章数据
+    } else {
+      endList.value = "END";
+      clearInterval(autoTimer);
+    }
     bs.value.finishPullUp();
     isPullUpLoad.value = false;
   };
@@ -88,17 +97,12 @@
       freeScroll: true,
       scrollX: true,
       scrollY: true,
-      zoom: {
-        start: 1,
-        min: 1,
-        max: 2,
-        initialOrigin: ["center", "center"],
-        minimalZoomDistance: 3,
-        bounceTime: 800, // ms
-      },
+      zoom: zoomOption,
     });
     // 监听上拉事件，执行相应回调函数
-    bs.value.on("pullingUp", pullingUpHandler);
+    bs.value.on("pullingUp", () => {
+      pullingUpHandler();
+    });
     bs.value.on("scrollStart", () => {
       showBottom.value = false;
       isShowSlider.value = false;
@@ -112,11 +116,13 @@
 
   // 操作面板显示与隐藏
   let showBottom: any = ref<object | boolean>(false);
-  let isShowSlider: any = ref<object | boolean>(false);
+  let isShowSlider: any = ref<object | boolean>(false); // 亮度调节
+  let speedSelectShow: any = ref<object | boolean>(false); // 自动播放速度调节
   const showPopup = () => {
     showBottom.value = !showBottom.value;
     if (!showBottom.value) {
       isShowSlider.value = false;
+      speedSelectShow.value = false;
     }
   };
   const showSlider = () => {
@@ -133,6 +139,8 @@
   let contentVeiwHeight = document.body.offsetHeight;
   const upScroll = () => {
     showBottom.value = false;
+    isShowSlider.value = false;
+    speedSelectShow.value = false;
     if (bs.value.y < -(contentVeiwHeight / 2)) {
       console.log(bs.value.y);
       bs.value.scrollBy(0, contentVeiwHeight, 500);
@@ -140,6 +148,8 @@
   };
   const downScroll = () => {
     showBottom.value = false;
+    isShowSlider.value = false;
+    speedSelectShow.value = false;
     bs.value.scrollBy(0, -contentVeiwHeight, 500);
   };
 
@@ -157,21 +167,53 @@
   // 自动播放
   let autoPlayShow = ref(false);
   let autoTimer: any = null;
-  const autoScroll = () => {
+  const autoTimeSelect = () => {
+    speedSelectShow.value = !speedSelectShow.value;
+  };
+
+  // 根据选择的播放速度调用函数
+  const autoScroll = (speed: number) => {
+    speedSelectShow.value = false;
+    isShowSlider.value = false;
     autoPlayShow.value = true;
+    showToast("オートオープン");
     autoTimer = setInterval(() => {
       if (bs.value.y <= bs.value.maxScrollY) {
-        clearInterval(autoTimer);
+        // clearInterval(autoTimer);
         pullingUpHandler();
       }
       downScroll();
-    }, 3000);
+    }, speed);
   };
 
   // 停止自动播放
   const stopAutoScroll = () => {
     autoPlayShow.value = false;
     clearInterval(autoTimer);
+  };
+
+  // 开启与关闭缩放功能
+  let isScale = ref(false);
+  let scaleTip = "ズーム機能が無効になっています";
+  const scaleOpen = () => {
+    isScale.value = !isScale.value;
+    // 手动开启与关闭缩放功能
+    zoomOption =
+      isScale.value === true
+        ? {
+            start: 1,
+            min: 1,
+            max: 2,
+            initialOrigin: ["center", "center"],
+            minimalZoomDistance: 3,
+            bounceTime: 800, // ms
+          }
+        : false;
+    scaleTip =
+      isScale.value === true
+        ? "ズーム機能が有効"
+        : "ズーム機能が無効になっています";
+    showToast(scaleTip);
   };
 </script>
 
@@ -189,15 +231,13 @@
       <!-- 上拉提示 -->
       <div class="pullup-tips text-center">
         <div v-if="!isPullUpLoad" class="before-trigger">
-          <span class="pullup-txt">上拉进入下一章</span>
+          <span class="pullup-txt">{{ endList }}</span>
         </div>
         <div v-else class="after-trigger">
           <span class="pullup-txt">Loading...</span>
         </div>
       </div>
     </div>
-
-    <!-- 头部 -->
     <!-- 头部返回按钮 -->
     <transition name="fadeIn">
       <div
@@ -223,7 +263,14 @@
               v-show="isLike"
               @click="likeIt"></i>
             <i class="bi bi-share"></i>
-            <i class="iconfont icon-fangdajing fs-3"></i>
+            <i
+              class="iconfont icon-fangdajing1 fs-3 scaleIcon"
+              v-show="isScale"
+              @click="scaleOpen"></i>
+            <i
+              class="iconfont icon-fangdajing1 fs-3 noScaleIcon"
+              v-show="!isScale"
+              @click="scaleOpen"></i>
           </div>
         </div>
       </div>
@@ -234,6 +281,7 @@
         class="popup position-absolute start-0 end-0 bottom-0 mx-auto mb-3 z-3 overflow-x-hidden text-nowrap"
         style="width: calc(12rem)"
         v-show="showBottom">
+        <!-- 亮度调节 -->
         <transition name="sideUp">
           <div
             class="slider mb-2 mx-auto"
@@ -255,6 +303,18 @@
             </van-slider>
           </div>
         </transition>
+        <!-- 自动播放秒数设定 -->
+        <transition name="sideUp">
+          <div class="speedSelectBox mb-2 mx-auto" v-show="speedSelectShow">
+            <div
+              class="speedSelect mb-2 mx-auto d-flex justify-content-evenly bg-dark rounded-5 blur-5 bg-opacity-75"
+              style="width: calc(100% - 1.5rem)">
+              <div class="fiveSc" @click="autoScroll(5000)">5s</div>
+              <div class="tenSc" @click="autoScroll(10000)">10s</div>
+              <div class="fifSc" @click="autoScroll(15000)">15s</div>
+            </div>
+          </div>
+        </transition>
         <div
           class="slider fs-3 d-flex justify-content-evenly align-items-center bg-dark rounded-5 blur-5 bg-opacity-75">
           <i class="bi bi-brightness-high" @click="showSlider"></i>
@@ -262,8 +322,11 @@
           <i
             class="bi bi-play-circle"
             v-show="!autoPlayShow"
-            @click="autoScroll"></i>
-          <i class="bi bi-pause-circle" v-show="autoPlayShow"></i>
+            @click="autoTimeSelect"></i>
+          <i
+            class="bi bi-pause-circle"
+            v-show="autoPlayShow"
+            @click="stopAutoScroll"></i>
         </div>
       </div>
     </transition>
@@ -307,5 +370,24 @@
   .contract-enter-from,
   .contract-leave-to {
     width: 0px !important;
+  }
+
+  .scaleIcon {
+    position: relative;
+    font-weight: 600;
+  }
+  .noScaleIcon {
+    position: relative;
+    font-weight: 600;
+    &::after {
+      content: "";
+      width: 26px;
+      height: 2px;
+      background-color: #fff;
+      position: absolute;
+      top: 40%;
+      left: -9%;
+      transform: rotate(-45deg) translateY(-50%);
+    }
   }
 </style>

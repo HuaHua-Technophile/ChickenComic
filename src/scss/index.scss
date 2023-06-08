@@ -1,8 +1,23 @@
 html,
 body {
   position: relative; //不定位会导致swiper轮播图竖向播放的异常
+  font-family: "思源宋体ExtraLight", "花园明朝A", "花园明朝B";
 }
-
+// 引入字体
+@font-face {
+  font-family: "花园明朝A";
+  src: url(../font/花园明朝体-日文/HanaMinA.ttf);
+}
+@font-face {
+  font-family: "花园明朝B";
+  src: url(../font/花园明朝体-日文/HanaMinB.ttf);
+}
+@font-face {
+  font-family: "思源宋体ExtraLight";
+  src: url(../font/思源宋体-日文/SourceHanSerifJP-ExtraLight.otf);
+  // font-weight: 250; /* 250 至 900 之間的任一數值 */
+  // font-variation-settings: "PADG" 4; /* 0 至 10 之間的任一數值 */
+}
 .darkBg {
   background: url(../img/darkBg.png) center/cover;
 }
