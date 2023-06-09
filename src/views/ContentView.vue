@@ -3,10 +3,20 @@
   import Pullup from "@better-scroll/pull-up";
   import Zoom from "@better-scroll/zoom";
   import ObserveImage from "@better-scroll/observe-image";
+  import NestedScroll from "@better-scroll/nested-scroll";
+  import debounce from "lodash/debounce"; //lodash节流
   import { showToast } from "vant";
-  import { onBeforeUnmount, onMounted, ref, toRefs } from "vue";
+  import {
+    onBeforeUnmount,
+    onMounted,
+    ref,
+    toRefs,
+    nextTick,
+    onUpdated,
+  } from "vue";
   import { getImageIndex, getImageToken } from "@/api/content";
   import { useRouter } from "vue-router";
+  import chapterComponent from "@/components/chapterComponent.vue"; //引入组件
 
   // 定义router
   const router = useRouter();
@@ -15,8 +25,12 @@
   const etid_data = history.state.params;
   let { index, chapterList } = toRefs(JSON.parse(etid_data));
   let nowEp = ref(chapterList.value[index.value]);
+  let chapterListIndex = index.value;
 
   // 获取漫画章节内容图片&索引
+  let oldImgEpList: any = ref<Array<number>>(
+    chapterList.value.slice(0, chapterList.value.length)
+  ); // copy一份旧章节数据
   let imgEpList: any = ref<Array<number>>([]); // 章节id数组集合
   let imgIndexUrl: any = ref<object>({}); // 漫画章节内容图片&索引 api数据
   let imgBaseUrl: any = ref<string>("https://manga.hdslb.com"); // 漫画章节内容图片拼接地址
@@ -37,7 +51,7 @@
       urls: JSON.stringify(imgUrlArr.value),
     }); // 请求漫画章节内容图片token数据
     imgUrlToken.value.data.forEach((item: object) => {
-      imgUrlTokenAll.value.push(item);
+      imgUrlTokenAll.value.push({ item, epId });
     });
     console.log(imgUrlToken.value);
   };
@@ -60,19 +74,22 @@
   BScroll.use(Pullup); // 注册上拉懒加载插件
   BScroll.use(ObserveImage);
   BScroll.use(Zoom); // 注册缩放插件
+  BScroll.use(NestedScroll); // 注册嵌套bscroll插件
   let zoomOption: any = false; // Zoom插件配置项（false为不启用缩放）
   let bs: any = ref<object>({});
+  let bs2: any = ref<object>({});
   let contentVeiw: any = ref<object>({});
   let isPullUpLoad: any = ref<boolean>(false);
   // 上拉加载调用此函数，发送下一章请求
   let endList = ref("上拉进入下一章");
-  const pullingUpHandler = async () => {
+  const pullingUpHandler = debounce(async function () {
     isPullUpLoad.value = true;
     if (
       epListindex < imgEpList.value.length &&
       imgEpList.value[epListindex + 1]
     ) {
       epListindex++;
+      chapterListIndex--;
       await getContentData(imgEpList.value[epListindex].id); // 上拉加载请求下一章数据
     } else {
       endList.value = "END";
@@ -80,16 +97,15 @@
     }
     bs.value.finishPullUp();
     isPullUpLoad.value = false;
-  };
+  }, 1000);
 
   let timer: any = null;
-  onMounted(() => {
+  // 封装实例化bscroll及其配置项函数
+  const bsMounted = () => {
     // 实例化bscroll并配置其配置项
     bs.value = new BScroll(contentVeiw.value as HTMLElement, {
       click: true,
-      pullUpLoad: {
-        threshold: 0,
-      },
+      pullUpLoad: true,
       // 开启 observe-image 插件
       observeImage: {
         debounceTime: 500,
@@ -98,6 +114,9 @@
       scrollX: true,
       scrollY: true,
       zoom: zoomOption,
+      nestedScroll: {
+        groupId: 2,
+      },
     });
     // 监听上拉事件，执行相应回调函数
     bs.value.on("pullingUp", () => {
@@ -107,15 +126,35 @@
       showBottom.value = false;
       isShowSlider.value = false;
     });
+  };
+  onMounted(() => {
+    bsMounted();
   });
 
+  // 判断当前阅读的章节
+  let boxes: any = [];
+  onUpdated(() => {
+    boxes = document.querySelectorAll(".imgItem");
+    console.log(boxes);
+    boxes.forEach((box: any) => {
+      observer.observe(box);
+    });
+  });
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      chapterListIndex = oldImgEpList.value.findIndex((item: any) => {
+        return item.id == entry.target.getAttribute("dataIndex");
+      });
+      console.log(chapterListIndex);
+    });
+  });
   onBeforeUnmount(() => {
     // 清除延时器
     clearInterval(timer);
   });
 
   // 操作面板显示与隐藏
-  let showBottom: any = ref<object | boolean>(false);
+  let showBottom: any = ref<object | boolean>(false); // 操作面板
   let isShowSlider: any = ref<object | boolean>(false); // 亮度调节
   let speedSelectShow: any = ref<object | boolean>(false); // 自动播放速度调节
   const showPopup = () => {
@@ -215,18 +254,59 @@
         : "ズーム機能が無効になっています";
     showToast(scaleTip);
   };
+
+  // 章节列表
+  let showListBottom: { value: boolean } | any = ref(false);
+  const showListPopup = () => {
+    showListBottom.value = true;
+    showPopup();
+    // bs.value.destroy();
+    nextTick(() => {
+      bs2.value = new BScroll(".chapter-warrper", {
+        click: true,
+        // 开启 observe-image 插件
+        observeImage: {
+          debounceTime: 500,
+        },
+        nestedScroll: {
+          groupId: 2,
+        },
+      });
+    });
+  };
+  // 隐藏章节列表
+  const enShowListBottom = () => {
+    // bsMounted();
+    showListBottom.value = false;
+  };
+
+  //子组件点击传出方法,阅读不同章节
+  let newIndex = 0;
+  const readThisChapter = async (index: number) => {
+    imgUrlTokenAll.value = [];
+    newIndex = imgEpList.value.findIndex((item: { id: any }) => {
+      return item.id == oldImgEpList.value[index].id;
+    });
+    chapterListIndex = index;
+    console.log(chapterListIndex);
+    await getContentData(imgEpList.value[newIndex].id);
+    epListindex = newIndex;
+  };
 </script>
 
 <template>
   <div class="contentView w-100 h-100" ref="contentVeiw">
     <!-- 滚动内容 -->
-    <div class="w-100">
+    <div class="contentClient w-100">
       <!-- 每一页内容 -->
       <div
         class="imgItem w-100"
+        :dataIndex="item.epId"
         v-for="(item, index) in imgUrlTokenAll"
         :key="index">
-        <img v-lazy="item.url + '?token=' + item.token" class="w-100" />
+        <img
+          v-lazy="item.item.url + '?token=' + item.item.token"
+          class="w-100" />
       </div>
       <!-- 上拉提示 -->
       <div class="pullup-tips text-center">
@@ -253,7 +333,12 @@
         <div
           class="ps-3 pe-3 d-flex justify-content-between align-items-center text-light t-shadow-3"
           v-show="isShowSlider">
-          <i class="bi bi-arrow-left-short" @click="toBack"></i>
+          <div class="leftIcon d-flex align-items-center">
+            <i class="bi bi-arrow-left-short" @click="toBack"></i>
+            <span class="epListTitle fs-3">{{
+              oldImgEpList[chapterListIndex].title
+            }}</span>
+          </div>
           <div
             class="rightIcon fs-3 d-flex justify-content-between align-items-center"
             style="width: 30%">
@@ -268,10 +353,31 @@
               v-show="isScale"
               @click="scaleOpen"></i>
             <i
-              class="iconfont icon-fangdajing1 fs-3 noScaleIcon"
+              class="iconfont icon-fangdajing1 fs-3 noScaleIcon position-relative"
               v-show="!isScale"
               @click="scaleOpen"></i>
           </div>
+        </div>
+      </div>
+    </transition>
+    <!-- 章节列表 -->
+    <transition name="fadeIn">
+      <!-- 蒙版区 -->
+      <div
+        class="w-100 z-9 position-absolute top-0 bg-dark bg-opacity-75"
+        style="height: calc(100vh + 1px)"
+        v-if="showListBottom"
+        @click="enShowListBottom">
+        <!-- 列表区 -->
+        <div
+          class="h-50 ms-3 me-3 position-absolute bg-dark blur-5 bg-opacity-75 rounded-4 Z-10"
+          style="bottom: 2%">
+          <chapterComponent
+            :detailList="imgEpList"
+            :maxHeight="'50vh'"
+            :selectIndex="chapterListIndex"
+            class="ms-3 me-3"
+            @readThisChapter="readThisChapter"></chapterComponent>
         </div>
       </div>
     </transition>
@@ -284,7 +390,7 @@
         <!-- 亮度调节 -->
         <transition name="sideUp">
           <div
-            class="slider mb-2 mx-auto"
+            class="slider mb-2 mx-auto rounded-pill shadow"
             style="width: calc(100% - 1.5rem)"
             v-show="isShowSlider">
             <van-slider
@@ -293,7 +399,7 @@
               :min="-75"
               :max="0"
               inactive-color="rgba(0, 0, 0, .2)"
-              active-color="#fff"
+              active-color="#e8e8e8"
               @update:model-value="onChange">
               <template #button>
                 <div
@@ -315,10 +421,11 @@
             </div>
           </div>
         </transition>
+        <!-- 自动播放 -->
         <div
           class="slider fs-3 d-flex justify-content-evenly align-items-center bg-dark rounded-5 blur-5 bg-opacity-75">
           <i class="bi bi-brightness-high" @click="showSlider"></i>
-          <i class="bi bi-list"></i>
+          <i class="bi bi-list" @click="showListPopup"></i>
           <i
             class="bi bi-play-circle"
             v-show="!autoPlayShow"
@@ -377,17 +484,20 @@
     font-weight: 600;
   }
   .noScaleIcon {
-    position: relative;
     font-weight: 600;
     &::after {
       content: "";
       width: 26px;
       height: 2px;
-      background-color: #fff;
+      background-color: rgb(254, 254, 254);
       position: absolute;
       top: 40%;
       left: -9%;
       transform: rotate(-45deg) translateY(-50%);
     }
+  }
+
+  .van-overlay {
+    height: calc(100vh + 1px);
   }
 </style>
