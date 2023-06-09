@@ -1,4 +1,6 @@
 <script setup>
+  import { ref } from "vue";
+
   let props = defineProps({
     detailList: {
       type: Array,
@@ -7,6 +9,9 @@
     maxHeight: {
       type: String,
       default: () => "80vh",
+    },
+    selectIndex: {
+      type: Number,
     },
   });
 </script>
@@ -26,11 +31,17 @@
         </div>
         <!-- 名称 -->
         <div class="flex-grow-1">
-          <div class="fs-7 opacity-50">
+          <div
+            class="fs-7"
+            :class="selectIndex == index ? 'text-body' : 'text-body-tertiary'">
             バンドしま - {{ detailList.length - index }}
           </div>
-          <div class="fs-5">{{ item.title.replace(/第.*[话|章]/, "") }}</div>
-          <div class="fs-8 opacity-50">
+          <div
+            class="fs-5"
+            :class="selectIndex == index ? 'text-body' : 'text-body-tertiary'">
+            {{ item.title.replace(/第.*[话|章]/, "") }}
+          </div>
+          <div class="fs-8 text-body-tertiary">
             <span class="me-3">{{ item.pub_time.slice(2, 10) }}</span>
             <span
               >{{ item.like_count }}<i class="bi bi-hand-thumbs-up"></i>
@@ -43,3 +54,4 @@
     </div>
   </div>
 </template>
+<style lang="scss"></style>
