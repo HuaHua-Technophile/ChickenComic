@@ -1,7 +1,7 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 export const useGlobalStore = defineStore("global", () => {
-  // 主题修改
+  // 主题修改---------------
   let theme = ref("dark");
   let changeTheme = () => {
     if (theme.value === "dark") {
@@ -16,13 +16,12 @@ export const useGlobalStore = defineStore("global", () => {
       document.body.classList.remove("lightBg");
     }
   };
-  //全局遮罩层
-  let popupShow = ref(false);
-  let popupInfo = ref("");
+  //登录信息----------------
+  let userInfo = ref({});
+
   return {
     theme,
     changeTheme,
-    popupShow,
-    popupInfo,
+    userInfo,
   };
 });

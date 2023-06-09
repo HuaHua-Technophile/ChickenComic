@@ -15,7 +15,7 @@
       .replace("更新", "更新します");
     return str;
   };
-  //数据请求---------------------------------
+  //------------------数据请求---------------------------------
   let route = useRoute();
   let { id }: { id?: string } = route.query;
   let res = ref<any>({});
@@ -25,7 +25,7 @@
     chapterList = res.value.data?.ep_list;
   };
   getData();
-  // Better scroll实例化相关------------------
+  // ------------------Better scroll实例化相关------------------
   BScroll.use(ObserveImage);
   BScroll.use(NestedScroll);
   let comicCover = ref<HTMLElement | object>({}); //待实例化的DOM元素
@@ -33,7 +33,7 @@
   let bs: any = ref({});
   let bs2: any = ref({});
   onMounted(() => {
-    // 挂载后获取原生dom对象,进行bs初始化
+    // ------------------挂载后获取原生dom对象,进行bs初始化
     bs.value = new BScroll(comicCover.value as HTMLElement, {
       click: true,
       observeImage: {
@@ -53,9 +53,9 @@
       },
     });
   });
-  //------主题色-------
+  //------------------------主题色-------------------------
   let GlobalStore = useGlobalStore();
-  //子组件点击传出方法,阅读不同章节
+  //------------------子组件点击传出方法,阅读不同章节------------------
   let router = useRouter();
   let readThisChapter = (index: number) => {
     let params = JSON.stringify({

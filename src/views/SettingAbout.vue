@@ -4,6 +4,7 @@
   import { useGlobalStore } from "../stores/counter";
   import { showToast } from "vant";
   import "vant/es/toast/style";
+  //---------------bs实例化相关-----------
   let settingAbout: any = ref<object | null>(null);
   let bs = ref({}); //Better scroll实例化后对象的存储
   onMounted(() => {
@@ -11,16 +12,16 @@
       click: true,
     });
   });
-  //-----------主题色修改------------------
+  //--------------主题色修改------------------
   let { theme, changeTheme }: any = useGlobalStore();
-  //-----------遮罩层修改------------------
+  //--------------遮罩层修改------------------
   let overlayShow = ref(false);
   let overlayInfo = ref("");
 </script>
 <template>
   <div ref="settingAbout" class="settingAbout w-100 h-100 noScrollBar">
     <!-- 滚动内容 -->
-    <div class="ps-3 pe-3 overflow-hidden" style="min-height: 105vh">
+    <div class="ps-3 pe-3 overflow-hidden" style="min-height: calc(100% + 5px)">
       <!-- 头部图片信息 -->
       <div class="ps-5 pe-5" style="margin-top: 30%">
         <img src="@/img/logo.png" class="w-100 h-100 rounded-3" />

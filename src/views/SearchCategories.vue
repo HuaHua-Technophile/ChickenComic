@@ -1,34 +1,59 @@
 <script setup lang="ts">
-  import { ref, onMounted, computed } from "vue";
+  import { ref, onMounted, computed, watchEffect } from "vue";
   import { useGlobalStore } from "../stores/counter";
   import { getSearchResult } from "../api/search";
   import BScroll from "better-scroll"; //导入Better scroll核心
+  import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
+  import Pullup from "@better-scroll/pull-up";
 
+  let time: any = null; //节流
+  let pageNumber = ref(1);
+  let handelFunction = () => {
+    clearTimeout(time);
+    time = setTimeout(() => {
+      pageNumber.value++;
+      console.log("上拉了");
+      console.log(pageNumber.value);
+      getSearchResultFun();
+    }, 500);
+
+    // getSearchResultFun(pageNumber.value);
+    bs.value.finishPullUp();
+    bs.value.refresh();
+  };
+  //------------------better scroll实例化相关-----------
+  BScroll.use(Pullup);
+  BScroll.use(ObserveImage);
   let searchResultList: any = ref<object | null>(null);
-  let bs = ref({}); //Better scroll实例化后对象的存储
+  let bs: { on: Function } | any = ref({}); //Better scroll实例化后对象的存储
   onMounted(() => {
-    bs.value = new BScroll(searchResultList.value, {
+    bs.value = new BScroll(searchResultList.value as HTMLElement, {
       click: true,
+      observeImage: {
+        debounceTime: 500, // ms
+      },
+      pullUpLoad: true,
     });
+    console.log(bs.value);
+    bs.value.on("pullingUp", handelFunction);
   });
-  //主题切换
-  let { theme, changeTheme }: any = useGlobalStore();
+
   let keyWord: any = ref("我推的孩子");
 
-  //获取搜索结果
-  let SearchResult: any = ref(null);
+  //-----------获取搜索结果数据-----------
+  let SearchResult: any = ref([]);
   const getSearchResultFun = async () => {
     let data = await getSearchResult({
       keyWord: "我退的孩子",
-      order: -1,
+      order: value1.value,
+      pageNum: pageNumber.value,
+      isFinish: isFinshVal.value,
+      isFree: isFreeVal.value,
     });
-    console.log(data.data.list);
-    SearchResult.value = data.data.list;
-    // console.log("data==》", SearchResult.value);
+    SearchResult.value = SearchResult.value.concat(data.data.list);
   };
 
   //作者数据格式处理
-
   const allAuthors = computed(() => {
     return function (val: Array<string>) {
       let authors: string = "";
@@ -42,11 +67,11 @@
       return authors;
     };
   });
-  console.log(allAuthors.value);
 
   onMounted(() => {
     getSearchResultFun();
   });
+  let { theme, changeTheme }: any = useGlobalStore();
 
   const reSearch = () => {
     console.log("click");
@@ -86,6 +111,31 @@
     { text: "免费", value: "免费" },
     { text: "付费", value: "付费" },
   ];
+
+  // -----------------选择结果分类-----------------------
+
+  const selectType = () => {
+    SearchResult.value = [];
+    getSearchResultFun();
+  };
+  // 根据连载付费分类
+  let isFinshVal = ref(-1);
+  let isFreeVal = ref(-1);
+  watchEffect(() => {
+    console.log(value3.value);
+    if (value3.value == "-1") {
+      isFinshVal.value = -1;
+      isFreeVal.value = -1;
+    } else if (value3.value == "免费") {
+      isFreeVal.value = 1;
+    } else if (value3.value == "付费") {
+      isFreeVal.value = 0;
+    } else if (value3.value == "连载") {
+      isFinshVal.value = 0;
+    } else if (value3.value == "完结") {
+      isFinshVal.value = 1;
+    }
+  });
 </script>
 <template>
   <div class="SearchCategories w-100 h-100 d-flex flex-column">
@@ -100,10 +150,16 @@
           :class="[theme == 'dark' ? 'searchDark' : 'searchLight']" />
       </form>
     </div>
-    <van-dropdown-menu :z-index="10" class="my-3">
-      <van-dropdown-item v-model="value1" :options="option1" />
+    <van-dropdown-menu :z-index="10" class="my-3" :overlay="true">
+      <van-dropdown-item
+        v-model="value1"
+        @change="selectType"
+        :options="option1" />
       <van-dropdown-item v-model="value2" :options="option2" />
-      <van-dropdown-item v-model="value3" :options="option3" />
+      <van-dropdown-item
+        v-model="value3"
+        :options="option3"
+        @change="selectType" />
     </van-dropdown-menu>
     <div
       class="searchResultList w-100 flex-grow-1 overflow-hidden"
@@ -124,10 +180,13 @@
             <div class="fs-10 opacity-75 van-ellipsis">
               {{ allAuthors(item.styles) }}
             </div>
-            <div class="fs-10 opacity-75">
+            <div class="fs-10 opacity-75 mt-1">
               {{ item.is_finish === 0 ? "连载中" : "完结" }}
             </div>
           </div>
+        </li>
+        <li class="w-100 py-4 text-center">
+          <van-loading />
         </li>
       </ul>
     </div>
@@ -135,7 +194,34 @@
 </template>
 <style lang="scss">
   .van-dropdown-menu__bar {
-    opacity: 0.7;
+    // opacity: 0.7;
+    color: #fff;
+    background-color: transparent;
+  }
+
+  .van-ellipsis {
+    color: #fff;
+  }
+  .van-dropdown-item {
+  }
+  .van-dropdown-item::after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(10px);
+  }
+  .van-dropdown-item__option--active {
+    .van-cell__title {
+      color: red;
+    }
+  }
+  .van-dropdown-item__content {
+    background-color: transparent;
+  }
+  .van-dropdown-item__option {
+    background-color: transparent;
     color: #fff;
   }
   .van-cell--clickable {
@@ -162,7 +248,6 @@
   .van-popup--top {
     display: flex;
     justify-content: space-between;
-
     flex-wrap: wrap;
   }
   .van-cell {
