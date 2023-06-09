@@ -144,13 +144,13 @@
         <!-- 开始阅读/加入书架 -->
         <div class="d-flex align-items-center justify-content-evenly mb-3">
           <div
-            class="pt-3 pb-3 fs-5 fw-bold bg-primary rounded-4 text-center t-shadow-3 bg-opacity-25 insetShadow"
+            class="pt-3 pb-3 fs-5 fw-bold bg-primary rounded-4 text-center t-shadow-3 bg-opacity-25 insetShadow-4-4"
             style="width: 40%"
             @click="readThisChapter(0)">
             読み始めます
           </div>
           <div
-            class="pt-3 pb-3 fs-5 fw-bold bg-secondary rounded-4 text-center t-shadow-3 bg-opacity-25 insetShadow"
+            class="pt-3 pb-3 fs-5 fw-bold bg-secondary rounded-4 text-center t-shadow-3 bg-opacity-25 insetShadow-4-4"
             style="width: 40%">
             本棚に入れます
           </div>
@@ -161,7 +161,7 @@
           <div class="mb-3 t-shadow-3">ラベル :</div>
           <div
             v-for="item in res.data?.story_elems"
-            class="bg-body-tertiary rounded mb-3 pt-1 pb-1 ps-3 pe-3">
+            class="bg-body-tertiary rounded mb-3 me-1 pt-1 pb-1 ps-3 pe-3">
             {{ item.name }}
           </div>
         </div>
@@ -196,9 +196,6 @@
   </div>
 </template>
 <style lang="scss">
-  .insetShadow {
-    box-shadow: inset 0px 0px 4px rgba(255, 255, 255, 0.4);
-  }
   .分隔符::after {
     content: "";
     display: block;
