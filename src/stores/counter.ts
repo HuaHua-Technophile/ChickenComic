@@ -1,5 +1,6 @@
 import { ref, watch } from "vue";
 import { defineStore } from "pinia";
+
 export const useGlobalStore = defineStore("global", () => {
   // 主题修改---------------
   let theme = ref("dark");
