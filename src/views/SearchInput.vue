@@ -4,27 +4,37 @@
   import BScroll from "better-scroll"; //导入Better scroll核心
   import { getSearchReferral, getSuggestedWord } from "@/api/search";
   import { useRouter, useRoute } from "vue-router";
+
+  // -----------路由-------------
+  let router: any = useRouter();
+  let route: any = useRoute();
+
+  //------------Better scroll实例化-----------
   let SearchInput: any = ref<object | null>(null);
-  let bs = ref({}); //Better scroll实例化后对象的存储
+  let bs = ref({});
   onMounted(() => {
     bs.value = new BScroll(SearchInput.value, {
       click: true,
     });
   });
 
-  //搜索框
-  let value = ref("");
-  let isFocus = ref(false);
-  //搜索框聚焦
+  // ---------搜索框------------
+  let value = ref(""); //关键词
+  let isFocus = ref(false); //是否聚焦
+
+  //------搜索框聚焦-----------
   const focusFun = () => {
     isFocus.value = true;
   };
-  // 搜索框失去焦点
+
+  // --------搜索框失去焦点----------
   const blurFun = () => {
-    isFocus.value = false;
+    setTimeout(() => {
+      isFocus.value = false;
+    }, 200);
   };
 
-  // 获取搜索建议词
+  // -----------获取搜索建议词----------
   let suggestedWord = ref(null);
   const getSuggestedWordFun = async () => {
     let data = await getSuggestedWord({ term: value.value });
@@ -47,7 +57,8 @@
 
   // 搜索历史
   let searchHistoryData: any = ref([]);
-  //获取历史记录数据;
+
+  //-----------获取历史记录数据-----------
   const starHistory = () => {
     if (!localStorage.getItem("searchHistory")) {
       localStorage.setItem(
@@ -61,7 +72,8 @@
     }
   };
   starHistory();
-  //添加搜索历史
+
+  //-----------添加搜索历史----------
   const searchFun = () => {
     let index = searchHistoryData.value.findIndex(
       (item: any) => item == value.value
@@ -74,7 +86,8 @@
       );
     }
   };
-  //清除历史记录
+
+  //------------清除历史记录-------------
   const clearHistory = () => {
     searchHistoryData.value = [];
     localStorage.setItem(
@@ -83,7 +96,7 @@
     );
   };
 
-  //获取热门搜索
+  //------------获取热门搜索---------
   let searchReferral: any = ref([]);
   let defaultKeyword: any = ref([]);
   const getSearchReferralFun = async () => {
@@ -93,16 +106,15 @@
   };
   getSearchReferralFun();
 
-  //主题切换
+  //---------主题切换----------
   let { theme, changeTheme }: any = useGlobalStore();
 
-  // 返回home主页
-  let router: any = useRouter();
-  let route: any = useRoute();
+  // -----------返回home主页--------
   const backHome = () => {
     router.go(-1);
   };
-  // 点击热搜跳转
+
+  // ---------点击热搜跳转漫画详情页-------------
   const openContentView = (id: number) => {
     router.push({
       path: "/comicCover",
@@ -111,14 +123,25 @@
       },
     });
   };
-  // const getSearchResult = () => {
-  //   router.push({
-  //     path: "/SearchCategories",
-  //     query: {
-  //       // keyword: value.value,
-  //     },
-  //   });
-  // };
+  const getSearchResult = (word: string) => {
+    value.value = word
+      .replace(/<em class="keyword"\>/g, "")
+      .replace(/\<\/em>/g, "");
+    searchFun();
+    router.push({
+      path: "/SearchCategories",
+      query: {
+        keyword: value.value,
+      },
+    });
+  };
+
+  // ------------搜索框回车 -----------
+  const arr1 = () => {
+    if (value.value !== "") {
+      getSearchResult(value.value);
+    }
+  };
 </script>
 
 <template>
@@ -145,6 +168,7 @@
               placeholder="请输入作者名/作品名/类型"
               background="transparent"
               @search="searchFun"
+              @keydown.enter="arr1"
               @focus="focusFun"
               @blur="blurFun"
               autocomplete="off"
@@ -166,7 +190,8 @@
           <li
             class="bg-body px-3 py-2 rounded-pill fs-10 bg-opacity-75 me-2 mt-2"
             v-for="(item, index) in searchHistoryData"
-            :key="index">
+            :key="index"
+            @click="getSearchResult(item)">
             {{ item }}
           </li>
         </ul>
@@ -206,7 +231,7 @@
             class="py-3"
             v-for="(item, index) in suggestedWord"
             :key="index"
-            @click="getSearchResult">
+            @click="getSearchResult(item)">
             <i class="bi bi-search"></i>
             <span class="ps-2" v-html="item"></span>
           </li>
