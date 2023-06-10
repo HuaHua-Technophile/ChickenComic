@@ -7,3 +7,4 @@ declare module "*.vue" {
   export default component;
 }
 declare module "lodash/debounce";
+declare module "js-md5";
