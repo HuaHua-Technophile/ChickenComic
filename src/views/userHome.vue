@@ -65,7 +65,7 @@
         color="rgba(255, 255, 255, .3)"
         title-inactive-color="rgb(232, 232, 232)"
         title-active-color="rgb(232, 232, 232)">
-        <van-tab class="pt-4 px-4" :title="'コレクション'"> </van-tab>
+        <van-tab class="pt-4 px-4" :title="'コレクション'"> 内容</van-tab>
         <van-tab class="pt-4 px-4" :title="'レコード破り'"> 内容 </van-tab>
       </van-tabs>
     </div>
