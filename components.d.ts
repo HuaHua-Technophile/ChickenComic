@@ -12,14 +12,10 @@ declare module '@vue/runtime-core' {
     ChapterComponent: typeof import('./src/components/chapterComponent.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    VanDropdownItem: typeof import('vant/es')['DropdownItem']
-    VanDropdownMenu: typeof import('vant/es')['DropdownMenu']
-    VanLoading: typeof import('vant/es')['Loading']
     VanOverlay: typeof import('vant/es')['Overlay']
-    VanPopup: typeof import("vant/es")["Popup"]
     VanSearch: typeof import('vant/es')['Search']
-    VanSlider: typeof import("vant/es")["Slider"]
-    VanTab: typeof import("vant/es")["Tab"]
-    VanTabs: typeof import("vant/es")["Tabs"]
+    VanSlider: typeof import('vant/es')['Slider']
+    VanTab: typeof import('vant/es')['Tab']
+    VanTabs: typeof import('vant/es')['Tabs']
   }
 }
