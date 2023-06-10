@@ -9,15 +9,11 @@ declare module 'vue' {
   export interface GlobalComponents {
     BackComponent: typeof import('./src/components/backComponent.vue')['default']
     ChapterComponent: typeof import('./src/components/chapterComponent.vue')['default']
-    ElInput: typeof import("element-plus/es")["ElInput"]
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     VanDropdownItem: typeof import('vant/es')['DropdownItem']
     VanDropdownMenu: typeof import('vant/es')['DropdownMenu']
     VanLoading: typeof import('vant/es')['Loading']
-    VanOverlay: typeof import('vant/es')['Overlay']
     VanSearch: typeof import('vant/es')['Search']
-    VanTab: typeof import("vant/es")["Tab"]
-    VanTabs: typeof import("vant/es")["Tabs"]
   }
 }

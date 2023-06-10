@@ -79,6 +79,8 @@
 .fadeIn-leave-active,
 .sideUp-enter-active,
 .sideUp-leave-active,
+.sideDown-enter-active,
+.sideDown-leave-active,
 .sideUp100-enter-active,
 .sideUp100-leave-active {
   transition: all 0.8s;
@@ -95,6 +97,11 @@
   opacity: 0;
 }
 
+.sideDown-enter-from,
+.sideDown-leave-to {
+  transform: translateY(-20px);
+  opacity: 0;
+}
 .sideUp100-enter-from,
 .sideUp100-leave-to {
   transform: translateY(100%);
