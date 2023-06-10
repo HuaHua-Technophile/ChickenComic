@@ -4,6 +4,7 @@
   import BScroll from "better-scroll"; //导入Better scroll核心
   import { getSearchReferral, getSuggestedWord } from "@/api/search";
   import { useRouter } from "vue-router";
+  import debounce from "lodash/debounce"; //导入lodash防抖
   // -----------定时器ID数组------------
   let timeId = ref<Array<number>>([]);
   // -----------路由-------------
@@ -39,17 +40,10 @@
       console.log(data);
     }
   };
-  let time: any = null;
-  const inputKeyWord = () => {
-    if (keyword.value !== "") {
-      clearTimeout(time);
-      time = setTimeout(() => {
-        getSuggestedWordFun();
-      }, 400);
-    } else {
-      suggestedWord.value = null;
-    }
-  };
+  const inputKeyWord = debounce(function () {
+    if (keyword.value != "") getSuggestedWordFun();
+    else suggestedWord.value = null;
+  }, 500);
   //-----------获取历史记录数据-----------
   let searchHistoryData: any = ref([]);
   const starHistory = () => {
@@ -121,11 +115,12 @@
     });
   };
   // ------------搜索框回车 -----------
-  const enterSearch = () => {
-    if (keyword.value !== "") {
+  const enterSearch = debounce(function () {
+    console.log("回车了");
+    if (keyword.value != "") {
       toSearchResult(keyword.value);
     }
-  };
+  }, 500);
   // 清除定时器
   onUnmounted(() => {
     timeId.value.forEach((item: number) => {
