@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted, watch } from "vue";
+  import { ref, onMounted } from "vue";
   import { useRouter } from "vue-router";
   import BScroll from "better-scroll"; //导入Better scroll核心
   import { showToast } from "vant";
