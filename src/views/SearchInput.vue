@@ -7,7 +7,6 @@
 
   // -----------路由-------------
   let router: any = useRouter();
-  let route: any = useRoute();
 
   //------------Better scroll实例化-----------
   let SearchInput: any = ref<object | null>(null);
@@ -109,12 +108,7 @@
   //---------主题切换----------
   let { theme, changeTheme }: any = useGlobalStore();
 
-  // -----------返回home主页--------
-  const backHome = () => {
-    router.go(-1);
-  };
-
-  // ---------点击热搜跳转漫画详情页-------------
+  //点击热搜跳转
   const openContentView = (id: number) => {
     router.push({
       path: "/comicCover",
@@ -149,7 +143,6 @@
     <div style="min-height: calc(100vh + 2px)">
       <!-- 搜索框 -->
       <div class="search d-flex flex-column align-items-star position-relative">
-        <i class="bi bi-arrow-left-short w-25 mr-5" @click="backHome"></i>
         <div
           class="ms-4 transition-5 mt-2"
           :class="[isFocus ? 'opacity-0' : 'opacity-1']">
@@ -238,6 +231,8 @@
         </ul>
       </div>
     </div>
+    <!-- 搜索框 -->
+    <back-component class="position-fixed"></back-component>
   </div>
 </template>
 <style lang="scss">
