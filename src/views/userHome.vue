@@ -59,8 +59,8 @@
         color="rgba(255, 255, 255, .3)"
         title-inactive-color="rgb(232, 232, 232)"
         title-active-color="rgb(232, 232, 232)">
-        <van-tab :title="'コレクション'"> 内容 </van-tab>
-        <van-tab :title="'レコード破り'"> 内容 </van-tab>
+        <van-tab class="pt-4 px-4" :title="'コレクション'"> </van-tab>
+        <van-tab class="pt-4 px-4" :title="'レコード破り'"> 内容 </van-tab>
       </van-tabs>
     </div>
     <div class="ps-3 position-fixed top-0 w-100 text-light t-shadow-3">
@@ -68,3 +68,13 @@
     </div>
   </div>
 </template>
+<style lang="scss">
+  .van-tabs__wrap {
+    border-radius: 99999px;
+    width: 80%;
+    margin: auto;
+  }
+  .van-tabs__line {
+    margin-bottom: calc(var(--jianXi) * 0.5);
+  }
+</style>
