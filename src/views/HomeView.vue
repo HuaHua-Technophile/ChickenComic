@@ -4,8 +4,9 @@
   // ---------用户信息-------------
   const S = useGlobalStore();
   let { userInfo } = storeToRefs(S);
-  if (localStorage.getItem("userInfo")) {
-    userInfo.value = JSON.parse(localStorage.getItem("userInfo") + "");
+  let userId = localStorage.getItem("userId");
+  if (userId) {
+    userInfo.value = JSON.parse(localStorage.getItem(`user${userId}`) + "");
   }
 </script>
 
