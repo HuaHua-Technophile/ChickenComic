@@ -4,7 +4,7 @@
   import Zoom from "@better-scroll/zoom";
   import ObserveImage from "@better-scroll/observe-image";
   import NestedScroll from "@better-scroll/nested-scroll";
-  import debounce from "lodash/debounce"; //lodash节流
+  import debounce from "lodash/debounce"; //lodash防抖
   import { showToast } from "vant";
   import {
     onBeforeUnmount,

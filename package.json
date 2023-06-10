@@ -20,9 +20,12 @@
     "better-scroll": "^2.5.1",
     "bootstrap": "^5.3.0",
     "bootstrap-icons": "^1.10.5",
+    "js-md5": "^0.7.3",
     "lodash": "^4.17.21",
     "pinia": "^2.0.36",
     "sass": "^1.62.1",
+    "unplugin-auto-import": "^0.16.4",
+    "unplugin-vue-components": "^0.25.1",
     "vant": "^4.4.1",
     "vue": "^3.3.2",
     "vue-router": "^4.2.0"
