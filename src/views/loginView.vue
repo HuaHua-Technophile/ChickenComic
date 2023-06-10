@@ -1,13 +1,26 @@
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
+  import { useRouter } from "vue-router";
   import BScroll from "better-scroll"; //导入Better scroll核心
   import { showToast } from "vant";
   import "vant/es/toast/style";
-  import { getQQInfo } from "@/api/QQinfo";
+  import axios from "axios";
+  import md5 from "js-md5";
+  // QQ昵称+头像 https://cloud.qqshabi.cn/api/qqinfo.php?qq=3118590779
+  // QQ昵称+头像 https://api.szfx.top/qqinfo/?qq=3118590779
+  // QQ昵称+头像 https://api.usuuu.com/qq/3118590779
+  // QQ头像 https://q.qlogo.cn/headimg_dl?dst_uin=3118590779&spec= (1~5)
+  let router = useRouter();
+  interface QQinfo {
+    data: {
+      name: string;
+      code: number;
+    };
+  }
   //-------------正则表达式---------------
   let passwordReg = /^(?=.*[A-Z])(?=.*\d)[^]{6,16}$/;
-  let accountReg = /^\d{3,11}$/;
-  //-----当前激活标签页
+  let accountReg = /^\d{3,12}$/;
+  //------------当前激活标签页---------------
   let active = ref(0);
   //---------------bs实例化相关-----------
   let loginView: any = ref<object | null>(null);
@@ -17,37 +30,83 @@
       click: true,
     });
   });
+  //----------登录页面------------------------
+  let account = ref("");
+  let password = ref("");
+  // 登录函数
+  let login = () => {
+    if (!account.value || !password.value) {
+      showToast("アカウントやパスワードを空にしてはいけません");
+      return;
+    } else if (!accountReg.test(account.value)) {
+      showToast("アカウントが規格外です");
+      return;
+    } else if (!passwordReg.test(password.value)) {
+      showToast("パスワードが規格外です");
+      return;
+    } else {
+      let accountData = JSON.parse(
+        localStorage.getItem(`user${account.value}`) + ""
+      );
+      if (accountData && accountData.password === md5(password.value)) {
+        showToast("紙桜へようこそです!");
+        localStorage.setItem("userId", account.value);
+        router.push({
+          name: "home",
+        });
+      } else showToast("アカウントやパスワードが間違っています");
+    }
+  };
   //----------注册页面------------------------
   let account1 = ref("");
   let password1 = ref("");
   let password2 = ref("");
-  let userInfoDatabase =
-    JSON.parse(localStorage.getItem("userInfoDatabase") + "") || [];
-
+  //注册函数
   let register = async () => {
     if (!accountReg.test(account1.value)) {
-      showToast(`アカウントは3~11桁の数字です
-      QQで登録してください`);
+      // QQID输入不符合要求
+      showToast(`アカウントは3~11桁の数字です\nQQで登録してください`);
+      return;
     } else if (password1.value === "" || password2.value === "") {
+      // 密码为空
       showToast(`パスワードは空です`);
+      return;
     } else if (password1.value != password2.value) {
+      // 两次输入的密码不一致
       showToast(`2回入力したパスワードが一致しません`);
+      return;
     } else if (!passwordReg.test(password1.value)) {
+      // 输入的密码不符合规范(6~16位数字或字母,必须包含一个大写字母)
       showToast("パスワードが規格外です");
+      return;
+    } else if (localStorage.getItem(`user${account1.value}`)) {
+      // 用户已存在
+      showToast(`アカウントを作成しました\nログインしてください`);
+      return;
     } else {
-      let res = await getQQInfo(account1.value);
-      if (res) {
-        showToast(`紙桜へようこそです!
-  登録しますよ!`);
-        // 因为没爬取到登录相关接口.因此一切的与账号信息或登陆相关都做本地数据存储与伪请求
-        userInfoDatabase.push({
-          id: account1.value,
-          password: password1.value,
-        });
-        password1.value = password2.value = account1.value = "";
-        active.value = 0;
-      } else {
+      // 成功创建
+      let res = <QQinfo>(
+        await axios.get(
+          `https://cloud.qqshabi.cn/api/qqinfo.php?qq=${account1.value}`
+        )
+      );
+      if (res.data.code === -1 || !res)
         showToast(`QQIDに問い合わせませんでした`);
+      else {
+        showToast(`紙桜へようこそです!\n登録しますよ!`);
+        // 因为没爬取到登录相关接口.因此一切的与账号信息或登陆相关都做本地数据存储与伪请求
+        localStorage.setItem(
+          `user${account1.value}`,
+          JSON.stringify({
+            name: res.data.name,
+            id: account1.value,
+            password: md5(password1.value),
+            watchingHistory: [], //历史已看,第一位为当前在看
+            collection: [], //已收藏漫画
+          })
+        );
+        localStorage.setItem(`userId`, account1.value);
+        router.push({ name: "home" });
       }
     }
   };
@@ -69,12 +128,13 @@
       <van-tabs v-model:active="active">
         <van-tab title="登録する" class="pt-4">
           <input
+            v-model="account"
             type="text"
             placeholder="ID入力をお願いします"
             maxlength="11"
             class="insetShadow-4-4" />
           <el-input
-            v-model="password1"
+            v-model="password"
             type="password"
             placeholder="パスワードをお願いします"
             maxlength="12"
@@ -84,7 +144,7 @@
           <div
             class="mx-auto rounded-pill text-center fs-3 pt-2 pb-2 insetShadow-9-8 bg-pink"
             style="width: 80%"
-            @click="register">
+            @click="login">
             登録する
           </div>
         </van-tab>

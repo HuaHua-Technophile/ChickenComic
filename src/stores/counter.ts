@@ -1,5 +1,6 @@
-import { ref, computed } from "vue";
+import { ref, watch } from "vue";
 import { defineStore } from "pinia";
+
 export const useGlobalStore = defineStore("global", () => {
   // 主题修改---------------
   let theme = ref("dark");
@@ -17,8 +18,13 @@ export const useGlobalStore = defineStore("global", () => {
     }
   };
   //登录信息----------------
-  let userInfo = ref({});
-
+  interface UserInfo {
+    id?: string;
+  }
+  let userInfo: any = ref<UserInfo>({});
+  watch(userInfo, (newVal: UserInfo) => {
+    localStorage.setItem(`user${newVal.id}`, JSON.stringify(newVal));
+  });
   return {
     theme,
     changeTheme,

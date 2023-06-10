@@ -53,7 +53,6 @@
     imgUrlToken.value.data.forEach((item: object) => {
       imgUrlTokenAll.value.push({ item, epId });
     });
-    console.log(imgUrlToken.value);
   };
 
   // 初始化章节内容及计数
@@ -72,7 +71,7 @@
 
   // 实例化bscroll并给阅读页添加滚动处理
   BScroll.use(Pullup); // 注册上拉懒加载插件
-  BScroll.use(ObserveImage);
+  BScroll.use(ObserveImage); // 自动重载插件
   BScroll.use(Zoom); // 注册缩放插件
   BScroll.use(NestedScroll); // 注册嵌套bscroll插件
   let zoomOption: any = false; // Zoom插件配置项（false为不启用缩放）
@@ -135,19 +134,23 @@
   let boxes: any = [];
   onUpdated(() => {
     boxes = document.querySelectorAll(".imgItem");
-    console.log(boxes);
     boxes.forEach((box: any) => {
       observer.observe(box);
     });
   });
-  const observer = new IntersectionObserver((entries, observer) => {
-    entries.forEach((entry) => {
-      chapterListIndex = oldImgEpList.value.findIndex((item: any) => {
-        return item.id == entry.target.getAttribute("dataIndex");
+  const observer = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach((entry, index) => {
+        chapterListIndex = oldImgEpList.value.findIndex((item: any) => {
+          return item.id == entry.target.getAttribute("dataIndex");
+        });
+        console.log(index);
       });
-      console.log(chapterListIndex);
-    });
-  });
+    },
+    {
+      threshold: [1],
+    }
+  );
   onBeforeUnmount(() => {
     // 清除延时器
     clearInterval(timer);
@@ -181,7 +184,6 @@
     isShowSlider.value = false;
     speedSelectShow.value = false;
     if (bs.value.y < -(contentVeiwHeight / 2)) {
-      console.log(bs.value.y);
       bs.value.scrollBy(0, contentVeiwHeight, 500);
     }
   };
@@ -288,7 +290,6 @@
       return item.id == oldImgEpList.value[index].id;
     });
     chapterListIndex = index;
-    console.log(chapterListIndex);
     await getContentData(imgEpList.value[newIndex].id);
     epListindex = newIndex;
   };
@@ -335,9 +336,9 @@
           v-show="isShowSlider">
           <div class="leftIcon d-flex align-items-center">
             <i class="bi bi-arrow-left-short" @click="toBack"></i>
-            <span class="epListTitle fs-3">{{
-              oldImgEpList[chapterListIndex].title
-            }}</span>
+            <span class="epListTitle fs-3"
+              >第{{ oldImgEpList.length - chapterListIndex }}话</span
+            >
           </div>
           <div
             class="rightIcon fs-3 d-flex justify-content-between align-items-center"

@@ -7,7 +7,7 @@
   import NestedScroll from "@better-scroll/nested-scroll"; //导入betterscroll嵌套
   import { useGlobalStore } from "@/stores/counter";
   import chapterComponent from "@/components/chapterComponent.vue"; //引入组件
-  //定义方法---------------------
+  //------------定义字符串替换方法---------------------
   let updateTime = (str: string) => {
     str = str
       .replace("卷", "いつでも")
@@ -25,15 +25,15 @@
     chapterList = res.value.data?.ep_list;
   };
   getData();
-  // ------------------Better scroll实例化相关------------------
+  // ------------------Better scroll配置项相关------------------
   BScroll.use(ObserveImage);
   BScroll.use(NestedScroll);
   let comicCover = ref<HTMLElement | object>({}); //待实例化的DOM元素
   let chapterComponentDom = ref<any>({}); //待实例化的DOM元素
   let bs: any = ref({});
   let bs2: any = ref({});
+  //-----------------挂载后获取原生dom对象,进行bs初始化
   onMounted(() => {
-    // ------------------挂载后获取原生dom对象,进行bs初始化
     bs.value = new BScroll(comicCover.value as HTMLElement, {
       click: true,
       observeImage: {
@@ -53,7 +53,8 @@
       },
     });
   });
-  //------------------------主题色-------------------------
+  //------------------------pinia判断是否已登录-------------------------
+  
   let GlobalStore = useGlobalStore();
   //------------------子组件点击传出方法,阅读不同章节------------------
   let router = useRouter();
@@ -64,8 +65,7 @@
     });
     router.push({ name: "content", state: { params } }); //注意：此处一定要用params
   };
-
-  // 返回上一页
+  // ------------------返回上一级路由----------------
   const toBack = () => {
     router.go(-1);
   };

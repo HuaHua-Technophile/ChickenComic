@@ -7,4 +7,5 @@ declare module "*.vue" {
   export default component;
 }
 declare module "lodash/debounce";
+declare module "js-md5";
 declare module "lodash/throttle";
