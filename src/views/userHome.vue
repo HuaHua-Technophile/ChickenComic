@@ -26,11 +26,9 @@
       },
     });
   };
-
   onMounted(() => {
     bsMounted();
   });
-
   // tab组件
   const active = ref(0);
 </script>
@@ -62,9 +60,8 @@
         <van-tab class="pt-4 px-4" :title="'コレクション'"> </van-tab>
         <van-tab class="pt-4 px-4" :title="'レコード破り'"> 内容 </van-tab>
       </van-tabs>
-    </div>
-    <div class="ps-3 position-fixed top-0 w-100 text-light t-shadow-3">
-      <i class="bi bi-arrow-left-short"></i>
+      <!-- 返回 -->
+      <back-component class="position-fixed"></back-component>
     </div>
   </div>
 </template>

@@ -54,7 +54,7 @@
     });
   });
   //------------------------pinia判断是否已登录-------------------------
-  
+
   let GlobalStore = useGlobalStore();
   //------------------子组件点击传出方法,阅读不同章节------------------
   let router = useRouter();
@@ -180,9 +180,7 @@
       </div>
     </div>
     <!-- 头部返回按钮 -->
-    <div class="ps-3 position-fixed top-0 w-100 text-light t-shadow-3">
-      <i class="bi bi-arrow-left-short" @click="toBack"></i>
-    </div>
+    <back-component class="position-fixed"></back-component>
     <!-- 背景 -->
     <div
       class="w-100 h-100 position-fixed top-0 z-n1"

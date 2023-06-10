@@ -239,8 +239,6 @@
   .van-ellipsis {
     color: #fff;
   }
-  .van-dropdown-item {
-  }
   .van-dropdown-item::after {
     content: "";
     display: block;
