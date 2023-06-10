@@ -4,6 +4,12 @@
   import ObserveImage from "@better-scroll/observe-image";
   import NestedScroll from "@better-scroll/nested-scroll";
   import { ref, onMounted } from "vue";
+  import { storeToRefs } from "pinia";
+  import { useGlobalStore } from "@/stores/counter";
+
+  // 获取用户信息
+  const { userInfo } = storeToRefs(useGlobalStore());
+  console.log(userInfo.value);
 
   // 获取userHome对象
   let userHome: any = ref<object | null>(null);

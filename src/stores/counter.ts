@@ -18,8 +18,11 @@ export const useGlobalStore = defineStore("global", () => {
     }
   };
   //登录信息----------------
-  let userInfo = ref({});
-  watch(userInfo, (newVal) => {
+  interface UserInfo {
+    id?: string;
+  }
+  let userInfo: any = ref<UserInfo>({});
+  watch(userInfo, (newVal: UserInfo) => {
     localStorage.setItem(`user${newVal.id}`, JSON.stringify(newVal));
   });
   return {
