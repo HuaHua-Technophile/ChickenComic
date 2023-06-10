@@ -40,7 +40,6 @@
   font-size: 0.6rem !important;
 }
 
-
 @for $i from 4 through 10 {
   .z-#{$i} {
     z-index: $i;
@@ -55,7 +54,11 @@
 @for $i from 1 through 10 {
   @for $j from 1 through 10 {
     .insetShadow-#{$i}-#{$j} {
-      box-shadow: inset 0px 0px unquote($j + "px") rgba(255, 255, 255, $i/10);
+      box-shadow: inset
+        0px
+        0px
+        unquote($j + "px")
+        rgba(255, 255, 255, calc($i / 10));
     }
   }
 }
