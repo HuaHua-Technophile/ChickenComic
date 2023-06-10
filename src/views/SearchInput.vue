@@ -30,6 +30,7 @@
     let data = await getSuggestedWord({ term: value.value });
     if (data) {
       suggestedWord.value = data.data;
+      console.log(data);
     }
   };
   let time: any = null;
@@ -110,7 +111,14 @@
       },
     });
   };
-  const getSearchResult = () => {};
+  // const getSearchResult = () => {
+  //   router.push({
+  //     path: "/SearchCategories",
+  //     query: {
+  //       // keyword: value.value,
+  //     },
+  //   });
+  // };
 </script>
 
 <template>

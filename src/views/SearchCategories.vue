@@ -1,19 +1,18 @@
 <script setup lang="ts">
-  import { ref, onMounted, computed, watchEffect } from "vue";
+  import { ref, onMounted, computed, watchEffect, watch } from "vue";
   import { useGlobalStore } from "../stores/counter";
   import { getSearchResult } from "../api/search";
   import BScroll from "better-scroll"; //导入Better scroll核心
   import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
+  import throttle from "lodash/throttle"; //Lodash节流
+  import { useRouter, useRoute } from "vue-router";
   import Pullup from "@better-scroll/pull-up";
-
   let time: any = null; //节流
   let pageNumber = ref(1);
   let handelFunction = () => {
     clearTimeout(time);
     time = setTimeout(() => {
       pageNumber.value++;
-      console.log("上拉了");
-      console.log(pageNumber.value);
       getSearchResultFun();
     }, 500);
 
@@ -34,14 +33,22 @@
       },
       pullUpLoad: true,
     });
-    console.log(bs.value);
     bs.value.on("pullingUp", handelFunction);
   });
 
   let keyWord: any = ref("我推的孩子");
 
+  // //若没有该分类数据，自动加载下一页进行匹配
+  const findDataInnextPage = () => {
+    pageNumber.value++;
+    getSearchResultFun();
+  };
   //-----------获取搜索结果数据-----------
+
+  let newData: any = ref(0);
   let SearchResult: any = ref([]);
+
+  let throttlefun = throttle(findDataInnextPage, 300);
   const getSearchResultFun = async () => {
     let data = await getSearchResult({
       keyWord: "我退的孩子",
@@ -50,10 +57,33 @@
       isFinish: isFinshVal.value,
       isFree: isFreeVal.value,
     });
-    SearchResult.value = SearchResult.value.concat(data.data.list);
+    if (value2.value == "-1") {
+      newData.value += data.data.list.length;
+      if (newData.value >= 10) {
+        SearchResult.value = SearchResult.value.concat(data.data.list);
+      } else {
+        findDataInnextPage();
+        console.log(newData.value, "again");
+        newData.value = 0;
+      }
+    } else {
+      data.data.list.forEach((n: any) => {
+        let index = n.styles.findIndex((item: any) => item == value2.value);
+        if (index !== -1) {
+          SearchResult.value = SearchResult.value.concat(n);
+          newData.value++;
+        }
+      });
+      if (newData.value >= 10) {
+        newData.value = 0;
+      } else {
+        console.log(newData.value);
+        throttlefun();
+      }
+    }
   };
 
-  //作者数据格式处理
+  //------------作者数据格式处理---------------
   const allAuthors = computed(() => {
     return function (val: Array<string>) {
       let authors: string = "";
@@ -73,8 +103,11 @@
   });
   let { theme, changeTheme }: any = useGlobalStore();
 
+  // 重新输入关键词搜索
+  let router: any = useRouter();
+  let route: any = useRoute();
   const reSearch = () => {
-    console.log("click");
+    router.push("/SearchInput");
   };
   const value1 = ref(-1);
   const value2 = ref("-1");
@@ -115,14 +148,16 @@
   // -----------------选择结果分类-----------------------
 
   const selectType = () => {
+    newData.value = 0;
+    pageNumber.value = 1;
     SearchResult.value = [];
     getSearchResultFun();
   };
-  // 根据连载付费分类
+
+  // 根据连载进度/付费分类
   let isFinshVal = ref(-1);
   let isFreeVal = ref(-1);
   watchEffect(() => {
-    console.log(value3.value);
     if (value3.value == "-1") {
       isFinshVal.value = -1;
       isFreeVal.value = -1;
@@ -155,7 +190,10 @@
         v-model="value1"
         @change="selectType"
         :options="option1" />
-      <van-dropdown-item v-model="value2" :options="option2" />
+      <van-dropdown-item
+        v-model="value2"
+        :options="option2"
+        @change="selectType" />
       <van-dropdown-item
         v-model="value3"
         :options="option3"
@@ -194,7 +232,6 @@
 </template>
 <style lang="scss">
   .van-dropdown-menu__bar {
-    // opacity: 0.7;
     color: #fff;
     background-color: transparent;
   }

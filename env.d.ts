@@ -8,3 +8,4 @@ declare module "*.vue" {
 }
 declare module "lodash/debounce";
 declare module "js-md5";
+declare module "lodash/throttle";
