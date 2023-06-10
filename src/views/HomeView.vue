@@ -2,8 +2,8 @@
   import { useGlobalStore } from "@/stores/counter";
   import { storeToRefs } from "pinia";
   // ---------用户信息-------------
-  const S = useGlobalStore();
-  let { userInfo } = storeToRefs(S);
+  const GlobalStore = useGlobalStore();
+  let { userInfo } = storeToRefs(GlobalStore);
   let userId = localStorage.getItem("userId");
   if (userId) {
     userInfo.value = JSON.parse(localStorage.getItem(`user${userId}`) + "");

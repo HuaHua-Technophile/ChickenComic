@@ -12,13 +12,15 @@
   // QQ头像 https://q.qlogo.cn/headimg_dl?dst_uin=3118590779&spec= (1~5)
   let router = useRouter();
   interface QQinfo {
-    name: string;
-    code: number;
+    data: {
+      name: string;
+      code: number;
+    };
   }
   //-------------正则表达式---------------
   let passwordReg = /^(?=.*[A-Z])(?=.*\d)[^]{6,16}$/;
   let accountReg = /^\d{3,12}$/;
-  //-----当前激活标签页
+  //------------当前激活标签页---------------
   let active = ref(0);
   //---------------bs实例化相关-----------
   let loginView: any = ref<object | null>(null);
@@ -88,14 +90,15 @@
           `https://cloud.qqshabi.cn/api/qqinfo.php?qq=${account1.value}`
         )
       );
-      if (res.code === -1 || !res) showToast(`QQIDに問い合わせませんでした`);
+      if (res.data.code === -1 || !res)
+        showToast(`QQIDに問い合わせませんでした`);
       else {
         showToast(`紙桜へようこそです!\n登録しますよ!`);
         // 因为没爬取到登录相关接口.因此一切的与账号信息或登陆相关都做本地数据存储与伪请求
         localStorage.setItem(
           `user${account1.value}`,
           JSON.stringify({
-            name: res.name,
+            name: res.data.name,
             id: account1.value,
             password: md5(password1.value),
             watchingHistory: [], //历史已看,第一位为当前在看
