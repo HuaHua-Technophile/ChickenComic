@@ -104,10 +104,8 @@
       <!-- 版本号 -->
       <div class="text-center opacity-50">Versions 1.0.1 Beta</div>
     </div>
-    <!-- 头部返回按钮 -->
-    <div class="ps-3 position-fixed top-0 w-100">
-      <i class="bi bi-arrow-left-short" @click="$router.go(-1)"></i>
-    </div>
+    <!-- 返回层 -->
+    <back-component class="position-fixed"></back-component>
     <!-- 弹出层 -->
     <van-overlay :show="overlayShow" @click="overlayShow = false">
       <div class="w-100 h-100 overflow-scroll blur-5 noScrollBar">

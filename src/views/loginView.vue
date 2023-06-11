@@ -181,9 +181,7 @@
       </van-tabs>
     </div>
     <!-- 头部返回按钮 -->
-    <div class="ps-3 position-fixed top-0 w-100">
-      <i class="bi bi-arrow-left-short" @click="$router.go(-1)"></i>
-    </div>
+    <back-component class="position-fixed"></back-component>
   </div>
 </template>
 <style lang="scss">

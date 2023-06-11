@@ -7,13 +7,19 @@
   import throttle from "lodash/throttle"; //Lodash节流
   import { useRouter, useRoute } from "vue-router";
   import Pullup from "@better-scroll/pull-up";
+
+  let router: any = useRouter();
+  let route: any = useRoute();
+  // ---------------- 上啦加载更多-------------
   let time: any = null; //节流
   let pageNumber = ref(1);
   let handelFunction = () => {
     clearTimeout(time);
     time = setTimeout(() => {
-      pageNumber.value++;
-      getSearchResultFun();
+      if (loadFlag) {
+        pageNumber.value++;
+        getSearchResultFun();
+      }
     }, 500);
 
     // getSearchResultFun(pageNumber.value);
@@ -35,23 +41,35 @@
     });
     bs.value.on("pullingUp", handelFunction);
   });
+  //---------- 搜索框关键词 -------------
+  let keyWord = ref("我推的孩子");
+  watchEffect(() => {
+    keyWord.value = route.query.keyword;
+  });
 
-  let keyWord: any = ref("我推的孩子");
-
-  // //若没有该分类数据，自动加载下一页进行匹配
+  // --------若没有该分类数据，自动加载下一页进行匹配----------
   const findDataInnextPage = () => {
     pageNumber.value++;
-    getSearchResultFun();
+    tryAgainNum.value++;
+    if (tryAgainNum.value <= 20) {
+      getSearchResultFun();
+    } else {
+      loadFlag.value = false;
+      tryAgainNum.value = 0;
+    }
   };
-  //-----------获取搜索结果数据-----------
 
-  let newData: any = ref(0);
-  let SearchResult: any = ref([]);
+  //-----------根据选择获取搜索结果数据-----------
+  let newData: any = ref(0); // 选项后符合条件的数据个数
+  let tryAgainNum: any = ref(0); // 自动加载次数
+  let SearchResult: any = ref([]); // 结果
+  let loadFlag = ref(true); // 加载开关
 
-  let throttlefun = throttle(findDataInnextPage, 300);
+  // 数据请求核心函数
+  let throttleFun = throttle(findDataInnextPage, 500);
   const getSearchResultFun = async () => {
     let data = await getSearchResult({
-      keyWord: "我退的孩子",
+      keyWord: keyWord.value,
       order: value1.value,
       pageNum: pageNumber.value,
       isFinish: isFinshVal.value,
@@ -61,10 +79,10 @@
       newData.value += data.data.list.length;
       if (newData.value >= 10) {
         SearchResult.value = SearchResult.value.concat(data.data.list);
+        newData.value = 0;
+        tryAgainNum.value = 0;
       } else {
         findDataInnextPage();
-        console.log(newData.value, "again");
-        newData.value = 0;
       }
     } else {
       data.data.list.forEach((n: any) => {
@@ -76,9 +94,9 @@
       });
       if (newData.value >= 10) {
         newData.value = 0;
+        tryAgainNum.value = 0;
       } else {
-        console.log(newData.value);
-        throttlefun();
+        throttleFun();
       }
     }
   };
@@ -98,17 +116,18 @@
     };
   });
 
+  // --------首次加载默认分类--------
   onMounted(() => {
     getSearchResultFun();
   });
   let { theme, changeTheme }: any = useGlobalStore();
 
-  // 重新输入关键词搜索
-  let router: any = useRouter();
-  let route: any = useRoute();
+  //---------- 重新输入关键词退回搜索--------------
   const reSearch = () => {
-    router.push("/SearchInput");
+    router.go(-1);
   };
+
+  // ------------分类数据 -------------
   const value1 = ref(-1);
   const value2 = ref("-1");
   const value3 = ref("-1");
@@ -148,13 +167,14 @@
   // -----------------选择结果分类-----------------------
 
   const selectType = () => {
+    loadFlag.value = true;
     newData.value = 0;
     pageNumber.value = 1;
     SearchResult.value = [];
     getSearchResultFun();
   };
 
-  // 根据连载进度/付费分类
+  // ------根据连载进度/付费分类---------
   let isFinshVal = ref(-1);
   let isFreeVal = ref(-1);
   watchEffect(() => {
@@ -171,6 +191,16 @@
       isFinshVal.value = 1;
     }
   });
+
+  // 点击分类结果跳转对应的详情页
+  const openContentView = (id: number) => {
+    router.push({
+      path: "/comicCover",
+      query: {
+        id: id,
+      },
+    });
+  };
 </script>
 <template>
   <div class="SearchCategories w-100 h-100 d-flex flex-column">
@@ -206,7 +236,8 @@
         <li
           class="d-flex mt-4 overflow-hidden"
           v-for="item in SearchResult"
-          :key="item.id">
+          :key="item.id"
+          @click="openContentView(item.id)">
           <div class="img-box mx-3">
             <img :src="item.vertical_cover + '@100w_100h.jpg'" alt="" />
           </div>
@@ -223,8 +254,9 @@
             </div>
           </div>
         </li>
-        <li class="w-100 py-4 text-center">
-          <van-loading />
+        <li class="w-100 py-3 text-center">
+          <van-loading v-if="loadFlag" />
+          <p class="w-100 py-3 text-center" v-else>没有更多了 ~~</p>
         </li>
       </ul>
     </div>
@@ -238,8 +270,6 @@
 
   .van-ellipsis {
     color: #fff;
-  }
-  .van-dropdown-item {
   }
   .van-dropdown-item::after {
     content: "";
