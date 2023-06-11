@@ -11,7 +11,7 @@ export function getListRank(): object {
 // 排行榜详情
 export function getRankInfo(params: object): object {
   return service({
-    url: "/ImageToken",
+    url: `/GetRankInfo`,
     method: "get",
     params,
   });

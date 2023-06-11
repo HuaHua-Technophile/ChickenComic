@@ -10,9 +10,14 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ChapterComponent: typeof import('./src/components/chapterComponent.vue')['default']
+    ComicItem: typeof import('./src/components/comicItem.vue')['default']
+    ComicItemComponent: typeof import('./src/components/comicItemComponent.vue')['default']
     ElInput: typeof import('element-plus/es')['ElInput']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    VanOverlay: typeof import('vant/es')['Overlay']
+    VanSearch: typeof import('vant/es')['Search']
+    VanSlider: typeof import('vant/es')['Slider']
     VanTab: typeof import('vant/es')['Tab']
     VanTabs: typeof import('vant/es')['Tabs']
   }
