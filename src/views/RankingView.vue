@@ -1,8 +1,13 @@
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
+  import { useRouter } from "vue-router";
   import comicItemComponent from "@/components/comicItemComponent.vue";
   import { getListRank, getRankInfo } from "@/api/ranking";
   import { register } from "swiper/element/bundle";
+
+  // 导入并使用useRouter
+  const router = useRouter();
+
   // -----------------注册swiper-------------------------
   register();
   // ------------------列表数据--------------------
@@ -64,7 +69,7 @@
     // 监听外层swiper的swiper slide是否改变
     sw1.value.addEventListener("swiperBox-slidechange", async (event: any) => {
       // swiper slide 改变后执行回调并发送当前排行的请求
-      rankInfoData.value = [];
+      rankInfoData.value = []; // 清空漫画列表数组，避免视觉上造成覆盖效果
       rankInfoData.value = await getRankInfo({
         id: `${
           listRankDataObj.value.data.list[event.detail[0].activeIndex].id
@@ -74,13 +79,18 @@
       });
     });
   });
+
+  // 返回首页
+  const toBack = (): void => {
+    router.go(-1);
+  };
 </script>
 
 <template>
   <div class="RankingView w-100 h-100">
     <!-- 头部返回按钮 -->
     <div class="ps-3 w-100 text-light t-shadow-3 d-flex align-items-center">
-      <i class="bi bi-arrow-left-short"></i>
+      <i class="bi bi-arrow-left-short" @click="toBack"></i>
       <div class="fs-2 flex-grow-1 text-center" style="padding-right: 30px">
         リーダーボード
       </div>
