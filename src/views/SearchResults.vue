@@ -203,7 +203,7 @@
   };
 </script>
 <template>
-  <div class="SearchCategories w-100 h-100 d-flex flex-column">
+  <div class="SearchResults w-100 h-100 d-flex flex-column">
     <!-- :class="[theme == 'dark' ? 'bg-black' : 'bg-white']" -->
     <div class="searchInput" @click="reSearch">
       <form action="/">

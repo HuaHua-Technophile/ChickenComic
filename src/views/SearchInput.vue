@@ -111,7 +111,7 @@
     searchHistoryAdd();
     // 跳转搜索结果
     router.push({
-      path: "/SearchCategories",
+      path: "/SearchResults",
       query: {
         keyword: keyword.value,
       },
