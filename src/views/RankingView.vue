@@ -4,7 +4,6 @@
   import comicItemComponent from "@/components/comicItemComponent.vue";
   import { getListRank, getRankInfo } from "@/api/ranking";
   import { register } from "swiper/element/bundle";
-
   // 导入并使用useRouter
   const router = useRouter();
 
@@ -12,7 +11,7 @@
   register();
   // ------------------列表数据--------------------
   let listRankDataObj: any = ref<object>({});
-  //------------------排行榜详情数据-------------------
+  // ------------------排行榜详情数据-------------------
   let rankInfoData: any = ref<object>({});
   const getListRankData = async () => {
     listRankDataObj.value = await getListRank();
@@ -135,7 +134,7 @@
               >{{ idx + 1 }}</em
             >
             <!-- 导入漫画组件 -->
-            <comicItemComponent :comicList="it"></comicItemComponent>
+            <comicItemComponent :comicInfo="it"></comicItemComponent>
           </swiper-slide>
         </swiper-container>
       </swiper-slide>

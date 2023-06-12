@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import { ref, onMounted, computed, watchEffect } from "vue";
-  import { useGlobalStore } from "../stores/counter";
   import { getSearchResult } from "../api/search";
   import BScroll from "better-scroll"; //导入Better scroll核心
   import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
@@ -113,8 +112,6 @@
   onMounted(() => {
     getSearchResultFun();
   });
-  let { theme, changeTheme }: any = useGlobalStore();
-  //---------- 重新输入关键词退回搜索--------------
   // ------------分类数据 -------------
   const sort1 = ref(-1);
   const sort2 = ref("-1");

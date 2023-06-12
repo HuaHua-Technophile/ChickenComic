@@ -90,6 +90,7 @@
   let defaultKeyword: any = ref([]);
   const getSearchReferralFun = async () => {
     let data = await getSearchReferral({ num: 12 });
+    console.log(data);
     defaultKeyword.value = data.data[0].title;
     searchReferral.value = data.data?.slice(1, 11);
   };
@@ -207,6 +208,7 @@
                 :class="[index < 3 ? 'fw-bold fs-1' : 'fs-4']">
                 {{ index + 1 }}
               </div>
+              <comic-item-component :comicInfo="item"></comic-item-component>
               <img
                 :src="`${item.vertical_cover}@150w_150h.jpg`"
                 class="d-block flex-shrink-0 me-2 rounded" />

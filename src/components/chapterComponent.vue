@@ -1,6 +1,5 @@
 <script setup>
   import { ref } from "vue";
-
   let props = defineProps({
     detailList: {
       type: Array,
@@ -54,4 +53,3 @@
     </div>
   </div>
 </template>
-<style lang="scss"></style>
