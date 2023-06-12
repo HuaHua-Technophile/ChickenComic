@@ -1,9 +1,7 @@
 <script setup lang="ts">
   import { useRouter } from "vue-router";
-
   // 调用导入的useRouter
   const router = useRouter();
-
   const props = defineProps<{
     comicList: {
       comic_id: number;
@@ -17,7 +15,6 @@
       default: () => {};
     };
   }>();
-
   // 跳转到相应漫画详情页
   const toComicDetail = (): void => {
     router.push({
@@ -26,7 +23,6 @@
     });
   };
 </script>
-
 <template>
   <div
     class="comicItem d-flex flex-grow-1"

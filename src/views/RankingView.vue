@@ -130,34 +130,30 @@
             v-for="(it, idx) in rankInfoData.data?.list"
             :key="it.id">
             <em
-              class="rankNum text-end d-block"
-              style="width: 15%; margin-right: 12px"
+              class="rankNum me-2 d-flex align-items-center justify-content-center"
+              style="width: 15%"
               >{{ idx + 1 }}</em
             >
             <!-- 导入漫画组件 -->
-            <comicItemComponent
-              :comicList="it"></comicItemComponent> </swiper-slide
-        ></swiper-container>
+            <comicItemComponent :comicList="it"></comicItemComponent>
+          </swiper-slide>
+        </swiper-container>
       </swiper-slide>
     </swiper-container>
   </div>
 </template>
 <style lang="scss">
   img[lazy="loading"] {
-    /*your style here*/
     opacity: 0;
   }
   img[lazy="error"] {
-    /*your style here*/
     opacity: 1;
     transition: 0.6s;
   }
   img[lazy="loaded"] {
-    /*your style here*/
     opacity: 1;
     transition: 0.6s;
   }
-
   .comicSlide {
     &:nth-child(1) {
       .rankNum {
