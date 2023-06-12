@@ -28,11 +28,12 @@
     isFocus.value = true;
   };
   const blurFun = () => {
-    keyword.value = "";
     timeId.value.push(
       setTimeout(() => {
         isFocus.value = false;
-      }, 200)
+        keyword.value = "";
+        suggestedWord.value = [];
+      }, 200) //需要设定延时器,否则失焦后数组立马清空,无法点击搜索建议词进行跳转
     );
   };
   // -----------获取搜索建议词----------
@@ -225,11 +226,11 @@
       <transition name="sideUp100">
         <ul v-if="isFocus" class="position-absolute" style="top：150px">
           <li
-            class="p-3"
+            class="p-3 d-flex align-items-center"
             v-for="(item, index) in suggestedWord"
             :key="index"
-            @click="toSearchResult(item)">
-            <i class="bi bi-search me-2"></i>
+            @click="toSearchResult(item + '')">
+            <i class="bi bi-search fs-5 me-3"></i>
             <span v-html="item"></span>
           </li>
         </ul>
