@@ -37,7 +37,6 @@
     let data = await getSuggestedWord({ term: keyword.value });
     if (data) {
       suggestedWord.value = data.data;
-      console.log(data);
     }
   };
   const inputKeyWord = debounce(function () {
@@ -116,7 +115,6 @@
   };
   // ------------搜索框回车 -----------
   const enterSearch = debounce(function () {
-    console.log("回车了");
     if (keyword.value != "") {
       toSearchResult(keyword.value);
     }
