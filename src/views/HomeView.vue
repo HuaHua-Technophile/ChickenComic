@@ -13,7 +13,7 @@
 <template>
   <div class="home">
     <!-- 滚动内容 -->
-    <div style="min-height: calc(100% + 2px)">
+    <div style="min-height: calc(100% + 1px)">
       <!-- 用户信息/设置 -->
       <div></div>
     </div>

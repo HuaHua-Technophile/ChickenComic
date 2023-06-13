@@ -91,7 +91,7 @@
         <div
           class="position-absolute top-0 translate-middle-y bg- d-flex align-items-center justify-content-center bg-light rounded-3"
           style="width: 10vw; height: 10vw; right: 10%">
-          <i class="bi bi-heart text-danger fs-3 t-shadow-2"></i>
+          <i class="bi bi-heart text-danger fs-3"></i>
         </div>
         <!-- 主要信息 -->
         <div class="d-flex align-items-center pt-5 mb-4">

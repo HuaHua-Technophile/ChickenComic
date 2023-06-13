@@ -7,9 +7,9 @@
       comic_id: number;
       title: string;
       author: string[];
-      styles: any;
+      styles: Array<string | any>;
       is_finish: number;
-      last_ord: any;
+      last_ord: number | string;
       vertical_cover: string;
       type: object;
       default: () => {};
@@ -29,7 +29,7 @@
     <img
       class="rounded-3 flex-shrink-0"
       v-lazy="comicInfo?.vertical_cover + '@478w_638h'"
-      style="box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.5)" />
+      style="box-shadow: 0px 0px 5px rgba(var(--bs-body-color-rgb), 0.5)" />
     <!-- 右侧文本区域 -->
     <div
       class="overflow-hidden flex-grow-1 d-flex flex-column justify-content-between">
@@ -38,9 +38,9 @@
         {{ comicInfo?.title }}
       </div>
       <!-- 下方漫画信息区域 -->
-      <div>
+      <div class="fs-9 opacity-50">
         <!-- 作者信息 -->
-        <div class="fs-9 text-truncate">
+        <div class="text-truncate">
           <span
             style="padding-right: 5px"
             v-for="(authorItem, auInd) in comicInfo?.author"
@@ -49,14 +49,14 @@
           >
         </div>
         <!-- 作品风格 -->
-        <div class="fs-9">
+        <div>
           <span>{{ comicInfo?.styles[0]?.name || comicInfo?.styles[0] }}</span>
         </div>
         <!-- 跟新或完结信息 -->
-        <div class="fs-9" v-show="!comicInfo?.is_finish">
+        <div v-show="!comicInfo?.is_finish">
           {{ comicInfo?.last_ord }}話に更新
         </div>
-        <div class="fs-9" v-show="comicInfo.is_finish">
+        <div v-show="comicInfo.is_finish">
           [完結]全{{ comicInfo?.last_ord }}話
         </div>
       </div>

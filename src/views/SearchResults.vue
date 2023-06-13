@@ -215,7 +215,7 @@
       class="searchResultList w-100 flex-grow-1 overflow-hidden"
       ref="searchResultList">
       <!-- 滚动核心 -->
-      <ul style="min-height: calc(100% + 5px)">
+      <ul style="min-height: calc(100% + 1px)">
         <li
           class="d-flex mt-4 overflow-hidden"
           v-for="item in SearchResult"

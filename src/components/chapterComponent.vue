@@ -18,7 +18,7 @@
   <div
     class="chapter-warrper overflow-hidden"
     :style="`max-height:${maxHeight}`">
-    <div class="chapter-content" style="min-height: calc(100% + 10px)">
+    <div class="chapter-content" style="min-height: calc(100% + 1px)">
       <div
         v-for="(item, index) in detailList"
         :key="index"
