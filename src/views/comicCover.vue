@@ -98,7 +98,7 @@
           <!-- 图 -->
           <div
             class="ms-4 me-4 w-25 position-relative rounded-4 overflow-hidden flex-shrink-0"
-            style="padding-bottom: 25%">
+            style="padding-bottom: 25%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.8)">
             <div class="position-absolute top-0 bottom-0 start-0 end-0">
               <img
                 v-lazy="res.data?.horizontal_cover"
