@@ -13,14 +13,17 @@
   // ------------------列表数据--------------------
   let listRankDataObj: any = ref<object>({});
   //------------------排行榜详情数据-------------------
-  let rankInfoData: any = ref<object>({});
+  let rankInfoData: any = ref<object>({}); // 定义变量做数据缓存
+  const saveArr: any = ref<Array<number>>([]); // 定义数组，元素中存放列表id做缓存标识
   const getListRankData = async () => {
     listRankDataObj.value = await getListRank();
-    rankInfoData.value = await getRankInfo({
+    let empObj = await getRankInfo({
       id: `${listRankDataObj.value.data.list[0].id}`,
       offset: "0",
       subId: "0",
     });
+    rankInfoData.value[0] = empObj;
+    saveArr.value.push(listRankDataObj.value.data.list[0].id);
     console.log(rankInfoData.value);
     // swiper 配置项 (需要在数据获取完初始化配置项)
     const params1 = {
@@ -63,20 +66,36 @@
 
   // --------------swiper实例化-----------------
   const sw1: any = ref(null);
+  const sw2: any = ref<Array<object> | null>(null);
   onMounted(() => {
     // -------------------发起请求获取列表数据----------------------
     getListRankData();
     // 监听外层swiper的swiper slide是否改变
+    let empObj = null;
+    let activeIndex = 0;
     sw1.value.addEventListener("swiperBox-slidechange", async (event: any) => {
       // swiper slide 改变后执行回调并发送当前排行的请求
-      rankInfoData.value = []; // 清空漫画列表数组，避免视觉上造成覆盖效果
-      rankInfoData.value = await getRankInfo({
-        id: `${
+      // rankInfoData.value = []; // 清空漫画列表数组，避免视觉上造成覆盖效果
+      // console.log(event.detail[0].activeIndex);
+      activeIndex = event.detail[0].activeIndex;
+      if (
+        !saveArr.value.includes(
           listRankDataObj.value.data.list[event.detail[0].activeIndex].id
-        }`,
-        offset: "0",
-        subId: "0",
-      });
+        )
+      ) {
+        empObj = await getRankInfo({
+          id: `${
+            listRankDataObj.value.data.list[event.detail[0].activeIndex].id
+          }`,
+          offset: "0",
+          subId: "0",
+        });
+        rankInfoData.value[activeIndex] = empObj;
+        saveArr.value.push(
+          listRankDataObj.value.data.list[event.detail[0].activeIndex].id
+        );
+      }
+      sw2.value[event.detail[0].activeIndex].swiper.slideTo(0, 0);
     });
   });
 
@@ -119,6 +138,7 @@
         :key="index">
         <!-- 里层swiper -->
         <swiper-container
+          ref="sw2"
           class="mySwiper2 w-100 h-100 overflow-hidden position-relative"
           slides-per-view="auto"
           direction="vertical"
@@ -127,7 +147,7 @@
           <swiper-slide
             class="comicSlide d-flex fs-1"
             style="width: 100%; height: 120px"
-            v-for="(it, idx) in rankInfoData.data?.list"
+            v-for="(it, idx) in rankInfoData[index]?.data?.list"
             :key="it.id">
             <em
               class="rankNum text-end d-block"
