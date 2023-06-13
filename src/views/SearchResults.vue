@@ -1,13 +1,11 @@
 <script setup lang="ts">
-  import { ref, onMounted, computed, watchEffect, watch } from "vue";
-  import { useGlobalStore } from "../stores/counter";
+  import { ref, onMounted, computed, watchEffect } from "vue";
   import { getSearchResult } from "../api/search";
   import BScroll from "better-scroll"; //导入Better scroll核心
   import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
   import throttle from "lodash/throttle"; //Lodash节流
   import { useRouter, useRoute } from "vue-router";
   import Pullup from "@better-scroll/pull-up";
-
   let router: any = useRouter();
   let route: any = useRoute();
   // ---------------- 上啦加载更多-------------
@@ -21,7 +19,6 @@
         getSearchResultFun();
       }
     }, 500);
-
     // getSearchResultFun(pageNumber.value);
     bs.value.finishPullUp();
     bs.value.refresh();
@@ -46,7 +43,6 @@
   watchEffect(() => {
     keyWord.value = route.query.keyword;
   });
-
   // --------若没有该分类数据，自动加载下一页进行匹配----------
   const findDataInnextPage = () => {
     pageNumber.value++;
@@ -58,24 +54,22 @@
       tryAgainNum.value = 0;
     }
   };
-
   //-----------根据选择获取搜索结果数据-----------
   let newData: any = ref(0); // 选项后符合条件的数据个数
   let tryAgainNum: any = ref(0); // 自动加载次数
   let SearchResult: any = ref([]); // 结果
   let loadFlag = ref(true); // 加载开关
-
   // 数据请求核心函数
   let throttleFun = throttle(findDataInnextPage, 500);
   const getSearchResultFun = async () => {
     let data = await getSearchResult({
       keyWord: keyWord.value,
-      order: value1.value,
+      order: sort1.value,
       pageNum: pageNumber.value,
       isFinish: isFinshVal.value,
       isFree: isFreeVal.value,
     });
-    if (value2.value == "-1") {
+    if (sort2.value == "-1") {
       newData.value += data.data.list.length;
       if (newData.value >= 10) {
         SearchResult.value = SearchResult.value.concat(data.data.list);
@@ -86,7 +80,7 @@
       }
     } else {
       data.data.list.forEach((n: any) => {
-        let index = n.styles.findIndex((item: any) => item == value2.value);
+        let index = n.styles.findIndex((item: any) => item == sort2.value);
         if (index !== -1) {
           SearchResult.value = SearchResult.value.concat(n);
           newData.value++;
@@ -100,7 +94,6 @@
       }
     }
   };
-
   //------------作者数据格式处理---------------
   const allAuthors = computed(() => {
     return function (val: Array<string>) {
@@ -115,22 +108,14 @@
       return authors;
     };
   });
-
   // --------首次加载默认分类--------
   onMounted(() => {
     getSearchResultFun();
   });
-  let { theme, changeTheme }: any = useGlobalStore();
-
-  //---------- 重新输入关键词退回搜索--------------
-  const reSearch = () => {
-    router.go(-1);
-  };
-
   // ------------分类数据 -------------
-  const value1 = ref(-1);
-  const value2 = ref("-1");
-  const value3 = ref("-1");
+  const sort1 = ref(-1);
+  const sort2 = ref("-1");
+  const sort3 = ref("-1");
   const option1 = [
     { text: "默认排序", value: -1 },
     { text: "人气推荐", value: 0 },
@@ -163,9 +148,7 @@
     { text: "免费", value: "免费" },
     { text: "付费", value: "付费" },
   ];
-
   // -----------------选择结果分类-----------------------
-
   const selectType = () => {
     loadFlag.value = true;
     newData.value = 0;
@@ -173,25 +156,23 @@
     SearchResult.value = [];
     getSearchResultFun();
   };
-
   // ------根据连载进度/付费分类---------
   let isFinshVal = ref(-1);
   let isFreeVal = ref(-1);
   watchEffect(() => {
-    if (value3.value == "-1") {
+    if (sort3.value == "-1") {
       isFinshVal.value = -1;
       isFreeVal.value = -1;
-    } else if (value3.value == "免费") {
+    } else if (sort3.value == "免费") {
       isFreeVal.value = 1;
-    } else if (value3.value == "付费") {
+    } else if (sort3.value == "付费") {
       isFreeVal.value = 0;
-    } else if (value3.value == "连载") {
+    } else if (sort3.value == "连载") {
       isFinshVal.value = 0;
-    } else if (value3.value == "完结") {
+    } else if (sort3.value == "完结") {
       isFinshVal.value = 1;
     }
   });
-
   // 点击分类结果跳转对应的详情页
   const openContentView = (id: number) => {
     router.push({
@@ -203,35 +184,37 @@
   };
 </script>
 <template>
-  <div class="SearchCategories w-100 h-100 d-flex flex-column">
-    <!-- :class="[theme == 'dark' ? 'bg-black' : 'bg-white']" -->
-    <div class="searchInput" @click="reSearch">
-      <form action="/">
-        <van-search
-          v-model="keyWord"
-          placeholder="请输入作者名/作品名/类型"
-          background="transparent"
-          autocomplete="off"
-          :class="[theme == 'dark' ? 'searchDark' : 'searchLight']" />
-      </form>
-    </div>
+  <div class="SearchResults w-100 h-100 d-flex flex-column">
+    <!-- 头部 -->
+    <back-component>
+      <template #searchInput>
+        <div
+          @click="$router.go(-1)"
+          class="d-flex align-items-center py-2 px-3 mx-3 bg-body rounded-pill opacity-75">
+          {{ keyWord }}
+        </div>
+      </template>
+    </back-component>
+    <!-- 分类 -->
     <van-dropdown-menu :z-index="10" class="my-3" :overlay="true">
       <van-dropdown-item
-        v-model="value1"
+        v-model="sort1"
         @change="selectType"
         :options="option1" />
       <van-dropdown-item
-        v-model="value2"
+        v-model="sort2"
         :options="option2"
         @change="selectType" />
       <van-dropdown-item
-        v-model="value3"
+        v-model="sort3"
         :options="option3"
         @change="selectType" />
     </van-dropdown-menu>
+    <!-- 滚动容器 -->
     <div
       class="searchResultList w-100 flex-grow-1 overflow-hidden"
       ref="searchResultList">
+      <!-- 滚动核心 -->
       <ul style="min-height: calc(100% + 5px)">
         <li
           class="d-flex mt-4 overflow-hidden"
@@ -267,7 +250,6 @@
     color: #fff;
     background-color: transparent;
   }
-
   .van-ellipsis {
     color: #fff;
   }

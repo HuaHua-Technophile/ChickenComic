@@ -12,13 +12,11 @@ declare module '@vue/runtime-core' {
     BackComponent: typeof import('./src/components/backComponent.vue')['default']
     ChapterComponent: typeof import('./src/components/chapterComponent.vue')['default']
     ComicItemComponent: typeof import('./src/components/comicItemComponent.vue')['default']
-    ElInput: typeof import('element-plus/es')['ElInput']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    VanOverlay: typeof import('vant/es')['Overlay']
+    VanDropdownItem: typeof import('vant/es')['DropdownItem']
+    VanDropdownMenu: typeof import('vant/es')['DropdownMenu']
+    VanLoading: typeof import('vant/es')['Loading']
     VanSearch: typeof import('vant/es')['Search']
-    VanSlider: typeof import('vant/es')['Slider']
-    VanTab: typeof import('vant/es')['Tab']
-    VanTabs: typeof import('vant/es')['Tabs']
   }
 }

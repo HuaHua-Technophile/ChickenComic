@@ -2,24 +2,27 @@
   import { ref, onMounted, onUnmounted } from "vue";
   import { useGlobalStore } from "../stores/counter";
   import BScroll from "better-scroll"; //导入Better scroll核心
+  import ObserveDOM from "@better-scroll/observe-dom"; //ObserveDOM插件
   import { getSearchReferral, getSuggestedWord } from "@/api/search";
   import { useRouter } from "vue-router";
   import debounce from "lodash/debounce"; //导入lodash防抖
   // -----------定时器ID数组------------
   let timeId = ref<Array<number>>([]);
   // -----------路由-------------
-  let router: any = useRouter();
+  let router = useRouter();
   //------------Better scroll实例化-----------
   let SearchInput: any = ref<object | null>(null);
+  BScroll.use(ObserveDOM); // 自动重载插件
   let bs = ref({});
   onMounted(() => {
     bs.value = new BScroll(SearchInput.value, {
       click: true,
+      observeDOM: true,
     });
   });
   // ---------搜索框------------
   let keyword = ref(""); //关键词
-  let isFocus = ref(false); //是否聚焦
+  let isFocus = ref(false); //搜索框是否聚焦
   //--------搜索框聚焦/失去焦点-----------
   const focusFun = () => {
     isFocus.value = true;
@@ -28,17 +31,19 @@
     timeId.value.push(
       setTimeout(() => {
         isFocus.value = false;
-      }, 200)
+        keyword.value = "";
+        suggestedWord.value = [];
+      }, 200) //需要设定延时器,否则失焦后数组立马清空,无法点击搜索建议词进行跳转
     );
   };
   // -----------获取搜索建议词----------
-  let suggestedWord = ref(null);
+  interface arr {
+    value: object | null;
+  }
+  let suggestedWord: arr = ref<arr | never[]>([]);
   const getSuggestedWordFun = async () => {
     let data = await getSuggestedWord({ term: keyword.value });
-    if (data) {
-      suggestedWord.value = data.data;
-      console.log(data);
-    }
+    if (data) suggestedWord.value = data.data;
   };
   const inputKeyWord = debounce(function () {
     if (keyword.value != "") getSuggestedWordFun();
@@ -85,11 +90,11 @@
   let defaultKeyword: any = ref([]);
   const getSearchReferralFun = async () => {
     let data = await getSearchReferral({ num: 12 });
+    console.log(data);
     defaultKeyword.value = data.data[0].title;
     searchReferral.value = data.data?.slice(1, 11);
   };
   getSearchReferralFun();
-
   //---------主题切换----------
   let { theme }: any = useGlobalStore();
   //点击热搜跳转
@@ -108,7 +113,7 @@
     searchHistoryAdd();
     // 跳转搜索结果
     router.push({
-      path: "/SearchCategories",
+      path: "/SearchResults",
       query: {
         keyword: keyword.value,
       },
@@ -116,7 +121,6 @@
   };
   // ------------搜索框回车 -----------
   const enterSearch = debounce(function () {
-    console.log("回车了");
     if (keyword.value != "") {
       toSearchResult(keyword.value);
     }
@@ -147,15 +151,15 @@
         </transition>
         <!-- 搜索输入框 -->
         <div
-          class="searchInputDom py-2 transition-5 position-absolute"
+          class="searchInputDom py-2 transition-5 position-absolute bg-opacity-50"
           :class="[
             theme == 'dark' ? 'bg-black' : 'bg-white',
-            isFocus ? 'active' : '',
+            isFocus ? 'active' : 'rounded-2',
           ]">
           <form action="/">
             <van-search
               v-model.trim="keyword"
-              placeholder="请输入作者名/作品名/类型"
+              placeholder="作者名/作品名/ジャンルを入力します"
               background="transparent"
               @search="searchHistoryAdd"
               @keydown.enter="enterSearch"
@@ -168,44 +172,51 @@
         </div>
       </div>
       <!-- 搜索历史 -->
-      <div
-        class="searchHistory mt-3 px-3"
-        :class="[isFocus ? 'opacity-0' : 'opacity-1']"
-        v-if="!keyword && searchHistoryData.length != 0">
-        <div class="d-flex justify-content-between align-items-center">
-          <p class="my-2">搜索历史</p>
-          <i class="bi bi-trash3 opacity-50" @click="clearHistory"></i>
+      <transition name="sideDown">
+        <div
+          v-show="!isFocus && searchHistoryData.length != 0"
+          class="searchHistory mt-3 px-3">
+          <div
+            class="d-flex justify-content-between align-items-center opacity-50">
+            <p class="my-2">検索履歴です</p>
+            <i class="bi bi-trash3" @click="clearHistory"></i>
+          </div>
+          <ul class="d-flex flex-wrap">
+            <li
+              class="bg-body rounded-pill fs-7 opacity-75 me-3 mb-2"
+              style="padding: 3px 13px"
+              v-for="(item, index) in searchHistoryData"
+              :key="index"
+              @click="toSearchResult(item)">
+              {{ item }}
+            </li>
+          </ul>
         </div>
-        <ul class="d-flex flex-wrap">
-          <li
-            class="bg-body px-3 py-2 rounded-pill fs-10 bg-opacity-75 me-2 mt-2"
-            v-for="(item, index) in searchHistoryData"
-            :key="index"
-            @click="toSearchResult(item)">
-            {{ item }}
-          </li>
-        </ul>
-      </div>
+      </transition>
       <!-- 热门搜索 -->
       <transition name="sideDown">
         <div class="searchReferral mt-4 transition-5" v-show="!isFocus">
-          <div class="d-flex justify-content-between align-items-center">
-            <p class="my-2 ms-3">热门搜索</p>
-          </div>
-          <ul class="mt-3 text-body d-flex flex-wrap w-100">
+          <p class="my-2 ms-3 opacity-50">人気検索</p>
+          <ul class="w-100 mt-3 text-body d-flex flex-wrap">
             <li
-              class="d-flex align-items-center mb-3 ps-3 noScrollBar w-50"
+              class="w-50 mb-3 d-flex align-items-center noScrollBar"
               v-for="(item, index) in searchReferral"
               :key="item.season_id"
               @click="openContentView(item.season_id)">
-              <div class="index fs-2">{{ index + 1 }}</div>
+              <div
+                class="index text-center flex-shrink-0"
+                :class="[index < 3 ? 'fw-bold fs-1' : 'fs-4']">
+                {{ index + 1 }}
+              </div>
+              <comic-item-component :comicInfo="item"></comic-item-component>
               <img
-                :src="item.vertical_cover + '@100w_100h.jpg'"
-                alt=""
-                class="pe-2 d-block" />
+                :src="`${item.vertical_cover}@150w_150h.jpg`"
+                class="d-block flex-shrink-0 me-2 rounded" />
               <div class="synopsis fles-group-1 noScrollBar">
-                <h4 class="fs-9 m-0 van-ellipsis">{{ item.title }}</h4>
-                <p class="fs-10 m-0 mt-1 opacity-50 van-ellipsis">
+                <p class="mb-1 van-multi-ellipsis--l2">
+                  {{ item.title }}
+                </p>
+                <p class="fs-7 mb-0 opacity-50">
                   {{ item.styles[0] }}
                 </p>
               </div>
@@ -214,23 +225,28 @@
         </div>
       </transition>
       <!-- 搜索建议词 -->
-      <div class="SearchSuggestWord position-absolute" v-if="isFocus">
-        <ul>
+      <transition name="sideUp100">
+        <ul v-if="isFocus" class="position-absolute" style="top：150px">
           <li
-            class="py-3"
+            class="p-3 d-flex align-items-center"
             v-for="(item, index) in suggestedWord"
             :key="index"
-            @click="toSearchResult(item)">
-            <i class="bi bi-search"></i>
-            <span class="ps-2" v-html="item"></span>
+            @click="toSearchResult(item + '')">
+            <i class="bi bi-search fs-5 me-3"></i>
+            <span v-html="item"></span>
           </li>
         </ul>
-      </div>
+      </transition>
     </div>
     <!-- 返回 -->
     <back-component class="position-fixed"></back-component>
   </div>
 </template>
+<style lang="scss" scoped>
+  .van-search {
+    padding: 0;
+  }
+</style>
 <style lang="scss">
   .searchDark {
     --van-search-content-background: transparent;
@@ -240,9 +256,7 @@
     --van-search-content-background: transparent;
     --van-field-input-text-color: rgb(1, 1, 1);
   }
-  .van-search {
-    padding: 0;
-  }
+
   .searchInputDom {
     width: 80%;
     top: 87.88px;
@@ -253,36 +267,23 @@
   }
   .searchReferral {
     img {
-      width: 4rem;
-    }
-    h4 {
-      max-width: 6rem;
+      width: 4.2rem;
     }
     div.index {
       width: 2rem;
     }
-    li {
-      &:nth-child(1) {
-        .index {
-          color: red;
-        }
-      }
-      &:nth-child(2) {
-        .index {
-          color: rgb(241, 132, 7);
-        }
-      }
-      &:nth-child(3) {
-        .index {
-          color: rgb(238, 185, 87);
-        }
-      }
+    & li:nth-child(1) .index {
+      color: rgb(255, 23, 23) !important;
+    }
+    & li:nth-child(2) .index {
+      color: rgb(241, 132, 7) !important;
+    }
+    & li:nth-child(3) .index {
+      color: rgb(238, 185, 87) !important;
     }
   }
   em.keyword {
-    color: red;
-  }
-  .SearchSuggestWord {
-    top: 150px;
+    color: rgb(255, 23, 23);
+    font-style: normal;
   }
 </style>
