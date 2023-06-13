@@ -91,7 +91,9 @@
         <div
           class="position-absolute top-0 translate-middle-y bg- d-flex align-items-center justify-content-center bg-light rounded-3"
           style="width: 10vw; height: 10vw; right: 10%">
-          <i class="bi bi-heart text-danger fs-3"></i>
+          <i
+            class="bi bi-heart text-danger fs-3"
+            style="text-shadow: 1.5px 1.5px 3px rgba(0, 0, 0, 0.5)"></i>
         </div>
         <!-- 主要信息 -->
         <div class="d-flex align-items-center pt-5 mb-4">
@@ -161,7 +163,7 @@
           <div class="mb-3 t-shadow-3">ラベル :</div>
           <div
             v-for="item in res.data?.story_elems"
-            class="bg-body-tertiary rounded mb-3 me-1 pt-1 pb-1 ps-3 pe-3">
+            class="bg-body-tertiary rounded mb-3 me-1 pt-1 pb-1 ps-3 pe-3 insetShadow-1-3">
             {{ item.name }}
           </div>
         </div>
