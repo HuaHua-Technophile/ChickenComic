@@ -14,5 +14,6 @@ declare module '@vue/runtime-core' {
     ComicItemComponent: typeof import('./src/components/comicItemComponent.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    VanSearch: typeof import('vant/es')['Search']
   }
 }
