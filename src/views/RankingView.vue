@@ -12,7 +12,7 @@
   // ------------------列表数据--------------------
   let listRankDataObj: any = ref<object>({});
   //------------------排行榜详情数据-------------------
-  let rankInfoData: any = ref<object>({}); // 定义变量做数据缓存
+  let rankInfoData: any = ref<object>({}); // 定义变量做数据缓存，方便根据属性名直接查找对应排行榜数组
   const saveArr: any = ref<Array<number>>([]); // 定义数组，元素中存放列表id做缓存标识
   const getListRankData = async () => {
     listRankDataObj.value = await getListRank();
@@ -23,7 +23,6 @@
     });
     rankInfoData.value[0] = empObj;
     saveArr.value.push(listRankDataObj.value.data.list[0].id);
-    console.log(rankInfoData.value);
     // swiper 配置项 (需要在数据获取完初始化配置项)
     const params1 = {
       // array with CSS styles
@@ -70,13 +69,14 @@
     // -------------------发起请求获取列表数据----------------------
     getListRankData();
     // 监听外层swiper的swiper slide是否改变
-    let empObj = null;
-    let activeIndex = 0;
+    let empObj = null; // 存放getRankInfo接口的返回数据
+    let activeIndex = 0; //存放当前slide索引
     sw1.value.addEventListener("swiperBox-slidechange", async (event: any) => {
       // swiper slide 改变后执行回调并发送当前排行的请求
       // rankInfoData.value = []; // 清空漫画列表数组，避免视觉上造成覆盖效果
       // console.log(event.detail[0].activeIndex);
       activeIndex = event.detail[0].activeIndex;
+      // 判断saveArr中是否存在已缓存标识，不存在则发送请求
       if (
         !saveArr.value.includes(
           listRankDataObj.value.data.list[event.detail[0].activeIndex].id
@@ -89,11 +89,14 @@
           offset: "0",
           subId: "0",
         });
+        // 将每次请求的不同排行榜数据添加到rankInfoData对象中做缓存
         rankInfoData.value[activeIndex] = empObj;
+        // 每次做完缓存都在saveArr中添加标识
         saveArr.value.push(
           listRankDataObj.value.data.list[event.detail[0].activeIndex].id
         );
       }
+      // 跳转到里层swiper的第一个slide
       sw2.value[event.detail[0].activeIndex].swiper.slideTo(0, 0);
     });
   });
