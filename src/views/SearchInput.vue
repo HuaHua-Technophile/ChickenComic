@@ -199,27 +199,18 @@
           <p class="my-2 ms-3 opacity-50">人気検索</p>
           <ul class="w-100 mt-3 text-body d-flex flex-wrap">
             <li
-              class="w-50 mb-3 d-flex align-items-center noScrollBar"
+              class="w-50 mb-3 d-flex align-items-center overflow-hidden"
               v-for="(item, index) in searchReferral"
               :key="item.season_id"
               @click="openContentView(item.season_id)">
+              <!-- 排序 人气搜索前标号 -->
               <div
                 class="index text-center flex-shrink-0"
                 :class="[index < 3 ? 'fw-bold fs-1' : 'fs-4']">
                 {{ index + 1 }}
               </div>
+              <!-- 漫画Item -->
               <comic-item-component :comicInfo="item"></comic-item-component>
-              <img
-                :src="`${item.vertical_cover}@150w_150h.jpg`"
-                class="d-block flex-shrink-0 me-2 rounded" />
-              <div class="synopsis fles-group-1 noScrollBar">
-                <p class="mb-1 van-multi-ellipsis--l2">
-                  {{ item.title }}
-                </p>
-                <p class="fs-7 mb-0 opacity-50">
-                  {{ item.styles[0] }}
-                </p>
-              </div>
             </li>
           </ul>
         </div>
@@ -267,10 +258,10 @@
   }
   .searchReferral {
     img {
-      width: 4.2rem;
+      width: 4.4rem;
     }
     div.index {
-      width: 2rem;
+      width: 1.8rem;
     }
     & li:nth-child(1) .index {
       color: rgb(255, 23, 23) !important;
