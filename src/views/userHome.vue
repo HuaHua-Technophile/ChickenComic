@@ -34,50 +34,6 @@
     bsMounted();
     // 内层swiper的touchstart及touchend事件触发时对bscroll进行销毁与再次实例化，防止swiper滚动时触发bscroll的滚动
     nextTick(() => {
-      // swiper 配置项 (需要在数据获取完初始化配置项)
-      const params = {
-        // array with CSS styles
-        pagination: {
-          clickable: true,
-          renderBullet: (index: number, className: string) => {
-            return `<span class="${className}" style="color: rgb(232, 232, 232)"></span>`;
-          },
-        },
-        // 初始化swiper样式
-        injectStyles: [
-          `.swiper-pagination-bullets.swiper-pagination-horizontal {
-          display: flex;
-          top: 0;
-          left: 50%;
-          width: 200px;
-          height: 50px;
-          transform: translateX(-50%);
-          background-color: rgba(0, 0, 0, .2);
-      }`,
-          `.swiper-pagination-bullet {
-          width: 100px;
-          height: 50px;
-          line-height: 50px;
-          border-radius: 0;
-          margin: 0 !important;
-          background-color: transparent;
-          opacity: 1;
-      }`,
-          `.swiper-pagination-bullet-active {
-          background-color: rgba(255, 255, 255, .1);
-      }`,
-        ],
-      };
-      // 给swiper注入样式
-      Object.assign(sw.value, params);
-      sw.value.initialize();
-      // sw.value.addEventListener("swiperFirstBox-touchstart", () => {
-      //   bs.value.destroy();
-      // });
-      // sw.value.addEventListener("swiperFirstBox-touchend", () => {
-      //   console.log("slide 1end");
-      //   bsMounted();
-      // });
       sw2.value.addEventListener("swiperBox-touchstart", () => {
         bs.value.destroy();
       });
@@ -105,13 +61,15 @@
         </div>
       </div>
       <!-- 外层swiper -->
+      <div class="btnArea d-flex justify-content-center">
+        <div class="btnL">2</div>
+        <div class="btnR">2</div>
+      </div>
       <swiper-container
         class="mySwiper1 w-100 overflow-hidden position-relative"
         style="height: 60vh; padding-top: 55px"
         events-prefix="swiperFirstBox-"
-        ref="sw"
-        init="false"
-        pagination="true">
+        ref="sw">
         <swiper-slide style="height: 60vh">
           <!-- 内层swiper -->
           <swiper-container
