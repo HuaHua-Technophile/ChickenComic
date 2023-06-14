@@ -220,7 +220,7 @@
       ref="searchResultList">
       <!-- 滚动核心 -->
       <ul style="min-height: calc(100% + 1px)">
-        <li
+        <!-- <li
           class="d-flex mt-4 overflow-hidden"
           v-for="item in SearchResult"
           :key="item.id"
@@ -240,10 +240,13 @@
               {{ item.is_finish === 0 ? "连载中" : "完结" }}
             </div>
           </div>
-        </li>
+        </li> -->
+        <li v-for="item in SearchResult" :key="item.id"></li>
         <li class="w-100 py-3 text-center">
           <van-loading v-if="loadFlag" />
-          <p class="w-100 py-3 text-center" v-else>没有更多了 ~~</p>
+          <p class="w-100 py-3 text-center opacity-50" v-else>
+            これ以上ありません~
+          </p>
         </li>
       </ul>
     </div>
