@@ -197,7 +197,7 @@
           <p class="my-2 ms-3 opacity-50">人気検索</p>
           <ul class="w-100 mt-3 text-body d-flex flex-wrap">
             <li
-              class="w-50 d-flex align-items-center"
+              class="w-50 mb-2 d-flex align-items-center"
               v-for="(item, index) in searchReferral"
               :key="item.season_id"
               @click="openContentView(item.season_id)">
@@ -259,7 +259,7 @@
   .searchReferral {
     img {
       width: 4.4rem;
-      margin-right: 0.5rem;
+      margin-right: 5px;
     }
     div.index {
       width: 1.8rem;

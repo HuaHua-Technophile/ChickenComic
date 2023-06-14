@@ -25,13 +25,17 @@
 </script>
 <template>
   <div
-    class="w-100 h-100 py-2 d-flex flex-grow-1 overflow-hidden"
+    class="w-100 h-100 d-flex flex-grow-1 overflow-hidden"
+    style="padding: 5px 0"
     @click="toComicDetail">
     <!-- 封面 -->
     <img
       class="rounded-3 flex-shrink-0"
       v-lazy="comicInfo?.vertical_cover + '@478w_638h'"
-      style="box-shadow: 0px 0px 5px rgba(var(--bs-body-color-rgb), 0.5)" />
+      style="
+        margin: 0 5px;
+        box-shadow: 0px 0px 5px rgba(var(--bs-body-color-rgb), 0.5);
+      " />
     <!-- 右侧文本区域 -->
     <div
       class="overflow-hidden flex-grow-1 d-flex flex-column justify-content-between">

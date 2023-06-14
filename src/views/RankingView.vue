@@ -100,22 +100,16 @@
       sw2.value[event.detail[0].activeIndex].swiper.slideTo(0, 0);
     });
   });
-
-  // 返回首页
-  const toBack = (): void => {
-    router.go(-1);
-  };
 </script>
 
 <template>
   <div class="RankingView w-100 h-100">
     <!-- 头部返回按钮 -->
-    <div class="ps-3 w-100 text-light t-shadow-3 d-flex align-items-center">
-      <i class="bi bi-arrow-left-short" @click="toBack"></i>
-      <div class="fs-2 flex-grow-1 text-center" style="padding-right: 30px">
-        リーダーボード
-      </div>
-    </div>
+    <back-component>
+      <template #searchInput>
+        <div class="fs-2 text-center t-shadow-2">リーダーボード</div>
+      </template>
+    </back-component>
     <!-- 外层swiper -->
     <swiper-container
       events-prefix="swiperBox-"
@@ -147,14 +141,14 @@
           free-mode="true">
           <!-- 每本漫画的 swiper slide -->
           <swiper-slide
-            class="comicSlide d-flex fs-1"
-            style="width: 100%; height: 120px"
+            class="comicSlide d-flex mb-2"
+            style="width: 100%; height: 135px"
             v-for="(it, idx) in rankInfoData[index]?.data?.list"
             :key="it.id">
-            <em
-              class="rankNum me-2 d-flex align-items-center justify-content-center"
-              style="width: 15%"
-              >{{ idx + 1 }}</em
+            <span
+              class="rankNum fs-2 d-flex align-items-center justify-content-center"
+              style="width: 11%"
+              >{{ idx + 1 }}</span
             >
             <!-- 导入漫画组件 -->
             <comicItemComponent :comicInfo="it"></comicItemComponent>
@@ -165,8 +159,12 @@
   </div>
 </template>
 <style lang="scss">
+  .RankingView img {
+    margin-right: 13px !important;
+  }
   img[lazy="loading"] {
     opacity: 0;
+    width: 93.8px !important;
   }
   img[lazy="error"] {
     opacity: 1;
@@ -180,21 +178,21 @@
     &:nth-child(1) {
       .rankNum {
         color: rgba(255, 0, 0);
-        font-size: 45px;
+        font-size: calc(1.325rem + 0.6rem + 0.9vw) !important;
         font-weight: 800;
       }
     }
     &:nth-child(2) {
       .rankNum {
         color: rgb(241, 132, 7);
-        font-size: 40px;
+        font-size: calc(1.325rem + 0.4rem + 0.9vw) !important;
         font-weight: 700;
       }
     }
     &:nth-child(3) {
       .rankNum {
         color: rgb(238, 185, 87);
-        font-size: 35px;
+        font-size: calc(1.325rem + 0.2rem + 0.9vw) !important;
         font-weight: 600;
       }
     }
