@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted } from "vue";
-  import { useGlobalStore } from "../stores/counter";
+  import { useThemeStore } from "../stores/theme";
   import BScroll from "better-scroll"; //导入Better scroll核心
   import ObserveDOM from "@better-scroll/observe-dom"; //ObserveDOM插件
   import { getSearchReferral, getSuggestedWord } from "@/api/search";
@@ -33,7 +33,7 @@
         isFocus.value = false;
         keyword.value = "";
         suggestedWord.value = [];
-      }, 200) //需要设定延时器,否则失焦后数组立马清空,无法点击搜索建议词进行跳转
+      }, 310) //需要设定延时器,否则失焦后数组立马清空,无法点击搜索建议词进行跳转
     );
   };
   // -----------获取搜索建议词----------
@@ -96,7 +96,7 @@
   };
   getSearchReferralFun();
   //---------主题切换----------
-  let { theme }: any = useGlobalStore();
+  let { theme }: any = useThemeStore();
   //点击热搜跳转
   const openContentView = (id: number) => {
     router.push({
@@ -124,7 +124,7 @@
     if (keyword.value != "") {
       toSearchResult(keyword.value);
     }
-  }, 500);
+  }, 300);
   // 清除定时器
   onUnmounted(() => {
     timeId.value.forEach((item: number) => {
@@ -139,19 +139,17 @@
       <!-- 头部 -->
       <div
         class="position-relative overflow-hidden"
-        style="padding-bottom: 50px">
+        style="padding-bottom: calc(50px + 3px)">
         <!-- 搜索页头部文本 -->
         <transition name="sideDown">
-          <div class="py-3 ps-4" v-show="!isFocus">
-            <h1 class="fs-3 mb-0">
-              ようこそ<br />
-              何を探すんですか?
-            </h1>
+          <div class="py-3 ps-4 fs-3 t-shadow-2" v-show="!isFocus">
+            ようこそ<br />
+            何を探すんですか?
           </div>
         </transition>
         <!-- 搜索输入框 -->
         <div
-          class="searchInputDom py-2 transition-5 position-absolute bg-opacity-50"
+          class="searchInputDom py-2 transition-5 position-absolute bg-opacity-50 insetShadow-2-2"
           :class="[
             theme == 'dark' ? 'bg-black' : 'bg-white',
             isFocus ? 'active' : 'rounded-2',
@@ -183,7 +181,7 @@
           </div>
           <ul class="d-flex flex-wrap">
             <li
-              class="bg-body rounded-pill fs-7 opacity-75 me-3 mb-2"
+              class="bg-body rounded-pill fs-7 bg-opacity-50 me-3 mb-2 insetShadow-2-2"
               style="padding: 3px 13px"
               v-for="(item, index) in searchHistoryData"
               :key="index"
@@ -199,7 +197,7 @@
           <p class="my-2 ms-3 opacity-50">人気検索</p>
           <ul class="w-100 mt-3 text-body d-flex flex-wrap">
             <li
-              class="w-50 mb-3 d-flex align-items-center overflow-hidden"
+              class="w-50 mb-2 d-flex align-items-center"
               v-for="(item, index) in searchReferral"
               :key="item.season_id"
               @click="openContentView(item.season_id)">
@@ -217,7 +215,10 @@
       </transition>
       <!-- 搜索建议词 -->
       <transition name="sideUp100">
-        <ul v-if="isFocus" class="position-absolute" style="top：150px">
+        <ul
+          v-if="isFocus"
+          class="position-absolute t-shadow-1"
+          style="top：150px">
           <li
             class="p-3 d-flex align-items-center"
             v-for="(item, index) in suggestedWord"
@@ -247,7 +248,6 @@
     --van-search-content-background: transparent;
     --van-field-input-text-color: rgb(1, 1, 1);
   }
-
   .searchInputDom {
     width: 80%;
     top: 87.88px;
@@ -259,12 +259,13 @@
   .searchReferral {
     img {
       width: 4.4rem;
+      margin-right: 5px;
     }
     div.index {
       width: 1.8rem;
     }
     & li:nth-child(1) .index {
-      color: rgb(255, 23, 23) !important;
+      color: rgb(255, 23, 112) !important;
     }
     & li:nth-child(2) .index {
       color: rgb(241, 132, 7) !important;
@@ -273,8 +274,8 @@
       color: rgb(238, 185, 87) !important;
     }
   }
-  em.keyword {
-    color: rgb(255, 23, 23);
-    font-style: normal;
+  .van-field__control::placeholder {
+    color: rgba(var(--bs-body-color-rgb), 0.5);
+    text-shadow: 0 0 3px rgba(var(--bs-body-color-rgb), 0.3);
   }
 </style>

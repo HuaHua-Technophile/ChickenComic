@@ -1,12 +1,27 @@
 <script setup lang="ts">
-  import { ref } from "vue";
+  import { ref, onMounted, onUpdated } from "vue";
   import { getRecommend, getHomeRecommend } from "../api/RecommendedComics";
+  import chunk from "lodash/chunk";
+  import BScroll from "better-scroll"; //导入Better scroll核心
+  import ObserveDOM from "@better-scroll/observe-dom"; //ObserveDOM插件
+  import { useRouter } from "vue-router";
+  //------------Better scroll实例化-----------
+  let RecommendedComics: any = ref<object | null>(null);
+  BScroll.use(ObserveDOM); // 自动重载插件
+  let bs: any = ref({});
+  onMounted(() => {
+    bs.value = new BScroll(RecommendedComics.value, {
+      probeType: 3,
+      click: true,
+      observeDOM: true,
+    });
+  });
   // 推荐漫画列表
   interface arr {
     value: Array<object>;
   }
   let RecommendList: arr = ref<never[]>([]);
-  console.log(RecommendList.value);
+  let RecommendLists: any = ref(null);
   // ---------------获取推荐漫画数据3条----------------
   const getRecommendFun = async () => {
     let data = await getRecommend();
@@ -18,51 +33,134 @@
     let data = await getHomeRecommend();
     RecommendList.value.push(...data.data.list);
     RecommendList.value.pop();
-
-    console.log(RecommendList.value);
+    RecommendLists.value = chunk(RecommendList.value, 4);
   };
   getHomeRecommendFun();
+  //-----------滚动效果---------------
+  let contentList: any = ref<object | null>(null);
+  let topOpacity = ref(0.75);
+  let bottomOpacity = ref(0.5);
+  let translateY = ref(60);
+  let scrollFun = (position: any) => {
+    if (position.y <= 0) {
+      if (position.y > -130) {
+        topOpacity.value = 0.75 + (0.75 * position.y) / 130;
+      } else if (position.y > -220) {
+        bottomOpacity.value = 0.5 + (0.5 * (position.y + 130)) / 90;
+      }
+    }
+    if (position.y <= 0 && position.y > -220) {
+      translateY.value = 60 + 60 * (position.y / 220);
+    } else if (position.y < -220) {
+      //解决js的误差问题
+      translateY.value = 0;
+    } else if (position.y > 0) {
+      translateY.value = 60;
+    }
+  };
+  onMounted(() => {
+    //-------------添加滚动事件----------
+    bs.value.on("scroll", scrollFun);
+  });
+  //--------------获取uldom绑定变量样式
+  onUpdated(() => {
+    contentList.value.children[3].style.transform = `translateY(${translateY.value}px)`;
+    contentList.value.children[4].style.transform = `translateY(${
+      2 * translateY.value
+    }px)`;
+  });
+
+  //--------------跳转详情页------------
+  let router = useRouter();
+  const goComicCoverPage = (id: any) => {
+    console.log(id);
+    router.push({
+      path: "comicCover",
+      query: {
+        id: id,
+      },
+    });
+  };
 </script>
 <template>
-  <div class="RecommendedComics w100 g-100">
-    <back-component class="position-fixed"></back-component>
-    <p>
-      暂无<br />
-      订阅作品<br />
-      惊喜探索<br />
-      更多作品盲盒<br />
-      等你开启<br />
-    </p>
-    <div class="contentList d-flex w-100 height">
-      <ul class="">
+  <div
+    class="RecommendedComics w-100 h-100 noScrollBar"
+    ref="RecommendedComics">
+    <!-- 滚动内容 -->
+    <div
+      class="contentList d-flex"
+      ref="contentList"
+      style="min-height: calc(100% + 1px)">
+      <!-- 头部文本 -->
+      <p
+        :style="{ opacity: topOpacity }"
+        class="fs-2 top fw-bold text-end pe-3 w-100 position-absolute z-n1">
+        暂无<br />
+        订阅作品<br />
+      </p>
+      <p
+        :style="{ opacity: bottomOpacity }"
+        class="fs-2 bottom fw-bold text-end pe-3 w-100 position-absolute z-n1">
+        惊喜探索<br />
+        更多作品盲盒<br />
+        等你开启<br />
+      </p>
+      <ul v-for="(item, index) in RecommendLists" :key="index">
         <li
-          style="
-            background-image: url('https://i0.hdslb.com/bfs/manga-static/accd35013c082cb622fb8749c86aec3bd4fb9253.jpg');
-          "></li>
-      </ul>
-      <ul>
-        <li
-          style="
-            background-image: url('https://i0.hdslb.com/bfs/manga-static/accd35013c082cb622fb8749c86aec3bd4fb9253.jpg');
-          "></li>
-      </ul>
-      <ul>
-        <li
-          style="
-            background-image: url('https://i0.hdslb.com/bfs/manga-static/accd35013c082cb622fb8749c86aec3bd4fb9253.jpg');
-          "></li>
+          class="w-100 m-1 fw-bold d-flex fs-4 position-relative"
+          v-for="card in item"
+          :key="card.season_id"
+          @click="goComicCoverPage(card.season_id || card.comic_id)">
+          <span class="w-100 text-direction pt-3 fs-1 fw-bold">{{
+            card.title
+          }}</span>
+          <img
+            :src="card.vertical_cover + '@300w_300h.jpg'"
+            alt=""
+            class="w-100 h-100 position-absolute" />
+        </li>
       </ul>
     </div>
+    <!-- 顶部返回 -->
+    <back-component class="position-fixed"></back-component>
   </div>
 </template>
-<style>
+<style lang="scss">
+  p.top {
+    top: 77.5px;
+  }
+  p.bottom {
+    top: 162.5px;
+  }
+  .contentList {
+    padding-top: 227.5px;
+  }
   ul {
     flex: 1;
+    overflow: hidden;
+    &:nth-child(4) {
+      transform: translateY(60px);
+    }
+    &:nth-child(5) {
+      transform: translateY(120px);
+    }
   }
   li {
-    height: 300px;
+    height: 250px;
+    background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
+  }
+  img {
+    object-fit: cover;
+    z-index: -1;
+  }
+  .text-direction {
+    color: #000;
+    font-family: "黑体";
+    letter-spacing: 0.4em;
+    margin: 0 auto;
+    writing-mode: vertical-rl; /*从左向右 从右向左是 writing-mode: vertical-rl;*/
+    writing-mode: tb-rl; /*IE浏览器的从左向右 从右向左是 writing-mode: tb-rl；*/
   }
 </style>

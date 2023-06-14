@@ -5,8 +5,15 @@
   import { register } from "swiper/element/bundle";
   import { ref, onMounted, nextTick, watch, onUpdated } from "vue";
   import { storeToRefs } from "pinia";
-  import { useGlobalStore } from "@/stores/counter";
-  //-------------------better scroll 实例化-------------------
+  import { useUserInfoStore } from "@/stores/userInfo";
+  // -----------------用户信息---------------------
+  const { userInfo } = storeToRefs(useUserInfoStore());
+  console.log(userInfo.value);
+  // 获取userHome对象
+  let userHome: any = ref<object | null>(null);
+  // 实例化bscroll并注册插件
+  BScroll.use(Pullup); // 注册上拉懒加载插件
+  BScroll.use(ObserveDOM); // 自动重载插件
   let bs: any = ref<object>({});
   const bsMounted = () => {
     // 实例化bscroll并配置其配置项
@@ -24,11 +31,6 @@
   register();
   const sw: any = ref<object | null>(null);
   const sw2: any = ref<object | null>(null);
-  // 获取用户信息
-  const { userInfo } = storeToRefs(useGlobalStore());
-  console.log(userInfo.value);
-  // 获取userHome对象
-  let userHome: any = ref<object | null>(null);
   // 实例化bscroll并注册插件
   BScroll.use(Pullup); // 注册上拉懒加载插件
   BScroll.use(ObserveDOM); // 自动重载插件
