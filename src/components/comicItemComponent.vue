@@ -24,7 +24,9 @@
   };
 </script>
 <template>
-  <div class="w-100 h-100 d-flex flex-grow-1" @click="toComicDetail">
+  <div
+    class="w-100 h-100 py-2 d-flex flex-grow-1 overflow-hidden"
+    @click="toComicDetail">
     <!-- 封面 -->
     <img
       class="rounded-3 flex-shrink-0"
@@ -34,7 +36,7 @@
     <div
       class="overflow-hidden flex-grow-1 d-flex flex-column justify-content-between">
       <!-- 漫画名 -->
-      <div class="fs-7 van-multi-ellipsis--l2">
+      <div class="fs-7 text-truncate">
         {{ comicInfo?.title }}
       </div>
       <!-- 下方漫画信息区域 -->

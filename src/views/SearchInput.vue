@@ -33,7 +33,7 @@
         isFocus.value = false;
         keyword.value = "";
         suggestedWord.value = [];
-      }, 200) //需要设定延时器,否则失焦后数组立马清空,无法点击搜索建议词进行跳转
+      }, 310) //需要设定延时器,否则失焦后数组立马清空,无法点击搜索建议词进行跳转
     );
   };
   // -----------获取搜索建议词----------
@@ -124,7 +124,7 @@
     if (keyword.value != "") {
       toSearchResult(keyword.value);
     }
-  }, 500);
+  }, 300);
   // 清除定时器
   onUnmounted(() => {
     timeId.value.forEach((item: number) => {
@@ -197,7 +197,7 @@
           <p class="my-2 ms-3 opacity-50">人気検索</p>
           <ul class="w-100 mt-3 text-body d-flex flex-wrap">
             <li
-              class="w-50 mb-3 d-flex align-items-center"
+              class="w-50 d-flex align-items-center"
               v-for="(item, index) in searchReferral"
               :key="item.season_id"
               @click="openContentView(item.season_id)">
@@ -265,7 +265,7 @@
       width: 1.8rem;
     }
     & li:nth-child(1) .index {
-      color: rgb(255, 23, 23) !important;
+      color: rgb(255, 23, 112) !important;
     }
     & li:nth-child(2) .index {
       color: rgb(241, 132, 7) !important;
@@ -273,10 +273,6 @@
     & li:nth-child(3) .index {
       color: rgb(238, 185, 87) !important;
     }
-  }
-  em.keyword {
-    color: rgb(255, 23, 23);
-    font-style: normal;
   }
   .van-field__control::placeholder {
     color: rgba(var(--bs-body-color-rgb), 0.5);
