@@ -1,6 +1,6 @@
 <script setup lang="ts"></script>
 <template>
-  <div class="w-100 h-100 t-shadow-2">
+  <div class="w-100 h-100">
     <!-- <router-view v-slot="{ Component }">
       <transition name="view">
         <component :is="Component" />

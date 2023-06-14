@@ -25,7 +25,7 @@
       <!-- 头部图片信息 -->
       <div class="ps-5 pe-5" style="margin-top: 30%">
         <img src="@/img/logo.png" class="w-100 h-100 rounded-3" />
-        <div class="mt-3 text-center fs-5">
+        <div class="mt-3 text-center fs-5 t-shadow-2">
           すばらしさは、紙上に咲く桜の花のように、手に取ることができます。
         </div>
       </div>

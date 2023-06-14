@@ -3,9 +3,10 @@
   import { storeToRefs } from "pinia";
   // ---------用户信息-------------
   const GlobalStore = useGlobalStore();
-  let { userInfo } = storeToRefs(GlobalStore);
+  let { userInfo, Logged } = storeToRefs(GlobalStore);
   let userId = localStorage.getItem("userId");
   if (userId) {
+    Logged.value = true;
     userInfo.value = JSON.parse(localStorage.getItem(`user${userId}`) + "");
   }
 </script>

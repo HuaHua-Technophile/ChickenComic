@@ -21,7 +21,8 @@ export const useGlobalStore = defineStore("global", () => {
   interface UserInfo {
     id?: string;
   }
-  let userInfo: any = ref<UserInfo>({});
+  let userInfo: UserInfo | any = ref<UserInfo>({});
+  let Logged = ref(false);
   watch(userInfo, (newVal: UserInfo) => {
     localStorage.setItem(`user${newVal.id}`, JSON.stringify(newVal));
   });
@@ -29,5 +30,6 @@ export const useGlobalStore = defineStore("global", () => {
     theme,
     changeTheme,
     userInfo,
+    Logged,
   };
 });

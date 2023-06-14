@@ -142,11 +142,9 @@
         style="padding-bottom: calc(50px + 3px)">
         <!-- 搜索页头部文本 -->
         <transition name="sideDown">
-          <div class="py-3 ps-4" v-show="!isFocus">
-            <h1 class="fs-3 mb-0">
-              ようこそ<br />
-              何を探すんですか?
-            </h1>
+          <div class="py-3 ps-4 fs-3 t-shadow-2" v-show="!isFocus">
+            ようこそ<br />
+            何を探すんですか?
           </div>
         </transition>
         <!-- 搜索输入框 -->

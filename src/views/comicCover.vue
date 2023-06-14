@@ -1,12 +1,13 @@
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
   import { useRoute, useRouter } from "vue-router";
+  import chapterComponent from "@/components/chapterComponent.vue"; //引入组件
+  import { useGlobalStore } from "@/stores/counter";
+  import { storeToRefs } from "pinia";
   import { getComicDetail } from "@/api/comicCover";
   import BScroll from "better-scroll"; //导入Better scroll核心  // 从路由传参获取当前页面漫画的id
   import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
   import NestedScroll from "@better-scroll/nested-scroll"; //导入betterscroll嵌套
-  import { useGlobalStore } from "@/stores/counter";
-  import chapterComponent from "@/components/chapterComponent.vue"; //引入组件
   //------------定义字符串替换方法---------------------
   let updateTime = (str: string) => {
     str = str
@@ -54,8 +55,10 @@
     });
   });
   //------------------------pinia判断是否已登录-------------------------
+  const GlobalStore = useGlobalStore();
+  let { userInfo, Logged } = storeToRefs(GlobalStore);
+  console.log(userInfo.value, Logged.value);
 
-  let GlobalStore = useGlobalStore();
   //------------------子组件点击传出方法,阅读不同章节------------------
   let router = useRouter();
   let readThisChapter = (index: number) => {
@@ -64,10 +67,6 @@
       chapterList,
     });
     router.push({ name: "content", state: { params } }); //注意：此处一定要用params
-  };
-  // ------------------返回上一级路由----------------
-  const toBack = () => {
-    router.go(-1);
   };
 </script>
 <template>
@@ -108,12 +107,12 @@
             </div>
           </div>
           <!-- 作者,漫画名 -->
-          <div class="t-shadow-3 flex-grow-1 overflow">
+          <div class="flex-grow-1 overflow">
             <div class="mb-2 opacity-50">
               人気しすー : {{ res.data?.interact_value }}
             </div>
             <div
-              class="fs-2 fw-bold mb-1 van-multi-ellipsis--l2"
+              class="fs-2 fw-bold mb-1 van-multi-ellipsis--l2 t-shadow-2"
               style="letter-spacing: 2.5px">
               {{ res.data?.title }}
             </div>
@@ -136,7 +135,7 @@
           </div>
         </div>
         <!-- 介绍 -->
-        <div class="ms-3 me-3 t-shadow-3 mb-3">
+        <div class="ms-3 me-3 mb-3">
           <div class="fs-5 mb-2 d-flex align-items-center">
             <span>漫畫のあらすじ</span>
             <i class="bi bi-chevron-down fs-7 ms-3"></i>
@@ -160,7 +159,7 @@
         <!-- 标签 -->
         <div
           class="d-flex justify-content-between align-items-center flex-wrap ps-3 pe-3 mb-3 opacity-75">
-          <div class="mb-3 t-shadow-3">ラベル :</div>
+          <div class="mb-3">ラベル :</div>
           <div
             v-for="item in res.data?.story_elems"
             class="bg-body-tertiary rounded mb-3 me-1 pt-1 pb-1 ps-3 pe-3 insetShadow-1-3">
