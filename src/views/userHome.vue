@@ -19,11 +19,6 @@
     // 实例化bscroll并配置其配置项
     bs.value = new BScroll(userHome.value as HTMLElement, {
       click: true,
-      // 开启 observe-image 插件
-      /* bounce: {
-        bottom: false, //阻止底部的上拉回弹动画
-      }, */
-      // ObserveDOM: true,
     });
   };
 
@@ -50,15 +45,17 @@
         },
         // 初始化swiper样式
         injectStyles: [
-          `.swiper-pagination-vertical.swiper-pagination-bullets{
+          `.swiper-pagination-bullets.swiper-pagination-horizontal {
+          display: flex;
           top: 0;
-          left: 0;
-          width: 90px;
-          height: 100px;
-          transform:none;
+          left: 50%;
+          width: 200px;
+          height: 50px;
+          transform: translateX(-50%);
+          background-color: rgba(0, 0, 0, .2);
       }`,
           `.swiper-pagination-bullet {
-          width: 90px;
+          width: 100px;
           height: 50px;
           line-height: 50px;
           border-radius: 0;
@@ -74,20 +71,20 @@
       // 给swiper注入样式
       Object.assign(sw.value, params);
       sw.value.initialize();
-      sw.value.addEventListener("swiperFirstBox-touchstart", () => {
-        bs.value.destroy();
-      });
-      sw.value.addEventListener("swiperFirstBox-touchend", () => {
-        console.log("slide 1end");
-        bsMounted();
-      });
-      // sw2.value.addEventListener("swiperBox-touchstart", () => {
+      // sw.value.addEventListener("swiperFirstBox-touchstart", () => {
       //   bs.value.destroy();
       // });
-      // sw2.value.addEventListener("swiperBox-touchend", () => {
-      //   console.log("slide end");
+      // sw.value.addEventListener("swiperFirstBox-touchend", () => {
+      //   console.log("slide 1end");
       //   bsMounted();
       // });
+      sw2.value.addEventListener("swiperBox-touchstart", () => {
+        bs.value.destroy();
+      });
+      sw2.value.addEventListener("swiperBox-touchend", () => {
+        console.log("slide end");
+        bsMounted();
+      });
     });
   });
 </script>
@@ -109,10 +106,12 @@
       </div>
       <!-- 外层swiper -->
       <swiper-container
-        class="mySwiper1 w-100 h-100 overflow-hidden position-relative"
+        class="mySwiper1 w-100 overflow-hidden position-relative"
+        style="height: 60vh; padding-top: 55px"
         events-prefix="swiperFirstBox-"
         ref="sw"
-        init="false">
+        init="false"
+        pagination="true">
         <swiper-slide style="height: 60vh">
           <!-- 内层swiper -->
           <swiper-container
