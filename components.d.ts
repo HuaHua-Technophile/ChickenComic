@@ -18,7 +18,5 @@ declare module '@vue/runtime-core' {
     VanDropdownMenu: typeof import('vant/es')['DropdownMenu']
     VanLoading: typeof import('vant/es')['Loading']
     VanSearch: typeof import('vant/es')['Search']
-    VanTab: typeof import('vant/es')['Tab']
-    VanTabs: typeof import('vant/es')['Tabs']
   }
 }

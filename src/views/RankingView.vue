@@ -3,6 +3,8 @@
   import comicItemComponent from "@/components/comicItemComponent.vue";
   import { getListRank, getRankInfo } from "@/api/ranking";
   import { register } from "swiper/element/bundle";
+  //-------------设备像素比---------------
+  let DPR = window.devicePixelRatio;
   // -----------------注册swiper-------------------------
   register();
   // ------------------列表数据--------------------
@@ -145,7 +147,9 @@
               >{{ idx + 1 }}</span
             >
             <!-- 导入漫画组件 -->
-            <comicItemComponent :comicInfo="it"></comicItemComponent>
+            <comicItemComponent
+              :comicInfo="it"
+              :img-width="(94 * DPR).toFixed()"></comicItemComponent>
           </swiper-slide>
         </swiper-container>
       </swiper-slide>

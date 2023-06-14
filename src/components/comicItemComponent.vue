@@ -14,6 +14,7 @@
       type: object;
       default: () => {};
     };
+    imgWidth: string;
   }>();
   // 跳转到相应漫画详情页
   const toComicDetail = (): void => {
@@ -31,7 +32,7 @@
     <!-- 封面 -->
     <img
       class="rounded-3 flex-shrink-0"
-      v-lazy="comicInfo?.vertical_cover + '@478w_638h'"
+      v-lazy="`${comicInfo?.vertical_cover}@${props.imgWidth}w`"
       style="
         margin: 0 5px;
         box-shadow: 0px 0px 5px rgba(var(--bs-body-color-rgb), 0.5);

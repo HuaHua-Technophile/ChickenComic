@@ -6,6 +6,8 @@
   import { getSearchReferral, getSuggestedWord } from "@/api/search";
   import { useRouter } from "vue-router";
   import debounce from "lodash/debounce"; //导入lodash防抖
+  // ---------------设备像素比----------------
+  let DPR = window.devicePixelRatio;
   // -----------定时器ID数组------------
   let timeId = ref<Array<number>>([]);
   // -----------路由-------------
@@ -208,7 +210,9 @@
                 {{ index + 1 }}
               </div>
               <!-- 漫画Item -->
-              <comic-item-component :comicInfo="item"></comic-item-component>
+              <comic-item-component
+                :comicInfo="item"
+                :imgWidth="(70.4 * DPR).toFixed()"></comic-item-component>
             </li>
           </ul>
         </div>
