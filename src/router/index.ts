@@ -57,6 +57,11 @@ const router = createRouter({
       name: "RecommendedComics",
       component: () => import("@/views/RecommendedComics.vue"),
     },
+    {
+      path: "/ComicClassification",
+      name: "ComicClassification",
+      component: () => import("@/views/ComicClassification.vue"),
+    },
   ],
 });
 
