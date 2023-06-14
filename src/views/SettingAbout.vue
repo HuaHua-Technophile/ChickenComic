@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
   import BScroll from "better-scroll"; //导入Better scroll核心
-  import { useGlobalStore } from "../stores/counter";
+  import { useThemeStore } from "../stores/theme";
   import { showToast } from "vant";
   import "vant/es/toast/style";
   //---------------bs实例化相关-----------
@@ -13,7 +13,7 @@
     });
   });
   //--------------主题色修改------------------
-  let { theme, changeTheme }: any = useGlobalStore();
+  let { theme, changeTheme }: any = useThemeStore();
   //--------------遮罩层修改------------------
   let overlayShow = ref(false);
   let overlayInfo = ref("");

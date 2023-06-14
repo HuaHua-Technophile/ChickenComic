@@ -2,12 +2,15 @@
   import { ref, onMounted } from "vue";
   import { useRoute, useRouter } from "vue-router";
   import chapterComponent from "@/components/chapterComponent.vue"; //引入组件
-  import { useGlobalStore } from "@/stores/counter";
+  import { useThemeStore } from "@/stores/theme";
+  import { useUserInfoStore } from "@/stores/userInfo";
   import { storeToRefs } from "pinia";
   import { getComicDetail } from "@/api/comicCover";
   import BScroll from "better-scroll"; //导入Better scroll核心  // 从路由传参获取当前页面漫画的id
   import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
   import NestedScroll from "@better-scroll/nested-scroll"; //导入betterscroll嵌套
+  //------------------主题-----------------------
+  const { theme } = useThemeStore();
   //------------定义字符串替换方法---------------------
   let updateTime = (str: string) => {
     str = str
@@ -16,7 +19,7 @@
       .replace("更新", "更新します");
     return str;
   };
-  //------------------数据请求---------------------------------
+  //------------------数据请求-----------------------
   let route = useRoute();
   let { id }: { id?: string } = route.query;
   let res = ref<any>({});
@@ -26,7 +29,7 @@
     chapterList = res.value.data?.ep_list;
   };
   getData();
-  // ------------------Better scroll配置项相关------------------
+  // -----------Better scroll配置项相关---------------
   BScroll.use(ObserveImage);
   BScroll.use(NestedScroll);
   let comicCover = ref<HTMLElement | object>({}); //待实例化的DOM元素
@@ -55,10 +58,8 @@
     });
   });
   //------------------------pinia判断是否已登录-------------------------
-  const GlobalStore = useGlobalStore();
-  let { userInfo, Logged } = storeToRefs(GlobalStore);
+  let { userInfo, Logged } = storeToRefs(useUserInfoStore());
   console.log(userInfo.value, Logged.value);
-
   //------------------子组件点击传出方法,阅读不同章节------------------
   let router = useRouter();
   let readThisChapter = (index: number) => {
@@ -81,10 +82,7 @@
       </div>
       <!-- 下方内容区域 -->
       <div
-        :class="[
-          { darkBg: GlobalStore.theme == 'dark' },
-          { lightBg: GlobalStore.theme == 'light' },
-        ]"
+        :class="[{ darkBg: theme == 'dark' }, { lightBg: theme == 'light' }]"
         class="rounded-top-5 position-relative">
         <!-- 收藏按钮 -->
         <div

@@ -5,12 +5,10 @@
   import NestedScroll from "@better-scroll/nested-scroll";
   import { ref, onMounted, onUpdated, watch } from "vue";
   import { storeToRefs } from "pinia";
-  import { useGlobalStore } from "@/stores/counter";
-
+  import { useUserInfoStore } from "@/stores/userInfo";
   // 获取用户信息
-  const { userInfo } = storeToRefs(useGlobalStore());
+  const { userInfo } = storeToRefs(useUserInfoStore());
   console.log(userInfo.value);
-
   // 获取userHome对象
   let userHome: any = ref<object | null>(null);
   let collectBs: any = ref<object | null>(null);
@@ -18,7 +16,6 @@
   BScroll.use(Pullup); // 注册上拉懒加载插件
   BScroll.use(ObserveDOM); // 自动重载插件
   BScroll.use(NestedScroll); // 注册嵌套bscroll插件
-
   let bs: any = ref<object>({});
   let bs2: any = ref<object>({});
   const bsMounted = () => {
@@ -40,7 +37,6 @@
   onMounted(() => {
     bsMounted();
   });
-
   // tab组件
   const active = ref(0);
   watch(active, () => {

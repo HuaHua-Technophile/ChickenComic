@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted } from "vue";
-  import { useGlobalStore } from "../stores/counter";
+  import { useThemeStore } from "../stores/theme";
   import BScroll from "better-scroll"; //导入Better scroll核心
   import ObserveDOM from "@better-scroll/observe-dom"; //ObserveDOM插件
   import { getSearchReferral, getSuggestedWord } from "@/api/search";
@@ -96,7 +96,7 @@
   };
   getSearchReferralFun();
   //---------主题切换----------
-  let { theme }: any = useGlobalStore();
+  let { theme }: any = useThemeStore();
   //点击热搜跳转
   const openContentView = (id: number) => {
     router.push({

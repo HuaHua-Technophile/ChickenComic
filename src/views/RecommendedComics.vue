@@ -5,7 +5,6 @@
   import BScroll from "better-scroll"; //导入Better scroll核心
   import ObserveDOM from "@better-scroll/observe-dom"; //ObserveDOM插件
   import { useRouter } from "vue-router";
-
   //------------Better scroll实例化-----------
   let RecommendedComics: any = ref<object | null>(null);
   BScroll.use(ObserveDOM); // 自动重载插件
@@ -17,21 +16,18 @@
       observeDOM: true,
     });
   });
-
   // 推荐漫画列表
   interface arr {
     value: Array<object>;
   }
   let RecommendList: arr = ref<never[]>([]);
   let RecommendLists: any = ref(null);
-
   // ---------------获取推荐漫画数据3条----------------
   const getRecommendFun = async () => {
     let data = await getRecommend();
     RecommendList.value.push(...data.data);
   };
   getRecommendFun();
-
   // -------------获取推荐漫画数据10条--------------
   const getHomeRecommendFun = async () => {
     let data = await getHomeRecommend();
@@ -40,7 +36,6 @@
     RecommendLists.value = chunk(RecommendList.value, 4);
   };
   getHomeRecommendFun();
-
   //-----------滚动效果---------------
   let contentList: any = ref<object | null>(null);
   let topOpacity = ref(0.75);

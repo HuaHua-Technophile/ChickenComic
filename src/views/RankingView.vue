@@ -1,12 +1,8 @@
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
-  import { useRouter } from "vue-router";
   import comicItemComponent from "@/components/comicItemComponent.vue";
   import { getListRank, getRankInfo } from "@/api/ranking";
   import { register } from "swiper/element/bundle";
-  // 导入并使用useRouter
-  const router = useRouter();
-
   // -----------------注册swiper-------------------------
   register();
   // ------------------列表数据--------------------
@@ -61,7 +57,6 @@
     Object.assign(sw1.value, params1);
     sw1.value.initialize();
   };
-
   // --------------swiper实例化-----------------
   const sw1: any = ref(null);
   const sw2: any = ref<Array<object> | null>(null);
@@ -101,7 +96,6 @@
     });
   });
 </script>
-
 <template>
   <div class="RankingView w-100 h-100">
     <!-- 头部返回按钮 -->
