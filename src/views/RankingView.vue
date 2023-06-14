@@ -139,19 +139,19 @@
           free-mode="true">
           <!-- 每本漫画的 swiper slide -->
           <swiper-slide
-            class="comicSlide d-flex fs-1"
-            style="width: 100%; height: 120px"
+            class="comicSlide d-flex mb-2"
+            style="width: 100%; height: 140px"
             v-for="(it, idx) in rankInfoData[index]?.data?.list"
             :key="it.id">
-            <em
-              class="rankNum me-2 d-flex align-items-center justify-content-center"
-              style="width: 15%"
-              >{{ idx + 1 }}</em
+            <span
+              class="rankNum fs-2 d-flex align-items-center justify-content-center"
+              style="width: 13%"
+              >{{ idx + 1 }}</span
             >
             <!-- 导入漫画组件 -->
             <comicItemComponent
               :comicInfo="it"
-              :img-width="(94 * DPR).toFixed()"></comicItemComponent>
+              :img-width="(97 * DPR).toFixed()"></comicItemComponent>
           </swiper-slide>
         </swiper-container>
       </swiper-slide>
@@ -159,9 +159,12 @@
   </div>
 </template>
 <style lang="scss">
+  .RankingView img {
+    margin-right: 10px !important;
+  }
   img[lazy="loading"] {
     opacity: 0;
-    width: 104px !important;
+    width: 97px !important;
   }
   img[lazy="error"] {
     opacity: 1;
@@ -174,22 +177,22 @@
   .comicSlide {
     &:nth-child(1) {
       .rankNum {
-        color: rgba(255, 0, 0);
-        font-size: 45px;
+        color: rgb(255, 23, 112);
+        font-size: calc(1.325rem + 0.9vw + 0.6rem) !important;
         font-weight: 800;
       }
     }
     &:nth-child(2) {
       .rankNum {
         color: rgb(241, 132, 7);
-        font-size: 40px;
+        font-size: calc(1.325rem + 0.9vw + 0.4rem) !important;
         font-weight: 700;
       }
     }
     &:nth-child(3) {
       .rankNum {
         color: rgb(238, 185, 87);
-        font-size: 35px;
+        font-size: calc(1.325rem + 0.9vw + 0.2rem) !important;
         font-weight: 600;
       }
     }
