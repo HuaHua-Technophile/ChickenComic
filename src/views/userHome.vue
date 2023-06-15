@@ -2,6 +2,7 @@
   import BScroll from "better-scroll"; //导入Better scroll核心
   import Pullup from "@better-scroll/pull-up";
   import ObserveDOM from "@better-scroll/observe-dom";
+  import NestedScroll from "@better-scroll/nested-scroll";
   import { register } from "swiper/element/bundle";
   import { ref, onMounted, nextTick, watch, onUpdated } from "vue";
   import { storeToRefs } from "pinia";
@@ -11,14 +12,26 @@
   console.log(userInfo.value);
   // 获取userHome对象
   let userHome: any = ref<object | null>(null);
+  let bscroll2: any = ref<object | null>(null);
   // 实例化bscroll并注册插件
   BScroll.use(Pullup); // 注册上拉懒加载插件
   BScroll.use(ObserveDOM); // 自动重载插件
+  BScroll.use(NestedScroll);
   let bs: any = ref<object>({});
+  let bs2: any = ref<object>({});
   const bsMounted = () => {
     // 实例化bscroll并配置其配置项
     bs.value = new BScroll(userHome.value as HTMLElement, {
       click: true,
+      nestedScroll: {
+        groupId: "shared",
+      },
+    });
+    bs2.value = new BScroll(bscroll2.value as HTMLElement, {
+      click: true,
+      nestedScroll: {
+        groupId: "shared",
+      },
     });
   };
 
@@ -34,13 +47,13 @@
     bsMounted();
     // 内层swiper的touchstart及touchend事件触发时对bscroll进行销毁与再次实例化，防止swiper滚动时触发bscroll的滚动
     nextTick(() => {
-      sw2.value.addEventListener("swiperBox-touchstart", () => {
-        bs.value.destroy();
-      });
-      sw2.value.addEventListener("swiperBox-touchend", () => {
-        console.log("slide end");
-        bsMounted();
-      });
+      // sw2.value.addEventListener("swiperBox-touchstart", () => {
+      //   bs.value.destroy();
+      // });
+      // sw2.value.addEventListener("swiperBox-touchend", () => {
+      //   console.log("slide end");
+      //   bsMounted();
+      // });
     });
   });
 </script>
@@ -67,12 +80,12 @@
       </div>
       <swiper-container
         class="mySwiper1 w-100 overflow-hidden position-relative"
-        style="height: 60vh; padding-top: 55px"
+        style="height: 60vh; margin-top: 55px"
         events-prefix="swiperFirstBox-"
         ref="sw">
         <swiper-slide style="height: 60vh">
           <!-- 内层swiper -->
-          <swiper-container
+          <!-- <swiper-container
             class="mySwiper2 w-100 h-100 overflow-hidden position-relative"
             events-prefix="swiperBox-"
             ref="sw2"
@@ -80,9 +93,39 @@
             direction="vertical"
             free-mode="true">
             <swiper-slide v-for="item in 100" :key="item" style="height: 120px">
-              {{ item }}
+              <div cl></div>
             </swiper-slide>
-          </swiper-container>
+          </swiper-container> -->
+          <!-- 里层bscroll -->
+          <div class="bs2Box" style="height: 100%" ref="bscroll2">
+            <div
+              class="bscroll2 d-flex flex-wrap justify-content-evenly"
+              style="min-height: calc(100% + 1px)">
+              <div
+                class="collectItem"
+                v-for="item in 100"
+                :key="item"
+                style="width: 40vw; height: 300px">
+                <div class="imageItemBox" style="width: 100%">
+                  <img
+                    class="imageItem rounded-3"
+                    style="
+                      width: 100%;
+                      box-shadow: 0px 0px 5px
+                        rgba(var(--bs-body-color-rgb), 0.5);
+                    "
+                    src="https://i0.hdslb.com/bfs/manga-static/3dee1e75e3f62edbace9f1b278a115a79d6a3947.jpg@568w_319h"
+                    alt="" />
+                </div>
+                <div class="comicTitle text-truncate fs-5">
+                  少年张嚣进入了一款名为“阎王游戏”的游戏中，但却在死后阴差阳错的复生在了另一个身体里，
+                  从此逆袭走上人生巅峰，他是否能凭一己之力掀翻整个地府的阴谋，然后征服这里所有的妹子！
+                </div>
+                <!-- 更新或完结信息 -->
+                <div class="finish fs-6 opacity-50">1111111話に更新</div>
+              </div>
+            </div>
+          </div>
         </swiper-slide>
         <swiper-slide style="height: 50vh">内容</swiper-slide>
       </swiper-container>
