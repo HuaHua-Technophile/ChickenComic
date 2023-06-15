@@ -22,7 +22,21 @@
   //------------------数据请求-----------------------
   let route = useRoute();
   let { id }: { id?: string } = route.query;
-  let res = ref<any>({});
+  interface res {
+    data: {
+      vertical_cover: string;
+      horizontal_cover: string;
+      interact_value: string;
+      title: string;
+      author_name: Array<string>;
+      evaluate: string;
+      story_elems: Array<{ name: string }>;
+      ep_list: string;
+      renewal_time: string;
+    };
+    value: res | any;
+  }
+  let res: res = ref<res | any>({});
   let chapterList: Array<number> = [];
   let getData = async () => {
     res.value = await getComicDetail(id!);
@@ -58,11 +72,17 @@
     });
   });
   //------------------------收藏相关/pinia判断是否已登录-------------------------
-  let { userInfo, Logged } = storeToRefs(useUserInfoStore());
-  // console.log(userInfo.value, Logged.value);
+  interface Info {
+    id?: string;
+    collection: Array<object>;
+  }
+  let { userInfo, Logged }: Info | any = storeToRefs(useUserInfoStore());
   let collect = () => {
-    if (Logged.value) console.log("已登录");
-    else console.log("未登录");
+    console.log(userInfo.value, Logged.value);
+    if (Logged.value) {
+      console.log("已登录");
+      userInfo.collection.push(res.data);
+    } else console.log("未登录");
   };
   //------------------子组件点击传出方法,阅读不同章节------------------
   let router = useRouter();
