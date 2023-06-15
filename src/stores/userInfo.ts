@@ -2,12 +2,13 @@ import { ref, watch } from "vue";
 import { defineStore } from "pinia";
 export const useUserInfoStore = defineStore("global", () => {
   //登录信息----------------
-  interface UserInfo {
+  interface Info {
     id?: string;
+    collection: Array<object>;
   }
-  let userInfo: UserInfo | any = ref<UserInfo>({});
+  let userInfo: Info | any = ref<Info | any>({});
   let Logged = ref(false);
-  watch(userInfo, (newVal: UserInfo) => {
+  watch(userInfo, (newVal: Info) => {
     localStorage.setItem(`user${newVal.id}`, JSON.stringify(newVal));
   });
   return {
