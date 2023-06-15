@@ -1,12 +1,10 @@
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
-  import { useRouter } from "vue-router";
   import comicItemComponent from "@/components/comicItemComponent.vue";
   import { getListRank, getRankInfo } from "@/api/ranking";
   import { register } from "swiper/element/bundle";
-  // 导入并使用useRouter
-  const router = useRouter();
-
+  //-------------设备像素比---------------
+  let DPR = window.devicePixelRatio;
   // -----------------注册swiper-------------------------
   register();
   // ------------------列表数据--------------------
@@ -100,22 +98,16 @@
       sw2.value[event.detail[0].activeIndex].swiper.slideTo(0, 0);
     });
   });
-
-  // 返回首页
-  const toBack = (): void => {
-    router.go(-1);
-  };
 </script>
 
 <template>
   <div class="RankingView w-100 h-100">
     <!-- 头部返回按钮 -->
-    <div class="ps-3 w-100 text-light t-shadow-3 d-flex align-items-center">
-      <i class="bi bi-arrow-left-short" @click="toBack"></i>
-      <div class="fs-2 flex-grow-1 text-center" style="padding-right: 30px">
-        リーダーボード
-      </div>
-    </div>
+    <back-component>
+      <template #searchInput>
+        <div class="fs-2 text-center">リーダーボード</div>
+      </template>
+    </back-component>
     <!-- 外层swiper -->
     <swiper-container
       events-prefix="swiperBox-"
@@ -147,17 +139,19 @@
           free-mode="true">
           <!-- 每本漫画的 swiper slide -->
           <swiper-slide
-            class="comicSlide d-flex fs-1"
-            style="width: 100%; height: 120px"
+            class="comicSlide d-flex mb-2"
+            style="width: 100%; height: 140px"
             v-for="(it, idx) in rankInfoData[index]?.data?.list"
             :key="it.id">
-            <em
-              class="rankNum me-2 d-flex align-items-center justify-content-center"
-              style="width: 15%"
-              >{{ idx + 1 }}</em
+            <span
+              class="rankNum fs-2 d-flex align-items-center justify-content-center"
+              style="width: 13%"
+              >{{ idx + 1 }}</span
             >
             <!-- 导入漫画组件 -->
-            <comicItemComponent :comicInfo="it"></comicItemComponent>
+            <comicItemComponent
+              :comicInfo="it"
+              :img-width="(97 * DPR).toFixed()"></comicItemComponent>
           </swiper-slide>
         </swiper-container>
       </swiper-slide>
@@ -165,8 +159,12 @@
   </div>
 </template>
 <style lang="scss">
+  .RankingView img {
+    margin-right: 10px !important;
+  }
   img[lazy="loading"] {
     opacity: 0;
+    width: 97px !important;
   }
   img[lazy="error"] {
     opacity: 1;
@@ -179,22 +177,22 @@
   .comicSlide {
     &:nth-child(1) {
       .rankNum {
-        color: rgba(255, 0, 0);
-        font-size: 45px;
+        color: rgb(255, 23, 112);
+        font-size: calc(1.325rem + 0.9vw + 0.6rem) !important;
         font-weight: 800;
       }
     }
     &:nth-child(2) {
       .rankNum {
         color: rgb(241, 132, 7);
-        font-size: 40px;
+        font-size: calc(1.325rem + 0.9vw + 0.4rem) !important;
         font-weight: 700;
       }
     }
     &:nth-child(3) {
       .rankNum {
         color: rgb(238, 185, 87);
-        font-size: 35px;
+        font-size: calc(1.325rem + 0.9vw + 0.2rem) !important;
         font-weight: 600;
       }
     }

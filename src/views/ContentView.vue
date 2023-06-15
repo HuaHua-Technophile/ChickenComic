@@ -15,11 +15,7 @@
     onUpdated,
   } from "vue";
   import { getImageIndex, getImageToken } from "@/api/content";
-  import { useRouter } from "vue-router";
   import chapterComponent from "@/components/chapterComponent.vue"; //引入组件
-
-  // 定义router
-  const router = useRouter();
 
   // 接收路由信息（包含当前漫画index和所有章节信息）
   const etid_data = history.state.params;
@@ -194,11 +190,6 @@
     bs.value.scrollBy(0, -contentVeiwHeight, 500);
   };
 
-  // 返回上一页
-  const toBack = () => {
-    router.go(-1);
-  };
-
   // 收藏漫画
   let isLike = ref(false);
   const likeIt = () => {
@@ -324,7 +315,7 @@
       <div
         class="contentHead position-fixed top-0 w-100 z-3"
         style="
-          background-image: linear-gradient(
+          background: linear-gradient(
             rgba(0, 0, 0, 0.75),
             transparent 87%,
             transparent
@@ -335,7 +326,7 @@
           class="ps-3 pe-3 d-flex justify-content-between align-items-center text-light t-shadow-3"
           v-show="isShowSlider">
           <div class="leftIcon d-flex align-items-center">
-            <i class="bi bi-arrow-left-short" @click="toBack"></i>
+            <i class="bi bi-arrow-left-short" @click="$router.go(-1)"></i>
             <span class="epListTitle fs-3"
               >第{{ oldImgEpList.length - chapterListIndex }}话</span
             >

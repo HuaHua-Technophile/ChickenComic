@@ -2,57 +2,45 @@
   import BScroll from "better-scroll"; //导入Better scroll核心
   import Pullup from "@better-scroll/pull-up";
   import ObserveDOM from "@better-scroll/observe-dom";
-  import NestedScroll from "@better-scroll/nested-scroll";
-  import { ref, onMounted, onUpdated, watch } from "vue";
+  import { register } from "swiper/element/bundle";
+  import { ref, onMounted, nextTick, watch, onUpdated } from "vue";
   import { storeToRefs } from "pinia";
-  import { useGlobalStore } from "@/stores/counter";
-
-  // 获取用户信息
-  const { userInfo } = storeToRefs(useGlobalStore());
+  import { useUserInfoStore } from "@/stores/userInfo";
+  // -----------------用户信息---------------------
+  const { userInfo } = storeToRefs(useUserInfoStore());
   console.log(userInfo.value);
-
   // 获取userHome对象
   let userHome: any = ref<object | null>(null);
-  let collectBs: any = ref<object | null>(null);
   // 实例化bscroll并注册插件
   BScroll.use(Pullup); // 注册上拉懒加载插件
   BScroll.use(ObserveDOM); // 自动重载插件
-  BScroll.use(NestedScroll); // 注册嵌套bscroll插件
-
   let bs: any = ref<object>({});
-  let bs2: any = ref<object>({});
   const bsMounted = () => {
     // 实例化bscroll并配置其配置项
     bs.value = new BScroll(userHome.value as HTMLElement, {
       click: true,
-      pullUpLoad: true,
-      // 开启 observe-image 插件
-      bounce: {
-        bottom: false, //阻止底部的上拉回弹动画
-      },
-      ObserveDOM: true,
-      nestedScroll: {
-        groupId: 2,
-      },
     });
-    console.log(collectBs.value.$el);
   };
+
+  // -----------------注册swiper-------------------------
+  register();
+  const sw: any = ref<object | null>(null);
+  const sw2: any = ref<object | null>(null);
+  // 实例化bscroll并注册插件
+  BScroll.use(Pullup); // 注册上拉懒加载插件
+  BScroll.use(ObserveDOM); // 自动重载插件
+
   onMounted(() => {
     bsMounted();
-  });
-
-  // tab组件
-  const active = ref(0);
-  watch(active, () => {
-    console.log("更行了");
-    bs2.value = new BScroll(collectBs.value.$el as HTMLElement, {
-      click: true,
-      pullUpLoad: true,
-      // 开启 observe-image 插件
-      ObserveDOM: true,
-      nestedScroll: {
-        groupId: 2,
-      },
+    // 内层swiper的touchstart及touchend事件触发时对bscroll进行销毁与再次实例化，防止swiper滚动时触发bscroll的滚动
+    nextTick(() => {
+      sw2.value.addEventListener("swiperBox-touchstart", () => {
+        bs.value.destroy();
+      });
+      sw2.value.addEventListener("swiperBox-touchend", () => {
+        console.log("slide end");
+        bsMounted();
+      });
     });
   });
 </script>
@@ -72,25 +60,32 @@
           <div class="userName mt-3 text-center">一夜九次郎</div>
         </div>
       </div>
-      <van-tabs
-        v-model:active="active"
-        line-width="50%"
-        line-height="44px"
-        background="rgba(0, 0, 0, .3)"
-        color="rgba(255, 255, 255, .3)"
-        title-inactive-color="rgb(232, 232, 232)"
-        title-active-color="rgb(232, 232, 232)">
-        <van-tab
-          class="overflow-hidden"
-          :title="'コレクション'"
-          ref="collectBs"
-          style="height: 50vh">
-          <div class="bsItemFirst">
-            <div v-for="item in 100" :key="item">{{ item }}</div>
-          </div>
-        </van-tab>
-        <van-tab class="pt-4 px-4" :title="'レコード破り'">内容</van-tab>
-      </van-tabs>
+      <!-- 外层swiper -->
+      <div class="btnArea d-flex justify-content-center">
+        <div class="btnL">2</div>
+        <div class="btnR">2</div>
+      </div>
+      <swiper-container
+        class="mySwiper1 w-100 overflow-hidden position-relative"
+        style="height: 60vh; padding-top: 55px"
+        events-prefix="swiperFirstBox-"
+        ref="sw">
+        <swiper-slide style="height: 60vh">
+          <!-- 内层swiper -->
+          <swiper-container
+            class="mySwiper2 w-100 h-100 overflow-hidden position-relative"
+            events-prefix="swiperBox-"
+            ref="sw2"
+            slides-per-view="auto"
+            direction="vertical"
+            free-mode="true">
+            <swiper-slide v-for="item in 100" :key="item" style="height: 120px">
+              {{ item }}
+            </swiper-slide>
+          </swiper-container>
+        </swiper-slide>
+        <swiper-slide style="height: 50vh">内容</swiper-slide>
+      </swiper-container>
       <!-- 返回 -->
       <back-component class="position-fixed"></back-component>
     </div>

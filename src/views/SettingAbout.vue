@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
   import BScroll from "better-scroll"; //导入Better scroll核心
-  import { useGlobalStore } from "../stores/counter";
+  import { useThemeStore } from "../stores/theme";
   import { showToast } from "vant";
   import "vant/es/toast/style";
   //---------------bs实例化相关-----------
@@ -13,7 +13,7 @@
     });
   });
   //--------------主题色修改------------------
-  let { theme, changeTheme }: any = useGlobalStore();
+  let { theme, changeTheme }: any = useThemeStore();
   //--------------遮罩层修改------------------
   let overlayShow = ref(false);
   let overlayInfo = ref("");
@@ -21,17 +21,17 @@
 <template>
   <div ref="settingAbout" class="settingAbout w-100 h-100 noScrollBar">
     <!-- 滚动内容 -->
-    <div class="ps-3 pe-3 overflow-hidden" style="min-height: calc(100% + 5px)">
+    <div class="ps-3 pe-3 overflow-hidden" style="min-height: calc(100% + 1px)">
       <!-- 头部图片信息 -->
       <div class="ps-5 pe-5" style="margin-top: 30%">
         <img src="@/img/logo.png" class="w-100 h-100 rounded-3" />
-        <div class="mt-3 text-center fs-5">
+        <div class="mt-3 text-center fs-5 t-shadow-2">
           すばらしさは、紙上に咲く桜の花のように、手に取ることができます。
         </div>
       </div>
       <!-- 夜间模式切换 -->
       <div
-        class="form-check form-switch pt-3 pb-3 bg-body-secondary rounded-pill fs-5 mb-3 insetShadow bg-opacity-50"
+        class="form-check form-switch pt-3 pb-3 bg-body-secondary bg-opacity-50 rounded-pill fs-5 mb-3 insetShadow-3-4"
         style="margin-top: 30%">
         <input
           class="form-check-input"
@@ -47,7 +47,7 @@
       </div>
       <!-- 关于 -->
       <div
-        class="ps-3 pe-3 bg-body-secondary rounded-pill fs-5 pt-2 pb-2 mb-3 bg-opacity-50"
+        class="ps-3 pe-3 bg-body-secondary bg-opacity-50 rounded-pill fs-5 pt-2 pb-2 mb-3 insetShadow-3-4"
         @click="
           overlayShow = true;
           overlayInfo =
@@ -58,7 +58,7 @@
       </div>
       <!-- 隐私协议 -->
       <div
-        class="ps-3 pe-3 bg-body-secondary rounded-pill fs-5 pt-2 pb-2 mb-3 bg-opacity-50"
+        class="ps-3 pe-3 bg-body-secondary bg-opacity-50 rounded-pill fs-5 pt-2 pb-2 mb-3 insetShadow-3-4"
         @click="
           overlayShow = true;
           overlayInfo = `「紙さくらコミック」ではユーザーのプライバシーとセキュリティを非常に重視しており、以下のようなプライバシープロトコルを作成していますので、よく読んで了承してください。
@@ -96,7 +96,7 @@
       </div>
       <!-- 检查更新 -->
       <div
-        class="ps-3 pe-3 bg-body-secondary rounded-pill fs-5 pt-2 pb-2 mb-3 bg-opacity-50"
+        class="ps-3 pe-3 bg-body-secondary bg-opacity-50 rounded-pill fs-5 pt-2 pb-2 mb-3 insetShadow-3-4"
         @click="showToast('さいしんばんです')">
         <i class="bi bi-arrow-repeat fs-3 ms-3 me-4"></i>
         <span>更新をチェックします</span>
@@ -118,3 +118,4 @@
     </van-overlay>
   </div>
 </template>
+<style lang="scss"></style>

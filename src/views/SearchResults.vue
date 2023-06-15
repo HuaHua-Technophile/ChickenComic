@@ -117,36 +117,36 @@
   const sort2 = ref("-1");
   const sort3 = ref("-1");
   const option1 = [
-    { text: "默认排序", value: -1 },
-    { text: "人气推荐", value: 0 },
-    { text: "更新时间", value: 1 },
-    { text: "上架时间", value: 2 },
+    { text: "黙認順序付け", value: -1 },
+    { text: "人気のおすすめ", value: 0 },
+    { text: "更新の時間", value: 1 },
+    { text: "店頭に並ぶ時間", value: 2 },
   ];
   const option2 = [
-    { text: "全部", value: "-1" },
-    { text: "热血", value: "热血" },
-    { text: "古风", value: "古风" },
-    { text: "玄幻", value: "玄幻" },
-    { text: "奇幻", value: "奇幻" },
-    { text: "悬疑", value: "悬疑" },
-    { text: "都市", value: "都市" },
-    { text: "历史", value: "历史" },
-    { text: "武侠仙侠", value: "武侠仙侠" },
-    { text: "游戏竞技", value: "游戏竞技" },
-    { text: "悬疑灵异", value: "悬疑灵异" },
-    { text: "架空", value: "架空" },
-    { text: "青春", value: "青春" },
-    { text: "西幻", value: "游戏竞技" },
-    { text: "现代", value: "现代" },
-    { text: "正能量", value: "正能量" },
-    { text: "科幻", value: "科幻" },
+    { text: "全部です", value: "-1" },
+    { text: "熱血です", value: "热血" },
+    { text: "古代です", value: "古风" },
+    { text: "玄幻です", value: "玄幻" },
+    { text: "ファンタジー", value: "奇幻" },
+    { text: "サスペンス", value: "悬疑" },
+    { text: "都市です", value: "都市" },
+    { text: "歴史です", value: "历史" },
+    { text: "武俠仙俠", value: "武侠仙侠" },
+    { text: "ゲーム競技", value: "游戏竞技" },
+    { text: "サスペンス", value: "悬疑灵异" },
+    { text: "フィクション", value: "架空" },
+    { text: "青春です", value: "青春" },
+    { text: "西洋幻想", value: "西幻" },
+    { text: "現代です", value: "现代" },
+    { text: "プラスエネルギー", value: "正能量" },
+    { text: "エスエフ", value: "科幻" },
   ];
   const option3 = [
-    { text: "全部", value: "-1" },
-    { text: "连载", value: "连载" },
-    { text: "完结", value: "完结" },
-    { text: "免费", value: "免费" },
-    { text: "付费", value: "付费" },
+    { text: "全部です", value: "-1" },
+    { text: "連載します", value: "连载" },
+    { text: "完結です", value: "完结" },
+    { text: "無料です", value: "免费" },
+    { text: "有料です", value: "付费" },
   ];
   // -----------------选择结果分类-----------------------
   const selectType = () => {
@@ -190,13 +190,17 @@
       <template #searchInput>
         <div
           @click="$router.go(-1)"
-          class="d-flex align-items-center py-2 px-3 mx-3 bg-body rounded-pill opacity-75">
+          class="d-flex align-items-center py-2 px-3 mx-3 bg-body bg-opacity-50 rounded-pill insetShadow-2-2">
           {{ keyWord }}
         </div>
       </template>
     </back-component>
     <!-- 分类 -->
-    <van-dropdown-menu :z-index="10" class="my-3" :overlay="true">
+    <van-dropdown-menu
+      :z-index="10"
+      class="my-3"
+      :overlay="true"
+      active-color="#ff1770">
       <van-dropdown-item
         v-model="sort1"
         @change="selectType"
@@ -215,8 +219,8 @@
       class="searchResultList w-100 flex-grow-1 overflow-hidden"
       ref="searchResultList">
       <!-- 滚动核心 -->
-      <ul style="min-height: calc(100% + 5px)">
-        <li
+      <ul style="min-height: calc(100% + 1px)">
+        <!-- <li
           class="d-flex mt-4 overflow-hidden"
           v-for="item in SearchResult"
           :key="item.id"
@@ -236,71 +240,61 @@
               {{ item.is_finish === 0 ? "连载中" : "完结" }}
             </div>
           </div>
-        </li>
+        </li> -->
+        <li v-for="item in SearchResult" :key="item.id"></li>
         <li class="w-100 py-3 text-center">
           <van-loading v-if="loadFlag" />
-          <p class="w-100 py-3 text-center" v-else>没有更多了 ~~</p>
+          <p class="w-100 py-3 text-center opacity-50" v-else>
+            これ以上ありません~
+          </p>
         </li>
       </ul>
     </div>
   </div>
 </template>
 <style lang="scss">
-  .van-dropdown-menu__bar {
-    color: #fff;
-    background-color: transparent;
-  }
-  .van-ellipsis {
-    color: #fff;
-  }
-  .van-dropdown-item::after {
-    content: "";
-    display: block;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(10px);
-  }
-  .van-dropdown-item__option--active {
-    .van-cell__title {
-      color: red;
+  .SearchResults {
+    --van-cell-text-color: var(--bs-light);
+    --van-dropdown-menu-title-text-color: var(--bs-body-color);
+    .van-dropdown-menu__bar,
+    .van-dropdown-item__content,
+    .van-dropdown-item__option {
+      background-color: transparent;
     }
-  }
-  .van-dropdown-item__content {
-    background-color: transparent;
-  }
-  .van-dropdown-item__option {
-    background-color: transparent;
-    color: #fff;
-  }
-  .van-cell--clickable {
+    .van-dropdown-item::after {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(10px);
+    }
     .van-cell__value {
+      // 右侧选中提示的打勾
       display: none;
     }
-  }
-  .details {
-    em {
-      font-style: normal;
+    .van-popup {
+      > .van-cell:last-child::before {
+        //利用before，规避vant默认的对末尾item的样式屏蔽
+        position: absolute;
+        box-sizing: border-box;
+        content: " ";
+        pointer-events: none;
+        right: var(--van-padding-md);
+        bottom: 0;
+        left: var(--van-padding-md);
+        border-bottom: 1px solid var(--van-cell-border-color);
+        transform: scaleY(0.5);
+      }
     }
-    em.keyword {
-      color: red;
+    .van-popup--top {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
     }
-  }
-  .searchDark {
-    --van-search-content-background: transparent;
-    --van-field-input-text-color: rgb(254, 254, 254);
-  }
-  .searchLight {
-    --van-search-content-background: transparent;
-    --van-field-input-text-color: rgb(1, 1, 1);
-  }
-  .van-popup--top {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-  }
-  .van-cell {
-    width: 25%;
-    text-align: center;
+    .van-cell {
+      width: 25%;
+      text-align: center;
+    }
   }
 </style>

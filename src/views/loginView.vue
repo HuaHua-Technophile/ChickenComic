@@ -117,7 +117,7 @@
     style="background: url(@/img/)"
     ref="loginView">
     <!-- 登录页滚动核心 -->
-    <div class="overflow-hidden" style="min-height: calc(100% + 5px)">
+    <div class="overflow-hidden" style="min-height: calc(100% + 1px)">
       <!-- 头部图片信息 -->
       <div class="ps-5 pe-5 mb-3" style="margin-top: 30%">
         <img src="@/img/logo.png" class="w-100 h-100 rounded-3" />

@@ -30,3 +30,7 @@ body {
   width: calc(100% - 0.6px) !important;
   height: calc(100% - 0.6px) !important;
 }
+em.keyword {
+  color: rgb(255, 23, 112);
+  font-style: normal;
+} //传回的关键词高亮
