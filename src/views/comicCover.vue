@@ -81,7 +81,7 @@
     console.log(userInfo.value, Logged.value);
     if (Logged.value) {
       console.log("已登录");
-      userInfo.value.collection.push(res.data);
+      userInfo.value.collection.push(res.value.data);
     } else console.log("未登录");
   };
   //------------------子组件点击传出方法,阅读不同章节------------------
