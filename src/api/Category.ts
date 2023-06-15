@@ -8,7 +8,7 @@ export function getAllLabel(): object {
   });
 }
 
-// 分了结果
+// 分类结果
 export function getClassPage(params: object): object {
   return service({
     url: "/ClassPage",
