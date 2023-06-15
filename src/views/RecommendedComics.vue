@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, onMounted, onUpdated } from "vue";
-  import { getRecommend, getHomeRecommend } from "../api/RecommendedComics";
+  import { getRecommend, getHomeRecommend } from "../api/Recommended";
   import chunk from "lodash/chunk";
   import BScroll from "better-scroll"; //导入Better scroll核心
   import ObserveDOM from "@better-scroll/observe-dom"; //ObserveDOM插件
