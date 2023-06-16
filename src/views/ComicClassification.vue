@@ -1,17 +1,25 @@
 <script setup lang="ts">
   import { ref, onMounted, toRef } from "vue";
-  import { getAllLabel, getClassPage } from "@/api/Category";
+  import { getAllLabel, getClassPage } from "@/api/category";
   import BScroll from "better-scroll"; //导入Better scroll核心
   import ObserveDOM from "@better-scroll/observe-dom"; //ObserveDOM插件
   import Pullup from "@better-scroll/pull-up";
   import { useRouter } from "vue-router";
   import throttle from "lodash/throttle"; //Lodash节流
-  import { type allLabelDataType } from "@/utils/typeing";
   interface activeListType {
     [name: string]: number;
   }
-  interface allLabelDataType {
-    data: object;
+  interface allLabelType {
+    [key: string]: Array<{
+      id: number;
+      name: string;
+    }>;
+  }
+  interface resultListType {
+    season_id: number;
+    vertical_cover: string;
+    title: string;
+    bottom_info: string;
   }
   //------------Better scroll实例化-----------
   let ComicClassification = ref();
@@ -27,15 +35,26 @@
     bs.value.on("pullingUp", handelFunction);
   });
   // -----------分类项--------------
-  let allLabel: any = ref([]);
+  let allLabel = ref<allLabelType>({
+    areas: [],
+    orders: [],
+    prices: [],
+    status: [],
+    styles: [],
+  });
   //请求参数
-  let activeList = ref<activeListType>();
+  let activeList = ref<activeListType>({
+    areas: -1,
+    orders: -1,
+    prices: -1,
+    status: -1,
+    styles: -1,
+  });
   //------------获取分了项数据------------------
 
   const getAllLabelFun = async () => {
-    let data: allLabelDataType = await getAllLabel();
+    let data = await getAllLabel();
     allLabel.value = data.data;
-    console.log(data);
 
     for (const key in allLabel.value) {
       allLabel.value[key].unshift({ id: -1, name: "全部" });
@@ -45,7 +64,7 @@
 
   // ------------------选择分类更换参数重新请求数据-----------------------
   const selectType = (name: string, id: number) => {
-    activeList.value![name] = id;
+    activeList.value[name] = id;
     // 初始化
     loadFlag.value = true;
     pageNumber.value = 1;
@@ -57,17 +76,17 @@
   // 页数
   let pageNumber = ref(1);
   // 结果
-  let resultList: any = ref([]);
+  let resultList = ref<Array<resultListType>>([]);
   const getClassPageFun = async () => {
-    let data: any = await getClassPage({
-      styleId: activeList.value?.styles,
-      areaId: activeList.value?.areas,
-      isFinish: activeList.value?.status,
-      order: activeList.value?.orders,
-      isFree: activeList.value?.prices,
+    let data = await getClassPage({
+      styleId: activeList.value.styles,
+      areaId: activeList.value.areas,
+      isFinish: activeList.value.status,
+      order: activeList.value.orders,
+      isFree: activeList.value.prices,
       pageNum: pageNumber.value,
     });
-    resultList.value = resultList.value.concat(data.data);
+    resultList.value!.push(...data.data);
   };
   getClassPageFun();
 
@@ -124,7 +143,7 @@
         <li
           class="p-2 bg-body m-2"
           v-for="item in allLabel.styles"
-          :class="{ active: item.id == activeList?.styles }"
+          :class="{ active: item.id == activeList.styles }"
           :key="item.id"
           @click="selectType('styles', item.id)">
           {{ item.name }}
@@ -138,7 +157,7 @@
               v-for="item in allLabel.areas"
               :key="item.id"
               class="text-center py-3"
-              :class="{ active: item.id == activeList?.areas }"
+              :class="{ active: item.id == activeList.areas }"
               @click="selectType('areas', item.id)">
               {{ item.name }}
             </li>
@@ -148,7 +167,7 @@
               v-for="item in allLabel.orders"
               :key="item.id"
               class="text-center py-3"
-              :class="{ active: item.id == activeList?.orders }"
+              :class="{ active: item.id == activeList.orders }"
               @click="selectType('orders', item.id)">
               {{ item.name }}
             </li>
@@ -158,7 +177,7 @@
               v-for="item in allLabel.prices"
               :key="item.id"
               class="text-center py-3"
-              :class="{ active: item.id == activeList?.prices }"
+              :class="{ active: item.id == activeList.prices }"
               @click="selectType('prices', item.id)">
               {{ item.name }}
             </li>
@@ -168,7 +187,7 @@
               v-for="item in allLabel.status"
               :key="item.id"
               class="text-center py-3"
-              :class="{ active: item.id == activeList?.status }"
+              :class="{ active: item.id == activeList.status }"
               @click="selectType('status', item.id)">
               {{ item.name }}
             </li>

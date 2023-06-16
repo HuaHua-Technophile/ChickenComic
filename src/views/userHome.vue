@@ -4,21 +4,21 @@
   import ObserveDOM from "@better-scroll/observe-dom";
   import NestedScroll from "@better-scroll/nested-scroll";
   import { register } from "swiper/element/bundle";
-  import { ref, onMounted, nextTick, watch, onUpdated } from "vue";
+  import { ref, onMounted } from "vue";
   import { storeToRefs } from "pinia";
   import { useUserInfoStore } from "@/stores/userInfo";
   // -----------------用户信息---------------------
   const { userInfo } = storeToRefs(useUserInfoStore());
   console.log(userInfo.value);
   // 获取userHome对象
-  let userHome: any = ref<object | null>(null);
-  let bscroll2: any = ref<object | null>(null);
+  let userHome = ref();
+  let bscroll2 = ref();
   // 实例化bscroll并注册插件
   BScroll.use(Pullup); // 注册上拉懒加载插件
   BScroll.use(ObserveDOM); // 自动重载插件
   BScroll.use(NestedScroll);
-  let bs: any = ref<object>({});
-  let bs2: any = ref<object>({});
+  let bs = ref();
+  let bs2 = ref();
   const bsMounted = () => {
     // 实例化bscroll并配置其配置项
     bs.value = new BScroll(userHome.value as HTMLElement, {
@@ -37,24 +37,13 @@
 
   // -----------------注册swiper-------------------------
   register();
-  const sw: any = ref<object | null>(null);
-  const sw2: any = ref<object | null>(null);
+  const sw = ref();
   // 实例化bscroll并注册插件
   BScroll.use(Pullup); // 注册上拉懒加载插件
   BScroll.use(ObserveDOM); // 自动重载插件
 
   onMounted(() => {
     bsMounted();
-    // 内层swiper的touchstart及touchend事件触发时对bscroll进行销毁与再次实例化，防止swiper滚动时触发bscroll的滚动
-    nextTick(() => {
-      // sw2.value.addEventListener("swiperBox-touchstart", () => {
-      //   bs.value.destroy();
-      // });
-      // sw2.value.addEventListener("swiperBox-touchend", () => {
-      //   console.log("slide end");
-      //   bsMounted();
-      // });
-    });
   });
 </script>
 <template>
@@ -92,18 +81,6 @@
         events-prefix="swiperFirstBox-"
         ref="sw">
         <swiper-slide style="height: 55vh">
-          <!-- 内层swiper -->
-          <!-- <swiper-container
-            class="mySwiper2 w-100 h-100 overflow-hidden position-relative"
-            events-prefix="swiperBox-"
-            ref="sw2"
-            slides-per-view="auto"
-            direction="vertical"
-            free-mode="true">
-            <swiper-slide v-for="item in 100" :key="item" style="height: 120px">
-              <div cl></div>
-            </swiper-slide>
-          </swiper-container> -->
           <!-- 里层bscroll -->
           <div class="bs2Box" style="height: 100%" ref="bscroll2">
             <div
