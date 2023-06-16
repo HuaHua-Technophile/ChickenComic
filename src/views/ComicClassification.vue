@@ -1,12 +1,18 @@
 <script setup lang="ts">
   import { ref, onMounted, toRef } from "vue";
-  import { getAllLabel, getClassPage } from "../api/category";
+  import { getAllLabel, getClassPage } from "@/api/Category";
   import BScroll from "better-scroll"; //导入Better scroll核心
   import ObserveDOM from "@better-scroll/observe-dom"; //ObserveDOM插件
   import Pullup from "@better-scroll/pull-up";
   import { useRouter } from "vue-router";
   import throttle from "lodash/throttle"; //Lodash节流
   import { type allLabelDataType } from "@/utils/typeing";
+  interface activeListType {
+    [name: string]: number;
+  }
+  interface allLabelDataType {
+    data: object;
+  }
   //------------Better scroll实例化-----------
   let ComicClassification = ref();
   BScroll.use(Pullup);
@@ -20,25 +26,10 @@
     });
     bs.value.on("pullingUp", handelFunction);
   });
-
   // -----------分类项--------------
-  interface active {
-    value: active | any;
-    styles: number;
-    areas: number;
-    orders: number;
-    prices: number;
-    status: number;
-  }
   let allLabel: any = ref([]);
   //请求参数
-  let activeList: active = ref<active | any>({
-    styles: -1,
-    areas: -1,
-    orders: -1,
-    prices: -1,
-    status: -1,
-  });
+  let activeList = ref<activeListType>();
   //------------获取分了项数据------------------
 
   const getAllLabelFun = async () => {
@@ -54,7 +45,7 @@
 
   // ------------------选择分类更换参数重新请求数据-----------------------
   const selectType = (name: string, id: number) => {
-    activeList.value[name] = id;
+    activeList.value![name] = id;
     // 初始化
     loadFlag.value = true;
     pageNumber.value = 1;
@@ -69,11 +60,11 @@
   let resultList: any = ref([]);
   const getClassPageFun = async () => {
     let data: any = await getClassPage({
-      styleId: activeList.value.styles,
-      areaId: activeList.value.areas,
-      isFinish: activeList.value.status,
-      order: activeList.value.orders,
-      isFree: activeList.value.prices,
+      styleId: activeList.value?.styles,
+      areaId: activeList.value?.areas,
+      isFinish: activeList.value?.status,
+      order: activeList.value?.orders,
+      isFree: activeList.value?.prices,
       pageNum: pageNumber.value,
     });
     resultList.value = resultList.value.concat(data.data);
@@ -133,7 +124,7 @@
         <li
           class="p-2 bg-body m-2"
           v-for="item in allLabel.styles"
-          :class="{ active: item.id == activeList.styles }"
+          :class="{ active: item.id == activeList?.styles }"
           :key="item.id"
           @click="selectType('styles', item.id)">
           {{ item.name }}
@@ -147,7 +138,7 @@
               v-for="item in allLabel.areas"
               :key="item.id"
               class="text-center py-3"
-              :class="{ active: item.id == activeList.areas }"
+              :class="{ active: item.id == activeList?.areas }"
               @click="selectType('areas', item.id)">
               {{ item.name }}
             </li>
@@ -157,7 +148,7 @@
               v-for="item in allLabel.orders"
               :key="item.id"
               class="text-center py-3"
-              :class="{ active: item.id == activeList.orders }"
+              :class="{ active: item.id == activeList?.orders }"
               @click="selectType('orders', item.id)">
               {{ item.name }}
             </li>
@@ -167,7 +158,7 @@
               v-for="item in allLabel.prices"
               :key="item.id"
               class="text-center py-3"
-              :class="{ active: item.id == activeList.prices }"
+              :class="{ active: item.id == activeList?.prices }"
               @click="selectType('prices', item.id)">
               {{ item.name }}
             </li>
@@ -177,7 +168,7 @@
               v-for="item in allLabel.status"
               :key="item.id"
               class="text-center py-3"
-              :class="{ active: item.id == activeList.status }"
+              :class="{ active: item.id == activeList?.status }"
               @click="selectType('status', item.id)">
               {{ item.name }}
             </li>
