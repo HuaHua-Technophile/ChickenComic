@@ -15,8 +15,12 @@ declare module '@vue/runtime-core' {
     ElInput: typeof import('element-plus/es')['ElInput']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    VanCollapse: typeof import('vant/es')['Collapse']
+    VanCollapseItem: typeof import('vant/es')['CollapseItem']
+    VanLoading: typeof import('vant/es')['Loading']
     VanSearch: typeof import('vant/es')['Search']
     VanTab: typeof import('vant/es')['Tab']
     VanTabs: typeof import('vant/es')['Tabs']
+    VanTextEllipsis: typeof import('vant/es')['TextEllipsis']
   }
 }
