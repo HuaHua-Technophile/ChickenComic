@@ -60,7 +60,7 @@
       },
     });
   });
-  //------------------------收藏相关/pinia判断是否已登录-------------------------
+  //------------------------收藏相关/pinia判断是否已登录/历史阅读-------------------------
   let { userInfo, Logged } = storeToRefs(useUserInfoStore());
   let collect = () => {
     if (Logged.value) {

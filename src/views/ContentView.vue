@@ -442,33 +442,26 @@
     </div>
   </div>
 </template>
-
 <style lang="scss">
   img[lazy="loading"] {
-    /*your style here*/
     opacity: 0;
   }
   img[lazy="error"] {
-    /*your style here*/
     opacity: 1;
     transition: 0.6s;
   }
   img[lazy="loaded"] {
-    /*your style here*/
     opacity: 1;
     transition: 0.6s;
   }
-
   .contract-enter-active,
   .contract-leave-active {
     transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
   }
-
   .contract-enter-from,
   .contract-leave-to {
     width: 0px !important;
   }
-
   .scaleIcon {
     position: relative;
     font-weight: 600;
@@ -486,8 +479,7 @@
       transform: rotate(-45deg) translateY(-50%);
     }
   }
-
   .van-overlay {
-    height: calc(100vh + 1px);
+    height: calc(100% + 1px);
   }
 </style>
