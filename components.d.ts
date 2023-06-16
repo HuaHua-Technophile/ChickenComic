@@ -5,8 +5,6 @@
 // Read more: https://github.com/vuejs/core/pull/3399
 export {}
 
-export {};
-
 declare module "@vue/runtime-core" {
   export interface GlobalComponents {
     BackComponent: typeof import("./src/components/backComponent.vue")["default"];
