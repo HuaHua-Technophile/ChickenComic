@@ -1,19 +1,11 @@
 <script setup lang="ts">
   import { useRouter } from "vue-router";
+  import { type comicInfoCommonType } from "@/utils/typeing";
+
   // 调用导入的useRouter
   const router = useRouter();
   const props = defineProps<{
-    comicInfo: {
-      comic_id: number;
-      title: string;
-      author: string[];
-      styles: Array<string | any>;
-      is_finish: number;
-      last_ord: number | string;
-      vertical_cover: string;
-      type: object;
-      default: () => {};
-    };
+    comicInfo: comicInfoCommonType;
     imgWidth: string;
   }>();
   // 跳转到相应漫画详情页

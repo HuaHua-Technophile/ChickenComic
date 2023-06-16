@@ -1,4 +1,4 @@
-import { ref, reactive, watch } from "vue";
+import { ref, watch } from "vue";
 import { defineStore } from "pinia";
 export const useUserInfoStore = defineStore("global", () => {
   //登录信息----------------
