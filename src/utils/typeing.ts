@@ -3,3 +3,7 @@ export interface imgIndexUrl {
     images: Array<{ path: string }>;
   };
 }
+
+export interface allLabelDataType {
+  data: object;
+}

@@ -6,6 +6,7 @@
   import Pullup from "@better-scroll/pull-up";
   import { useRouter } from "vue-router";
   import throttle from "lodash/throttle"; //Lodash节流
+  import { type allLabelDataType } from "@/utils/typeing";
   interface activeListType {
     [name: string]: number;
   }
@@ -32,7 +33,7 @@
   //------------获取分了项数据------------------
 
   const getAllLabelFun = async () => {
-    let data: allLabelDataType = (await getAllLabel()) as allLabelDataType;
+    let data: allLabelDataType = await getAllLabel();
     allLabel.value = data.data;
     console.log(data);
 
