@@ -1,11 +1,12 @@
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
+  import { storeToRefs } from "pinia";
   import BScroll from "better-scroll"; //导入Better scroll核心
-  import { useThemeStore } from "../stores/theme";
+  import { useThemeStore } from "../stores/theme"; //导入pinia
   import { showToast } from "vant";
   import "vant/es/toast/style";
   //---------------bs实例化相关-----------
-  let settingAbout: any = ref<object | null>(null);
+  let settingAbout = ref();
   let bs = ref({}); //Better scroll实例化后对象的存储
   onMounted(() => {
     bs.value = new BScroll(settingAbout.value, {
@@ -13,7 +14,13 @@
     });
   });
   //--------------主题色修改------------------
-  let { theme, changeTheme }: any = useThemeStore();
+  let { theme } = storeToRefs(useThemeStore());
+  let { changeTheme } = useThemeStore();
+  let settingChangeTheme = () => {
+    console.log("点击了按钮");
+    console.log(changeTheme);
+    changeTheme();
+  };
   //--------------遮罩层修改------------------
   let overlayShow = ref(false);
   let overlayInfo = ref("");
@@ -40,7 +47,7 @@
           id="flexSwitchCheckDefault"
           style="margin-left: -1.5rem"
           :checked="theme == 'dark'"
-          @click="changeTheme" />
+          @click="settingChangeTheme" />
         <label class="form-check-label ms-3" for="flexSwitchCheckDefault"
           >ナイトモードです</label
         >

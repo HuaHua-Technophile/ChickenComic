@@ -94,7 +94,7 @@
         class="rounded-top-5 position-relative">
         <!-- 收藏按钮 -->
         <div
-          class="position-absolute top-0 translate-middle-y bg- d-flex align-items-center justify-content-center bg-light rounded-3"
+          class="position-absolute top-0 translate-middle-y d-flex align-items-center justify-content-center bg-light rounded-3"
           style="width: 10vw; height: 10vw; right: 10%"
           @click="collect">
           <i

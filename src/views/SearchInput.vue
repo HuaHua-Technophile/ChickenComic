@@ -6,6 +6,7 @@
   import { getSearchReferral, getSuggestedWord } from "@/api/search";
   import { useRouter } from "vue-router";
   import debounce from "lodash/debounce"; //导入lodash防抖
+
   // ---------------设备像素比----------------
   let DPR = window.devicePixelRatio;
   // -----------定时器ID数组------------
@@ -17,11 +18,10 @@
   BScroll.use(ObserveDOM); // 自动重载插件
   let bs = ref({});
   onMounted(() => {
-    if (SearchInput.value)
-      bs.value = new BScroll(SearchInput.value, {
-        click: true,
-        observeDOM: true,
-      });
+    bs.value = new BScroll(SearchInput.value, {
+      click: true,
+      observeDOM: true,
+    });
   });
   // ------------搜索框------------
   let keyword = ref(""); //关键词
@@ -40,10 +40,8 @@
     );
   };
   // -----------获取搜索建议词----------
-  interface arr {
-    value: object | null;
-  }
-  let suggestedWord: arr = ref<arr | never[]>([]);
+
+  let suggestedWord = ref();
   const getSuggestedWordFun = async () => {
     let data = await getSuggestedWord({ term: keyword.value });
     if (data) suggestedWord.value = data.data;
@@ -53,7 +51,7 @@
     else suggestedWord.value = null;
   }, 500);
   //-----------获取历史记录数据-----------
-  let searchHistoryData: any = ref([]);
+  let searchHistoryData = ref<Array<string>>([]);
   const starHistory = () => {
     if (!localStorage.getItem("searchHistory")) {
       localStorage.setItem(
@@ -70,7 +68,7 @@
   //-----------添加搜索历史----------
   const searchHistoryAdd = () => {
     let index = searchHistoryData.value.findIndex(
-      (item: any) => item == keyword.value
+      (item) => item == keyword.value
     );
     if (index === -1) {
       searchHistoryData.value.push(keyword.value);
@@ -89,8 +87,8 @@
     );
   };
   //------------获取热门搜索---------
-  let searchReferral: any = ref([]);
-  let defaultKeyword: any = ref([]);
+  let searchReferral = ref<Array<{ season_id: number }>>([]);
+  let defaultKeyword = ref([]);
   const getSearchReferralFun = async () => {
     let data = await getSearchReferral({ num: 12 });
     console.log(data);
@@ -99,7 +97,7 @@
   };
   getSearchReferralFun();
   //---------主题切换----------
-  let { theme }: any = useThemeStore();
+  let { theme } = useThemeStore();
   //点击热搜跳转
   const openContentView = (id: number) => {
     router.push({
@@ -130,7 +128,7 @@
   }, 300);
   // 销毁前清除定时器
   onUnmounted(() => {
-    timeId.forEach((item: number) => {
+    timeId.forEach((item) => {
       clearTimeout(item);
     });
   });
@@ -154,7 +152,7 @@
         <div
           class="searchInputDom py-2 transition-5 position-absolute bg-opacity-50 insetShadow-2-2"
           :class="[
-            theme == 'dark' ? 'bg-black' : 'bg-white',
+            theme == 'light' ? 'bg-white' : 'bg-black',
             isFocus ? 'active' : 'rounded-2',
           ]">
           <form action="/">
@@ -168,7 +166,7 @@
               @blur="blurFun"
               autocomplete="off"
               @update:model-value="inputKeyWord"
-              :class="[theme == 'dark' ? 'searchDark' : 'searchLight']" />
+              :class="[theme == 'light' ? 'searchLight' : 'searchDark']" />
           </form>
         </div>
       </div>
