@@ -22,7 +22,7 @@
           comic_id: number;
           title: string;
           author: string[];
-          styles: Array<string | any>;
+          styles: Array<{ name: string }>;
           is_finish: number;
           last_ord: number | string;
           vertical_cover: string;
@@ -41,7 +41,7 @@
   let listRankDataObj = ref<listRankDataObjType>({});
   //------------------排行榜详情数据-------------------
   let rankInfoData = ref<rankInfoDataType>({}); // 定义变量做数据缓存，方便根据属性名直接查找对应排行榜数组
-  const saveArr: any = ref([]); // 定义数组，元素中存放列表id做缓存标识
+  const saveArr = ref<Array<number>>([]); // 定义数组，元素中存放列表id做缓存标识
   const getListRankData = async () => {
     listRankDataObj.value = await getListRank();
     let empObj = await getRankInfo({
@@ -91,8 +91,8 @@
   };
 
   // --------------swiper实例化-----------------
-  const sw1: any = ref(null);
-  const sw2: any = ref<Array<object> | null>(null);
+  const sw1 = ref();
+  const sw2 = ref();
   let empObj = null; // 存放getRankInfo接口的返回数据
   let activeIndex = 0; //存放当前slide索引
   onMounted(() => {

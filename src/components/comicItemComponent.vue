@@ -7,7 +7,7 @@
       comic_id: number;
       title: string;
       author: string[];
-      styles: Array<string | any>;
+      styles: Array<{ name: string }>;
       is_finish: number;
       last_ord: number | string;
       vertical_cover: string;
