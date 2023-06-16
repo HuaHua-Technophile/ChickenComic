@@ -6,24 +6,25 @@
   import "vant/es/toast/style";
   import axios from "axios";
   import md5 from "js-md5";
-  // QQ昵称+头像 https://cloud.qqshabi.cn/api/qqinfo.php?qq=3118590779
-  // QQ昵称+头像 https://api.szfx.top/qqinfo/?qq=3118590779
-  // QQ昵称+头像 https://api.usuuu.com/qq/3118590779
-  // QQ头像 https://q.qlogo.cn/headimg_dl?dst_uin=3118590779&spec= (1~5)
-  let router = useRouter();
-  interface QQinfo {
+  interface resType {
     data: {
       name: string;
       code: number;
     };
   }
-  //-------------正则表达式---------------
+  // QQ昵称+头像 https://cloud.qqshabi.cn/api/qqinfo.php?qq=3118590779
+  // QQ昵称+头像 https://api.szfx.top/qqinfo/?qq=3118590779
+  // QQ昵称+头像 https://api.usuuu.com/qq/3118590779
+  // QQ头像 https://q.qlogo.cn/headimg_dl?dst_uin=3118590779&spec= (1~5)
+  let router = useRouter();
+
+  //---------------正则表达式---------------
   let passwordReg = /^(?=.*[A-Z])(?=.*\d)[^]{6,16}$/;
   let accountReg = /^\d{3,12}$/;
-  //------------当前激活标签页---------------
+  //--------------当前激活标签页---------------
   let active = ref(0);
   //---------------bs实例化相关-----------
-  let loginView: any = ref<object | null>(null);
+  let loginView = ref();
   let bs = ref({}); //Better scroll实例化后对象的存储
   onMounted(() => {
     bs.value = new BScroll(loginView.value, {
@@ -85,7 +86,7 @@
       return;
     } else {
       // 成功创建
-      let res = <QQinfo>(
+      let res = <resType>(
         await axios.get(
           `https://cloud.qqshabi.cn/api/qqinfo.php?qq=${account1.value}`
         )

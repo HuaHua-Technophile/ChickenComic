@@ -5,7 +5,7 @@
   import { showToast } from "vant";
   import "vant/es/toast/style";
   //---------------bs实例化相关-----------
-  let settingAbout: any = ref<object | null>(null);
+  let settingAbout = ref();
   let bs = ref({}); //Better scroll实例化后对象的存储
   onMounted(() => {
     bs.value = new BScroll(settingAbout.value, {
@@ -13,7 +13,7 @@
     });
   });
   //--------------主题色修改------------------
-  let { theme, changeTheme }: any = useThemeStore();
+  let { theme, changeTheme } = useThemeStore();
   //--------------遮罩层修改------------------
   let overlayShow = ref(false);
   let overlayInfo = ref("");
