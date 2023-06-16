@@ -6,9 +6,9 @@
   import ObserveDOM from "@better-scroll/observe-dom"; //ObserveDOM插件
   import { useRouter } from "vue-router";
   //------------Better scroll实例化-----------
-  let RecommendedComics: any = ref<object | null>(null);
+  let RecommendedComics = ref();
   BScroll.use(ObserveDOM); // 自动重载插件
-  let bs: any = ref({});
+  let bs = ref();
   onMounted(() => {
     bs.value = new BScroll(RecommendedComics.value, {
       probeType: 3,
@@ -72,7 +72,7 @@
 
   //--------------跳转详情页------------
   let router = useRouter();
-  const goComicCoverPage = (id: any) => {
+  const goComicCoverPage = (id: number) => {
     console.log(id);
     router.push({
       path: "comicCover",
