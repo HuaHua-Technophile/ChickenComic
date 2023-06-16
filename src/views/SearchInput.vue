@@ -152,7 +152,7 @@
         <div
           class="searchInputDom py-2 transition-5 position-absolute bg-opacity-50 insetShadow-2-2"
           :class="[
-            theme == 'dark' ? 'bg-black' : 'bg-white',
+            theme == 'light' ? 'bg-white' : 'bg-black',
             isFocus ? 'active' : 'rounded-2',
           ]">
           <form action="/">
@@ -166,7 +166,7 @@
               @blur="blurFun"
               autocomplete="off"
               @update:model-value="inputKeyWord"
-              :class="[theme == 'dark' ? 'searchDark' : 'searchLight']" />
+              :class="[theme == 'light' ? 'searchLight' : 'searchDark']" />
           </form>
         </div>
       </div>

@@ -17,7 +17,6 @@
   // QQ昵称+头像 https://api.usuuu.com/qq/3118590779
   // QQ头像 https://q.qlogo.cn/headimg_dl?dst_uin=3118590779&spec= (1~5)
   let router = useRouter();
-
   //---------------正则表达式---------------
   let passwordReg = /^(?=.*[A-Z])(?=.*\d)[^]{6,16}$/;
   let accountReg = /^\d{3,12}$/;
