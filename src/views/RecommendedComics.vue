@@ -21,7 +21,7 @@
     value: Array<object>;
   }
   let RecommendList: arr = ref<never[]>([]);
-  let RecommendLists: any = ref(null);
+  let RecommendLists = ref();
   // ---------------获取推荐漫画数据3条----------------
   const getRecommendFun = async () => {
     let data = await getRecommend();
@@ -37,11 +37,16 @@
   };
   getHomeRecommendFun();
   //-----------滚动效果---------------
-  let contentList: any = ref<object | null>(null);
+
+  interface position {
+    x: number;
+    y: number;
+  }
+  let contentList = ref();
   let topOpacity = ref(0.75);
   let bottomOpacity = ref(0.5);
   let translateY = ref(60);
-  let scrollFun = (position: any) => {
+  let scrollFun = (position: position) => {
     if (position.y <= 0) {
       if (position.y > -130) {
         topOpacity.value = 0.75 + (0.75 * position.y) / 130;
