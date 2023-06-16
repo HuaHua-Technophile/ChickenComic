@@ -12,10 +12,6 @@ declare module 'vue' {
     ComicItemComponent: typeof import('./src/components/comicItemComponent.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    VanCollapse: typeof import('vant/es')['Collapse']
-    VanCollapseItem: typeof import('vant/es')['CollapseItem']
-    VanLoading: typeof import('vant/es')['Loading']
-    VanOverlay: typeof import('vant/es')['Overlay']
-    VanTextEllipsis: typeof import('vant/es')['TextEllipsis']
+    VanSearch: typeof import('vant/es')['Search']
   }
 }

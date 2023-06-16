@@ -6,10 +6,10 @@
   import throttle from "lodash/throttle"; //Lodash节流
   import { useRouter, useRoute } from "vue-router";
   import Pullup from "@better-scroll/pull-up";
-  let router: any = useRouter();
-  let route: any = useRoute();
+  let router = useRouter();
+  let route = useRoute();
   // ---------------- 上啦加载更多-------------
-  let time: any = null; //节流
+  let time = null; //节流
   let pageNumber = ref(1);
   let handelFunction = () => {
     clearTimeout(time);
@@ -229,11 +229,11 @@
             <img :src="item.vertical_cover + '@100w_100h.jpg'" alt="" />
           </div>
           <div class="details d-fles w-100">
-            <div class="name my-2 van-ellipsis" v-html="item.title"></div>
-            <div class="fs-10 opacity-75 van-ellipsis w-50">
+            <div class="name my-2 " v-html="item.title"></div>
+            <div class="fs-10 opacity-75  w-50">
               {{ allAuthors(item.author_name) }}
             </div>
-            <div class="fs-10 opacity-75 van-ellipsis">
+            <div class="fs-10 opacity-75 ">
               {{ allAuthors(item.styles) }}
             </div>
             <div class="fs-10 opacity-75 mt-1">
