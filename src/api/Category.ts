@@ -1,7 +1,6 @@
 import service from "./http";
-import { type allLabelDataType } from "@/utils/typeing";
 // 分类筛选条件
-export function getAllLabel(): Promise<allLabelDataType> {
+export function getAllLabel() {
   return service({
     url: "/AllLabel",
     method: "get",
@@ -9,7 +8,7 @@ export function getAllLabel(): Promise<allLabelDataType> {
 }
 
 // 分类结果
-export function getClassPage(params: object): object {
+export function getClassPage(params: object) {
   return service({
     url: "/ClassPage",
     method: "get",

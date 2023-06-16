@@ -1,7 +1,7 @@
 import service from "./http";
 // 排行榜
 // 排行榜列表
-export function getListRank(): object {
+export function getListRank() {
   return service({
     url: "/ListRank",
     method: "get",
@@ -9,7 +9,7 @@ export function getListRank(): object {
 }
 
 // 排行榜详情
-export function getRankInfo(params: object): object {
+export function getRankInfo(params: object) {
   return service({
     url: `/GetRankInfo`,
     method: "get",
