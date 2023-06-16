@@ -65,7 +65,6 @@
   const { setCollection } = useUserInfoStore();
   let collect = () => {
     if (Logged.value) {
-      // userInfo.value.collection.push(res.value.data); //生效，但是无法反馈至pinia中
       setCollection([{ name: 123 }]);
     } else console.log("未登录");
   };
@@ -87,7 +86,7 @@
       <div
         class="mx-auto mb-5 rounded-5 overflow-hidden"
         style="width: 70%; box-shadow: 0px 0px 30px rgba(255, 255, 255, 0.5)">
-        <img v-lazy="res?.data?.vertical_cover + '@386w'" class="w-100" />
+        <img v-lazy="res?.data.vertical_cover + '@386w'" class="w-100" />
       </div>
       <!-- 下方内容区域 -->
       <div
@@ -110,30 +109,30 @@
             style="padding-bottom: 25%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.8)">
             <div class="position-absolute top-0 bottom-0 start-0 end-0">
               <img
-                v-lazy="res.data?.horizontal_cover + '@105h'"
+                v-lazy="res?.data.horizontal_cover + '@105h'"
                 class="w-100 h-100 object-fit-cover" />
             </div>
           </div>
           <!-- 作者,漫画名 -->
           <div class="flex-grow-1 overflow">
             <div class="mb-2 opacity-50">
-              人気しすー : {{ res.data?.interact_value }}
+              人気しすー : {{ res?.data.interact_value }}
             </div>
             <div
               class="fs-2 fw-bold mb-1 van-multi-ellipsis--l2 t-shadow-2"
               style="letter-spacing: 2.5px">
-              {{ res.data?.title }}
+              {{ res?.data.title }}
             </div>
             <div class="pe-3">
               <span class="fs-7 opacity-75">絵師 : </span>
               <span>
                 <span
-                  v-for="(item, index) in res.data?.author_name"
+                  v-for="(item, index) in res?.data.author_name"
                   :key="index"
                   :class="[
                     {
                       'me-2 position-relative 分隔符':
-                        index < res.data?.author_name.length - 1,
+                        index < res?.data.author_name.length - 1,
                     },
                   ]"
                   >{{ item }}</span
@@ -148,7 +147,7 @@
             <span>漫畫のあらすじ</span>
             <i class="bi bi-chevron-down fs-7 ms-3"></i>
           </div>
-          <div class="opacity-50">{{ res.data?.evaluate }}</div>
+          <div class="opacity-50">{{ res?.data.evaluate }}</div>
         </div>
         <!-- 开始阅读/加入书架 -->
         <div class="d-flex align-items-center justify-content-evenly mb-3">
@@ -169,20 +168,20 @@
           class="d-flex justify-content-between align-items-center flex-wrap ps-3 pe-3 mb-3 opacity-75">
           <div class="mb-3">ラベル :</div>
           <div
-            v-for="item in res.data?.story_elems"
+            v-for="item in res?.data.story_elems"
             class="bg-body-tertiary rounded mb-3 me-1 pt-1 pb-1 ps-3 pe-3 insetShadow-1-3">
             {{ item.name }}
           </div>
         </div>
         <!-- 章节 -->
         <div class="ms-3 me-3 mb-3">
-          <span class="fs-3 me-3">全{{ res.data?.ep_list.length }}ページ</span>
-          <span class="opacity-75" v-if="res.data?.renewal_time">{{
-            updateTime(res.data.renewal_time)
+          <span class="fs-3 me-3">全{{ res?.data.ep_list.length }}ページ</span>
+          <span class="opacity-75" v-if="res?.data.renewal_time">{{
+            updateTime(res?.data.renewal_time)
           }}</span>
         </div>
         <chapterComponent
-          :detailList="res.data?.ep_list"
+          :detailList="res?.data.ep_list"
           class="ms-3 me-3"
           @readThisChapter="readThisChapter"
           ref="chapterComponentDom"></chapterComponent>
@@ -193,7 +192,7 @@
     <!-- 背景 -->
     <div class="w-100 h-100 position-fixed top-0 z-n1">
       <img
-        :src="res.data?.vertical_cover + '@386w'"
+        :src="res?.data.vertical_cover + '@386w'"
         class="w-100 h-100 object-fit-cover" />
       <!-- 暗色遮罩层 -->
       <div
