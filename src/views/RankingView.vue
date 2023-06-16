@@ -3,31 +3,61 @@
   import comicItemComponent from "@/components/comicItemComponent.vue";
   import { getListRank, getRankInfo } from "@/api/ranking";
   import { register } from "swiper/element/bundle";
+
+  interface listRankDataObjType {
+    value?: object;
+    data?: {
+      list: Array<{
+        id: number;
+        name: string;
+      }>;
+    };
+  }
+
+  interface rankInfoDataType {
+    [activeIndex: number]: {
+      data?: {
+        list: Array<{
+          id: number;
+          comic_id: number;
+          title: string;
+          author: string[];
+          styles: Array<string | any>;
+          is_finish: number;
+          last_ord: number | string;
+          vertical_cover: string;
+          type: object;
+          default: () => {};
+        }>;
+      };
+    };
+  }
+
   //-------------设备像素比---------------
   let DPR = window.devicePixelRatio;
   // -----------------注册swiper-------------------------
   register();
   // ------------------列表数据--------------------
-  let listRankDataObj: any = ref<object>({});
+  let listRankDataObj = ref<listRankDataObjType>({});
   //------------------排行榜详情数据-------------------
-  let rankInfoData: any = ref<object>({}); // 定义变量做数据缓存，方便根据属性名直接查找对应排行榜数组
-  const saveArr: any = ref<Array<number>>([]); // 定义数组，元素中存放列表id做缓存标识
+  let rankInfoData = ref<rankInfoDataType>({}); // 定义变量做数据缓存，方便根据属性名直接查找对应排行榜数组
+  const saveArr: any = ref([]); // 定义数组，元素中存放列表id做缓存标识
   const getListRankData = async () => {
     listRankDataObj.value = await getListRank();
     let empObj = await getRankInfo({
-      id: `${listRankDataObj.value.data.list[0].id}`,
+      id: `${listRankDataObj.value.data!.list[0].id!}`,
       offset: "0",
       subId: "0",
     });
-    rankInfoData.value[0] = empObj;
-    saveArr.value.push(listRankDataObj.value.data.list[0].id);
+    rankInfoData.value[activeIndex] = empObj;
+    saveArr.value.push(listRankDataObj.value.data!.list[0].id);
     // swiper 配置项 (需要在数据获取完初始化配置项)
     const params1 = {
       // array with CSS styles
       pagination: {
         clickable: true,
         renderBullet: (index: number, className: string) => {
-          return `<span class="${className}" style="color: rgb(232, 232, 232)">${listRankDataObj.value.data.list[
+          return `<span class="${className}" style="color: rgb(232, 232, 232)">${listRankDataObj.value.data!.list[
             index
           ]?.name.slice(0, 2)}</span>`;
         },
@@ -63,12 +93,12 @@
   // --------------swiper实例化-----------------
   const sw1: any = ref(null);
   const sw2: any = ref<Array<object> | null>(null);
+  let empObj = null; // 存放getRankInfo接口的返回数据
+  let activeIndex = 0; //存放当前slide索引
   onMounted(() => {
     // -------------------发起请求获取列表数据----------------------
     getListRankData();
     // 监听外层swiper的swiper slide是否改变
-    let empObj = null; // 存放getRankInfo接口的返回数据
-    let activeIndex = 0; //存放当前slide索引
     sw1.value.addEventListener("swiperBox-slidechange", async (event: any) => {
       // swiper slide 改变后执行回调并发送当前排行的请求
       // rankInfoData.value = []; // 清空漫画列表数组，避免视觉上造成覆盖效果
@@ -77,12 +107,12 @@
       // 判断saveArr中是否存在已缓存标识，不存在则发送请求
       if (
         !saveArr.value.includes(
-          listRankDataObj.value.data.list[event.detail[0].activeIndex].id
+          listRankDataObj.value.data!.list[event.detail[0].activeIndex].id
         )
       ) {
         empObj = await getRankInfo({
           id: `${
-            listRankDataObj.value.data.list[event.detail[0].activeIndex].id
+            listRankDataObj.value.data!.list[event.detail[0].activeIndex].id
           }`,
           offset: "0",
           subId: "0",
@@ -91,7 +121,7 @@
         rankInfoData.value[activeIndex] = empObj;
         // 每次做完缓存都在saveArr中添加标识
         saveArr.value.push(
-          listRankDataObj.value.data.list[event.detail[0].activeIndex].id
+          listRankDataObj.value.data!.list[event.detail[0].activeIndex].id
         );
       }
       // 跳转到里层swiper的第一个slide

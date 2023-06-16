@@ -61,10 +61,10 @@
   <div class="userHome w-100 h-100" ref="userHome">
     <!-- 外部bscroll滚动区域 -->
     <div class="bsContent w-100" style="min-height: calc(100% + 1px)">
-      <div class="userInfoArea position-relative" style="height: 40vh">
+      <div class="userInfoArea position-relative" style="height: 30vh">
         <div
           class="info position-absolute start-50 translate-middle-x"
-          style="bottom: 15%">
+          style="bottom: 12%">
           <div
             class="userCover rounded-3 overflow-hidden"
             style="width: 100px; height: 100px">
@@ -75,15 +75,23 @@
       </div>
       <!-- 外层swiper -->
       <div class="btnArea d-flex justify-content-center">
-        <div class="btnL">2</div>
-        <div class="btnR">2</div>
+        <div
+          class="btnL text-center"
+          style="width: 100px; height: 50px; line-height: 50px">
+          コレクション
+        </div>
+        <div
+          class="btnR text-center"
+          style="width: 100px; height: 50px; line-height: 50px">
+          レコード破り
+        </div>
       </div>
       <swiper-container
         class="mySwiper1 w-100 overflow-hidden position-relative"
-        style="height: 60vh; margin-top: 55px"
+        style="height: 55vh; margin-top: 20px; padding-top: 5px"
         events-prefix="swiperFirstBox-"
         ref="sw">
-        <swiper-slide style="height: 60vh">
+        <swiper-slide style="height: 55vh">
           <!-- 内层swiper -->
           <!-- <swiper-container
             class="mySwiper2 w-100 h-100 overflow-hidden position-relative"
@@ -99,13 +107,13 @@
           <!-- 里层bscroll -->
           <div class="bs2Box" style="height: 100%" ref="bscroll2">
             <div
-              class="bscroll2 d-flex flex-wrap justify-content-evenly"
+              class="bscroll2 d-flex flex-wrap"
               style="min-height: calc(100% + 1px)">
               <div
                 class="collectItem"
-                v-for="item in 100"
-                :key="item"
-                style="width: 40vw; height: 300px">
+                v-for="(item, index) in userInfo?.collection"
+                :key="index"
+                style="width: 40%; height: 300px">
                 <div class="imageItemBox" style="width: 100%">
                   <img
                     class="imageItem rounded-3"
@@ -114,15 +122,16 @@
                       box-shadow: 0px 0px 5px
                         rgba(var(--bs-body-color-rgb), 0.5);
                     "
-                    src="https://i0.hdslb.com/bfs/manga-static/3dee1e75e3f62edbace9f1b278a115a79d6a3947.jpg@568w_319h"
+                    v-lazy="item.vertical_cover + '@568w_319h'"
                     alt="" />
                 </div>
-                <div class="comicTitle text-truncate fs-5">
-                  少年张嚣进入了一款名为“阎王游戏”的游戏中，但却在死后阴差阳错的复生在了另一个身体里，
-                  从此逆袭走上人生巅峰，他是否能凭一己之力掀翻整个地府的阴谋，然后征服这里所有的妹子！
+                <div class="comicTitle text-truncate fs-5 pt-1">
+                  {{ item.title }}
                 </div>
                 <!-- 更新或完结信息 -->
-                <div class="finish fs-6 opacity-50">1111111話に更新</div>
+                <div class="finish fs-6 opacity-50">
+                  {{ item.last_ord }}話に更新
+                </div>
               </div>
             </div>
           </div>
@@ -135,15 +144,22 @@
   </div>
 </template>
 <style lang="scss">
-  .van-tab__panel {
-    min-height: calc(100% + 1px) !important;
+  .collectItem {
+    &:nth-child(odd) {
+      margin: 0 6.66666667%;
+    }
   }
-  .van-tabs__wrap {
-    border-radius: 99999px;
-    width: 80%;
-    margin: auto;
+
+  img[lazy="loading"] {
+    opacity: 0;
+    width: 40% !important;
   }
-  .van-tabs__line {
-    margin-bottom: calc(var(--jianXi) * 0.5);
+  img[lazy="error"] {
+    opacity: 1;
+    transition: 0.6s;
+  }
+  img[lazy="loaded"] {
+    opacity: 1;
+    transition: 0.6s;
   }
 </style>
