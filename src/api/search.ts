@@ -1,7 +1,7 @@
 import service from "./http";
 
 // 热门搜索  （参数 num=10）
-export function getSearchReferral(params: any): any {
+export function getSearchReferral(params: object) {
   return service({
     url: "/SearchRecommend",
     method: "get",
@@ -11,7 +11,7 @@ export function getSearchReferral(params: any): any {
 
 // 搜索建议词
 // ?term=天&num=20
-export function getSuggestedWord(params: any): any {
+export function getSuggestedWord(params: object) {
   console.log(params);
   return service({
     url: "/bcomic/SearchSug",

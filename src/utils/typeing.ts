@@ -3,11 +3,6 @@ export interface imgIndexUrl {
     images: Array<{ path: string }>;
   };
 }
-
-export interface allLabelDataType {
-  data: object;
-}
-
 export interface comicInfoCommonType {
   id?: number;
   comic_id: number;
