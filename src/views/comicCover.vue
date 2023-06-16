@@ -24,7 +24,7 @@
   let { id }: { id?: string } = route.query;
 
   let res = ref();
-  let chapterList: any[] = [];
+  let chapterList: Array<object> = [];
   let getData = async () => {
     res.value = await getComicDetail(id!);
     chapterList = res.value.data?.ep_list;
@@ -33,10 +33,10 @@
   // ----------------Better scroll配置项相关---------------
   BScroll.use(ObserveImage);
   BScroll.use(NestedScroll);
-  let comicCover = ref<HTMLElement>(); //待实例化的DOM元素
-  let chapterComponentDom = ref<any>({}); //待实例化的DOM元素
-  let bs: any = ref({});
-  let bs2: any = ref({});
+  let comicCover = ref(); //待实例化的DOM元素
+  let chapterComponentDom = ref(); //待实例化的DOM元素
+  let bs = ref();
+  let bs2 = ref();
   //-------------挂载后获取原生dom对象,进行bs初始化---------
   onMounted(() => {
     if (comicCover.value) {
