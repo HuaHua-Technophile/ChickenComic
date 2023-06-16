@@ -62,6 +62,11 @@ const router = createRouter({
       name: "ComicClassification",
       component: () => import("@/views/ComicClassification.vue"),
     },
+    {
+      path: "/home",
+      name: "home",
+      component: () => import("@/views/home.vue"),
+    },
   ],
 });
 
