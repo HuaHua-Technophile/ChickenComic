@@ -16,7 +16,7 @@
   } from "vue";
   import { getImageIndex, getImageToken } from "@/api/content";
   import chapterComponent from "@/components/chapterComponent.vue"; //引入组件
-
+  import { type imgIndexUrl } from "@/utils/typeing";
   // 接收路由信息（包含当前漫画index和所有章节信息）
   const etid_data = history.state.params;
   let { index, chapterList } = toRefs(JSON.parse(etid_data));
@@ -28,19 +28,17 @@
     chapterList.value.slice(0, chapterList.value.length)
   ); // copy一份旧章节数据
   let imgEpList: any = ref<Array<number>>([]); // 章节id数组集合
-  let imgIndexUrl: any = ref<object>({}); // 漫画章节内容图片&索引 api数据
-  let imgBaseUrl: any = ref<string>("https://manga.hdslb.com"); // 漫画章节内容图片拼接地址
+  let imgIndexUrl = ref<imgIndexUrl>(); // 漫画章节内容图片&索引 api数据
+  let imgBaseUrl: any = ref("https://manga.hdslb.com"); // 漫画章节内容图片拼接地址
   let imgUrlArr: any = ref<Array<object>>([]); // 漫画章节内容图片数据(整合为数组)
   let imgUrlToken: any = ref<Array<object>>([]); // 漫画章节内容图片Token api数据
   let imgUrlTokenAll: any = ref<Array<object>>([]); // 漫画所有章节内容图片Token api数据
   const getContentData = async (epId: number) => {
-    imgIndexUrl.value = await getImageIndex({ epId: epId }); // 请求漫画章节内容图片&索引数据
+    imgIndexUrl.value = (await getImageIndex({ epId: epId })) as imgIndexUrl; // 请求漫画章节内容图片&索引数据
     // imgBaseUrl.value = imgIndexUrl.value.data.host;
     // 根据图片基地址 图片url 图片格式 拼接为图片token接口的请求参数
-    imgUrlArr.value = imgIndexUrl.value.data.images.map(
-      (item: { path: string }) => {
-        return `${imgBaseUrl.value + item.path}@660w.webp`;
-      }
+    imgUrlArr.value = imgIndexUrl.value!.data.images.map(
+      (value) => `${imgBaseUrl.value + value.path}@660w.webp`
     );
     // 批量请求token
     imgUrlToken.value = await getImageToken({

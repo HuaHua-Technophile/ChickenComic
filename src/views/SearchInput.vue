@@ -9,28 +9,29 @@
   // ---------------设备像素比----------------
   let DPR = window.devicePixelRatio;
   // -----------定时器ID数组------------
-  let timeId = ref<Array<number>>([]);
+  let timeId: Array<number> = [];
   // -----------路由-------------
   let router = useRouter();
-  //------------Better scroll实例化-----------
-  let SearchInput: any = ref<object | null>(null);
+  // ------------Better scroll实例化-----------
+  let SearchInput = ref();
   BScroll.use(ObserveDOM); // 自动重载插件
   let bs = ref({});
   onMounted(() => {
-    bs.value = new BScroll(SearchInput.value, {
-      click: true,
-      observeDOM: true,
-    });
+    if (SearchInput.value)
+      bs.value = new BScroll(SearchInput.value, {
+        click: true,
+        observeDOM: true,
+      });
   });
-  // ---------搜索框------------
+  // ------------搜索框------------
   let keyword = ref(""); //关键词
   let isFocus = ref(false); //搜索框是否聚焦
-  //--------搜索框聚焦/失去焦点-----------
+  // --------搜索框聚焦/失去焦点-----------
   const focusFun = () => {
     isFocus.value = true;
   };
   const blurFun = () => {
-    timeId.value.push(
+    timeId.push(
       setTimeout(() => {
         isFocus.value = false;
         keyword.value = "";
@@ -127,9 +128,9 @@
       toSearchResult(keyword.value);
     }
   }, 300);
-  // 清除定时器
+  // 销毁前清除定时器
   onUnmounted(() => {
-    timeId.value.forEach((item: number) => {
+    timeId.forEach((item: number) => {
       clearTimeout(item);
     });
   });

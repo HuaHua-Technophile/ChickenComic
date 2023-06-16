@@ -22,22 +22,9 @@
   //------------------数据请求-----------------------
   let route = useRoute();
   let { id }: { id?: string } = route.query;
-  interface res {
-    data: {
-      vertical_cover: string;
-      horizontal_cover: string;
-      interact_value: string;
-      title: string;
-      author_name: Array<string>;
-      evaluate: string;
-      story_elems: Array<{ name: string }>;
-      ep_list: string;
-      renewal_time: string;
-    };
-    value: res | any;
-  }
-  let res: res = ref<res | any>({});
-  let chapterList: Array<number> = [];
+
+  let res = ref();
+  let chapterList: any[] = [];
   let getData = async () => {
     res.value = await getComicDetail(id!);
     chapterList = res.value.data?.ep_list;
@@ -46,21 +33,23 @@
   // ----------------Better scroll配置项相关---------------
   BScroll.use(ObserveImage);
   BScroll.use(NestedScroll);
-  let comicCover = ref<HTMLElement | object>({}); //待实例化的DOM元素
+  let comicCover = ref<HTMLElement>(); //待实例化的DOM元素
   let chapterComponentDom = ref<any>({}); //待实例化的DOM元素
   let bs: any = ref({});
   let bs2: any = ref({});
   //-------------挂载后获取原生dom对象,进行bs初始化---------
   onMounted(() => {
-    bs.value = new BScroll(comicCover.value as HTMLElement, {
-      click: true,
-      observeImage: {
-        debounceTime: 500, // ms
-      },
-      nestedScroll: {
-        groupId: 1, // string or number
-      },
-    });
+    if (comicCover.value) {
+      bs.value = new BScroll(comicCover.value, {
+        click: true,
+        observeImage: {
+          debounceTime: 500, // ms
+        },
+        nestedScroll: {
+          groupId: 1, // string or number
+        },
+      });
+    }
     bs2.value = new BScroll(chapterComponentDom.value.$el, {
       click: true,
       observeImage: {
@@ -72,16 +61,12 @@
     });
   });
   //------------------------收藏相关/pinia判断是否已登录-------------------------
-  interface Info {
-    id?: string;
-    collection: Array<object>;
-  }
-  let { userInfo, Logged }: Info | any = storeToRefs(useUserInfoStore());
+  let { userInfo, Logged } = storeToRefs(useUserInfoStore());
+  const { setCollection } = useUserInfoStore();
   let collect = () => {
-    console.log(userInfo.value, Logged.value);
     if (Logged.value) {
-      console.log("已登录");
-      userInfo.value.collection.push(res.value.data);
+      // userInfo.value.collection.push(res.value.data); //生效，但是无法反馈至pinia中
+      setCollection([{ name: 123 }]);
     } else console.log("未登录");
   };
   //------------------子组件点击传出方法,阅读不同章节------------------
@@ -102,7 +87,7 @@
       <div
         class="mx-auto mb-5 rounded-5 overflow-hidden"
         style="width: 70%; box-shadow: 0px 0px 30px rgba(255, 255, 255, 0.5)">
-        <img v-lazy="res.data?.vertical_cover + '@386w'" class="w-100" />
+        <img v-lazy="res?.data?.vertical_cover + '@386w'" class="w-100" />
       </div>
       <!-- 下方内容区域 -->
       <div
