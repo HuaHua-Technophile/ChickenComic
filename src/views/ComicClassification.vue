@@ -6,7 +6,7 @@
   import Pullup from "@better-scroll/pull-up";
   import { useRouter } from "vue-router";
   import throttle from "lodash/throttle"; //Lodash节流
-
+  import { type allLabelDataType } from "@/utils/typeing";
   //------------Better scroll实例化-----------
   let ComicClassification = ref();
   BScroll.use(Pullup);
@@ -40,12 +40,9 @@
     status: -1,
   });
   //------------获取分了项数据------------------
-  interface allLabelData {
-    data: object;
-  }
 
   const getAllLabelFun = async () => {
-    let data: allLabelData = (await getAllLabel()) as allLabelData;
+    let data: allLabelDataType = await getAllLabel();
     allLabel.value = data.data;
     console.log(data);
 

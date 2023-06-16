@@ -1,7 +1,7 @@
 import service from "./http";
-
+import { type allLabelDataType } from "@/utils/typeing";
 // 分类筛选条件
-export function getAllLabel(): object {
+export function getAllLabel(): Promise<allLabelDataType> {
   return service({
     url: "/AllLabel",
     method: "get",
