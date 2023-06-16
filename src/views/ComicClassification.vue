@@ -5,12 +5,13 @@
   import ObserveDOM from "@better-scroll/observe-dom"; //ObserveDOM插件
   import Pullup from "@better-scroll/pull-up";
   import { useRouter } from "vue-router";
+  import throttle from "lodash/throttle"; //Lodash节流
 
   //------------Better scroll实例化-----------
-  let ComicClassification: any = ref<object | null>(null);
+  let ComicClassification = ref();
   BScroll.use(Pullup);
   BScroll.use(ObserveDOM); // 自动重载插件
-  let bs: any = ref({});
+  let bs = ref();
   onMounted(() => {
     bs.value = new BScroll(ComicClassification.value, {
       click: true,
@@ -21,8 +22,8 @@
   });
 
   // -----------分类项--------------
-  interface abcd {
-    value: abcd | any;
+  interface active {
+    value: active | any;
     styles: number;
     areas: number;
     orders: number;
@@ -31,7 +32,7 @@
   }
   let allLabel: any = ref([]);
   //请求参数
-  let activeList: abcd = ref<abcd | any>({
+  let activeList: active = ref<active | any>({
     styles: -1,
     areas: -1,
     orders: -1,
@@ -39,9 +40,15 @@
     status: -1,
   });
   //------------获取分了项数据------------------
+  interface allLabelData {
+    data: object;
+  }
+
   const getAllLabelFun = async () => {
-    let data: any = await getAllLabel();
+    let data: allLabelData = (await getAllLabel()) as allLabelData;
     allLabel.value = data.data;
+    console.log(data);
+
     for (const key in allLabel.value) {
       allLabel.value[key].unshift({ id: -1, name: "全部" });
     }
@@ -49,7 +56,7 @@
   getAllLabelFun();
 
   // ------------------选择分类更换参数重新请求数据-----------------------
-  const selectType = (name: any, id: number) => {
+  const selectType = (name: string, id: number) => {
     activeList.value[name] = id;
     // 初始化
     loadFlag.value = true;
@@ -77,21 +84,21 @@
   getClassPageFun();
 
   //----------------上啦加载更多----------------
-  let time: any = null; //节流
+  const findDataInnextPage = () => {
+    pageNumber.value++;
+    getClassPageFun();
+  };
+  let throttleFun = throttle(findDataInnextPage, 2000); //节流
   let handelFunction = () => {
     loadFlag.value = true;
-    clearTimeout(time);
-    time = setTimeout(() => {
-      pageNumber.value++;
-      getClassPageFun();
-    }, 2000);
+    throttleFun();
     bs.value.finishPullUp();
     bs.value.refresh();
   };
   // loading 显示开关
   const loadFlag = ref(false);
   // 帅选框开关
-  const activeNames: any = toRef(["0"]);
+  const activeNames = toRef(["0"]);
   //添加滚动事件
   onMounted(() => {
     bs.value.on("scrollStart", closeTyoeFun);
@@ -107,7 +114,7 @@
   };
 
   // -------------点击分类结果跳转对应的详情页------------------
-  let router: any = useRouter();
+  let router = useRouter();
   const openContentView = (id: number) => {
     router.push({
       path: "/comicCover",
