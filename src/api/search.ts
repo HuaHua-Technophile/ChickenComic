@@ -22,7 +22,7 @@ export function getSuggestedWord(params: object) {
 
 // 漫画搜搜
 // keyWord
-export function getSearchResult(params: any): any {
+export function getSearchResult(params: object) {
   console.log(params);
   return service({
     url: "/Search",

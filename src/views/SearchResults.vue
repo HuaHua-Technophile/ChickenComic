@@ -6,30 +6,25 @@
   import throttle from "lodash/throttle"; //Lodash节流
   import { useRouter, useRoute } from "vue-router";
   import Pullup from "@better-scroll/pull-up";
-  let router: any = useRouter();
-  let route: any = useRoute();
-  // ---------------- 上啦加载更多-------------
-  let time: any = null; //节流
+  let router = useRouter();
+  let route = useRoute();
+  // ---------------- 上拉加载更多-------------
   let pageNumber = ref(1);
-  let handelFunction = () => {
-    clearTimeout(time);
-    time = setTimeout(() => {
-      if (loadFlag) {
-        pageNumber.value++;
-        getSearchResultFun();
-      }
-    }, 500);
-    // getSearchResultFun(pageNumber.value);
+  let handelFunction = throttle(() => {
+    if (loadFlag) {
+      pageNumber.value++;
+      getSearchResultFun();
+    }
     bs.value.finishPullUp();
     bs.value.refresh();
-  };
+  }, 500);
   //------------------better scroll实例化相关-----------
   BScroll.use(Pullup);
   BScroll.use(ObserveImage);
-  let searchResultList: any = ref<object | null>(null);
-  let bs: { on: Function } | any = ref({}); //Better scroll实例化后对象的存储
+  let searchResultList = ref();
+  let bs = ref(); //Better scroll实例化后对象的存储
   onMounted(() => {
-    bs.value = new BScroll(searchResultList.value as HTMLElement, {
+    bs.value = new BScroll(searchResultList.value, {
       click: true,
       observeImage: {
         debounceTime: 500, // ms
@@ -41,10 +36,10 @@
   //---------- 搜索框关键词 -------------
   let keyWord = ref("我推的孩子");
   watchEffect(() => {
-    keyWord.value = route.query.keyword;
+    keyWord.value = route.query.keyword + "";
   });
   // --------若没有该分类数据，自动加载下一页进行匹配----------
-  const findDataInnextPage = () => {
+  const findDataInnextPage = throttle(() => {
     pageNumber.value++;
     tryAgainNum.value++;
     if (tryAgainNum.value <= 20) {
@@ -53,14 +48,13 @@
       loadFlag.value = false;
       tryAgainNum.value = 0;
     }
-  };
+  }, 500);
   //-----------根据选择获取搜索结果数据-----------
-  let newData: any = ref(0); // 选项后符合条件的数据个数
-  let tryAgainNum: any = ref(0); // 自动加载次数
-  let SearchResult: any = ref([]); // 结果
+  let newData = ref(0); // 选项后符合条件的数据个数
+  let tryAgainNum = ref(0); // 自动加载次数
+  let SearchResult = ref<Array<{ id: number }>>([]); // 结果
   let loadFlag = ref(true); // 加载开关
   // 数据请求核心函数
-  let throttleFun = throttle(findDataInnextPage, 500);
   const getSearchResultFun = async () => {
     let data = await getSearchResult({
       keyWord: keyWord.value,
@@ -79,8 +73,8 @@
         findDataInnextPage();
       }
     } else {
-      data.data.list.forEach((n: any) => {
-        let index = n.styles.findIndex((item: any) => item == sort2.value);
+      data.data.list.forEach((n) => {
+        let index = n.styles.findIndex((item) => item == sort2.value);
         if (index !== -1) {
           SearchResult.value = SearchResult.value.concat(n);
           newData.value++;
@@ -90,7 +84,7 @@
         newData.value = 0;
         tryAgainNum.value = 0;
       } else {
-        throttleFun();
+        findDataInnextPage();
       }
     }
   };
@@ -229,11 +223,11 @@
             <img :src="item.vertical_cover + '@100w_100h.jpg'" alt="" />
           </div>
           <div class="details d-fles w-100">
-            <div class="name my-2 van-ellipsis" v-html="item.title"></div>
-            <div class="fs-10 opacity-75 van-ellipsis w-50">
+            <div class="name my-2 " v-html="item.title"></div>
+            <div class="fs-10 opacity-75  w-50">
               {{ allAuthors(item.author_name) }}
             </div>
-            <div class="fs-10 opacity-75 van-ellipsis">
+            <div class="fs-10 opacity-75 ">
               {{ allAuthors(item.styles) }}
             </div>
             <div class="fs-10 opacity-75 mt-1">
