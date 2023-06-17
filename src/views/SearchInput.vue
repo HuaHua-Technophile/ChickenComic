@@ -7,8 +7,6 @@
   import { useRouter } from "vue-router";
   import debounce from "lodash/debounce"; //导入lodash防抖
 
-  // ---------------设备像素比----------------
-  let DPR = window.devicePixelRatio;
   // -----------定时器ID数组------------
   let timeId: Array<number> = [];
   // -----------路由-------------
@@ -91,7 +89,6 @@
   let defaultKeyword = ref([]);
   const getSearchReferralFun = async () => {
     let data = await getSearchReferral({ num: 12 });
-    console.log(data);
     defaultKeyword.value = data.data[0].title;
     searchReferral.value = data.data?.slice(1, 11);
   };
@@ -211,7 +208,7 @@
               <!-- 漫画Item -->
               <comic-item-component
                 :comicInfo="item"
-                :imgWidth="(70.4 * DPR).toFixed()"></comic-item-component>
+                :imgWidth="70.4"></comic-item-component>
             </li>
           </ul>
         </div>
