@@ -3,7 +3,14 @@ import { defineStore } from "pinia";
 export const useUserInfoStore = defineStore("global", () => {
   //登录信息----------------
 
-  let userInfo = ref<{ id: number; collection: Array<object> }>();
+  let userInfo = ref<{
+    id: number;
+    collection: Array<{
+      vertical_cover: string;
+      title: string;
+      last_ord: number;
+    }>;
+  }>();
   let Logged = ref(false);
   watch(
     userInfo,

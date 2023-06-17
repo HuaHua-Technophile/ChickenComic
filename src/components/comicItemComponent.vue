@@ -81,3 +81,17 @@
     </div>
   </div>
 </template>
+<style lang="scss" scoped>
+  img[lazy="loading"] {
+    opacity: 0;
+    width: 97px !important;
+  }
+  img[lazy="error"] {
+    opacity: 1;
+    transition: 0.6s;
+  }
+  img[lazy="loaded"] {
+    opacity: 1;
+    transition: 0.6s;
+  }
+</style>
