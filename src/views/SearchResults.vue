@@ -6,18 +6,19 @@
   import throttle from "lodash/throttle"; //Lodash节流
   import { useRouter, useRoute } from "vue-router";
   import Pullup from "@better-scroll/pull-up";
+
   let router = useRouter();
   let route = useRoute();
-  // -------------数据请求与渲染----------
+
+  // -------------数据请求------------
   const SearchResultLoad = async () => {
     let res = await getSearchResult({
       keyWord: keyWord.value,
       order: sort1.value,
       pageNum: pageNumber.value,
-      isFinish: isFinshVal.value,
-      isFree: isFreeVal.value,
+      isFinish: sort3.value,
+      isFree: sort4.value,
     });
-    console.log("结果出来了", res);
     if (sort2.value == "-1") {
       newData.value += res.data.list.length;
       if (newData.value >= 10) {
@@ -28,10 +29,10 @@
         findDataInnextPage();
       }
     } else {
-      res.data.list.forEach((i: { styles: Array<string> }) => {
-        let index = i.styles.findIndex((j) => j == sort2.value);
+      res.data.list.forEach((item: { styles: Array<string>; id: number }) => {
+        let index = item.styles.findIndex((j) => j == sort2.value);
         if (index !== -1) {
-          SearchResult.value.push(i);
+          SearchResult.value.push(item);
           newData.value++;
         }
       });
@@ -43,23 +44,24 @@
       }
     }
   };
-  //---------- 搜索框关键词 -------------
-  let keyWord = ref("");
+  //---------- 搜索框关键词 ----------------
+  let keyWord = ref();
   watchEffect(() => {
     keyWord.value = route.query.keyword + "";
   });
   // ---------------- 上拉加载更多-------------
   let pageNumber = ref(1);
-  let LoadFinish = ref(false); // 加载开关,是否加载完毕
+  let LoadFlag = ref(true); // 加载开关,是否显示loading
   let newData = ref(0); // 选项后符合条件的数据个数
   let retryTimes = ref(0); // 自动加载次数
   let pullUpload = throttle(() => {
-    if (!LoadFinish) {
+    if (LoadFlag) {
       pageNumber.value++;
       SearchResultLoad();
     }
     bs.value.finishPullUp();
-  }, 500);
+    console.log(1111);
+  }, 2500);
   //------------------better scroll实例化相关-----------
   BScroll.use(Pullup);
   BScroll.use(ObserveImage);
@@ -82,12 +84,12 @@
     if (retryTimes.value <= 20) {
       SearchResultLoad();
     } else {
-      LoadFinish.value = true;
+      LoadFlag.value = false;
       retryTimes.value = 0;
     }
   }, 500);
   //-----------根据选择获取搜索结果数据-----------
-  let SearchResult = ref<Array<{ id?: number; styles: Array<string> }>>([]); // 结果
+  let SearchResult = ref<Array<{ id: number; styles: Array<string> }>>([]); // 结果
   //------------作者数据格式处理---------------
   const allAuthors = computed(() => {
     return function (val: Array<string>) {
@@ -107,14 +109,16 @@
     SearchResultLoad();
   });
   // ------------分类数据 -------------
-  const sort1 = ref(-1);
+  const sort1 = ref("-1");
   const sort2 = ref("-1");
   const sort3 = ref("-1");
+  const sort4 = ref("-1");
+
   const option1 = [
-    { text: "黙認順序付け", value: -1 },
-    { text: "人気のおすすめ", value: 0 },
-    { text: "更新の時間", value: 1 },
-    { text: "店頭に並ぶ時間", value: 2 },
+    { text: "黙認順序付け", value: "-1" },
+    { text: "人気のおすすめ", value: "0" },
+    { text: "更新の時間", value: "1" },
+    { text: "店頭に並ぶ時間", value: "2" },
   ];
   const option2 = [
     { text: "全部です", value: "-1" },
@@ -137,36 +141,23 @@
   ];
   const option3 = [
     { text: "全部です", value: "-1" },
-    { text: "連載します", value: "连载" },
-    { text: "完結です", value: "完结" },
-    { text: "無料です", value: "免费" },
-    { text: "有料です", value: "付费" },
+    { text: "連載します", value: "0" },
+    { text: "完結です", value: "1" },
+  ];
+  const option4 = [
+    { text: "全部です", value: "-1" },
+    { text: "無料です", value: "0" },
+    { text: "有料です", value: "1" },
   ];
   // -----------------选择结果分类-----------------------
   const selectType = () => {
-    LoadFinish.value = false;
+    LoadFlag.value = true;
     newData.value = 0;
     pageNumber.value = 1;
     SearchResult.value = [];
     SearchResultLoad();
   };
-  // ------根据连载进度/付费分类---------
-  let isFinshVal = ref(-1);
-  let isFreeVal = ref(-1);
-  watchEffect(() => {
-    if (sort3.value == "-1") {
-      isFinshVal.value = -1;
-      isFreeVal.value = -1;
-    } else if (sort3.value == "免费") {
-      isFreeVal.value = 1;
-    } else if (sort3.value == "付费") {
-      isFreeVal.value = 0;
-    } else if (sort3.value == "连载") {
-      isFinshVal.value = 0;
-    } else if (sort3.value == "完结") {
-      isFinshVal.value = 1;
-    }
-  });
+
   // 点击分类结果跳转对应的详情页
   const openContentView = (id: number) => {
     router.push({
@@ -207,6 +198,10 @@
         v-model="sort3"
         :options="option3"
         @change="selectType" />
+      <van-dropdown-item
+        v-model="sort4"
+        :options="option4"
+        @change="selectType" />
     </van-dropdown-menu>
     <!-- 滚动容器 -->
     <div
@@ -217,11 +212,12 @@
         <comic-item-component
           v-for="item in SearchResult"
           :key="item.id"
+          @click="openContentView(item.id)"
           :comicInfo="item"
           :imgWidth="50"
           class="mb-2"></comic-item-component>
         <li class="w-100 py-3 text-center">
-          <van-loading v-if="!LoadFinish" />
+          <van-loading v-if="LoadFlag" />
           <p class="w-100 py-3 text-center opacity-50" v-else>
             これ以上ありません~
           </p>
