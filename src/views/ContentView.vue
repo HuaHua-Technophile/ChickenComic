@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import BScroll from "better-scroll"; //导入Better scroll核心
+  import BScroll, { type Options } from "better-scroll"; //导入Better scroll核心
   import Pullup from "@better-scroll/pull-up";
   import Zoom from "@better-scroll/zoom";
   import ObserveImage from "@better-scroll/observe-image";
@@ -17,6 +17,12 @@
   import { getImageIndex, getImageToken } from "@/api/content";
   import chapterComponent from "@/components/chapterComponent.vue"; //引入组件
   import { type imgIndexUrl } from "@/utils/typeing";
+
+  interface imgUrlTokenAllType {
+    epId?: number;
+    item?: { url: string; token: string };
+  }
+
   // 接收路由信息（包含当前漫画index和所有章节信息）
   const etid_data = history.state.params;
   let { index, chapterList } = toRefs(JSON.parse(etid_data));
@@ -24,15 +30,15 @@
   let chapterListIndex = index.value;
 
   // 获取漫画章节内容图片&索引
-  let oldImgEpList: any = ref<Array<number>>(
+  let oldImgEpList = ref<Array<{ id: number }>>(
     chapterList.value.slice(0, chapterList.value.length)
   ); // copy一份旧章节数据
-  let imgEpList: any = ref<Array<number>>([]); // 章节id数组集合
+  let imgEpList = ref<Array<{ id: number }>>([]); // 章节id数组集合
   let imgIndexUrl = ref<imgIndexUrl>(); // 漫画章节内容图片&索引 api数据
-  let imgBaseUrl: any = ref("https://manga.hdslb.com"); // 漫画章节内容图片拼接地址
-  let imgUrlArr: any = ref<Array<object>>([]); // 漫画章节内容图片数据(整合为数组)
-  let imgUrlToken: any = ref<Array<object>>([]); // 漫画章节内容图片Token api数据
-  let imgUrlTokenAll: any = ref<Array<object>>([]); // 漫画所有章节内容图片Token api数据
+  let imgBaseUrl = ref("https://manga.hdslb.com"); // 漫画章节内容图片拼接地址
+  let imgUrlArr = ref<Array<string>>([]); // 漫画章节内容图片数据(整合为数组)
+  let imgUrlToken = ref(); // 漫画章节内容图片Token api数据
+  let imgUrlTokenAll = ref<Array<imgUrlTokenAllType>>([]); // 漫画所有章节内容图片Token api数据
   const getContentData = async (epId: number) => {
     imgIndexUrl.value = (await getImageIndex({ epId: epId })) as imgIndexUrl; // 请求漫画章节内容图片&索引数据
     // imgBaseUrl.value = imgIndexUrl.value.data.host;
@@ -44,7 +50,7 @@
     imgUrlToken.value = await getImageToken({
       urls: JSON.stringify(imgUrlArr.value),
     }); // 请求漫画章节内容图片token数据
-    imgUrlToken.value.data.forEach((item: object) => {
+    imgUrlToken.value.data.forEach((item: { url: string; token: string }) => {
       imgUrlTokenAll.value.push({ item, epId });
     });
   };
@@ -56,7 +62,7 @@
     imgEpList.value.reverse();
     // 调用getContentData方法获取章节数据并对数据做处理
     getContentData(nowEp.value.id);
-    epListindex = imgEpList.value.findIndex((item: { id: any }) => {
+    epListindex = imgEpList.value.findIndex((item) => {
       return item.id == nowEp.value.id;
     });
   };
@@ -68,11 +74,11 @@
   BScroll.use(ObserveImage); // 自动重载插件
   BScroll.use(Zoom); // 注册缩放插件
   BScroll.use(NestedScroll); // 注册嵌套bscroll插件
-  let zoomOption: any = false; // Zoom插件配置项（false为不启用缩放）
-  let bs: any = ref<object>({});
-  let bs2: any = ref<object>({});
-  let contentVeiw: any = ref<object>({});
-  let isPullUpLoad: any = ref<boolean>(false);
+  let zoomOption: boolean | Options = false; // Zoom插件配置项（false为不启用缩放）
+  let bs = ref();
+  let bs2 = ref();
+  let contentVeiw = ref<object>({});
+  let isPullUpLoad = ref<boolean>(false);
   // 上拉加载调用此函数，发送下一章请求
   let endList = ref("上拉进入下一章");
   const pullingUpHandler = debounce(async function () {
@@ -92,25 +98,28 @@
     isPullUpLoad.value = false;
   }, 1000);
 
-  let timer: any = null;
+  let timer: number | undefined = undefined;
   // 封装实例化bscroll及其配置项函数
   const bsMounted = () => {
     // 实例化bscroll并配置其配置项
-    bs.value = new BScroll(contentVeiw.value as HTMLElement, {
-      click: true,
-      pullUpLoad: true,
-      // 开启 observe-image 插件
-      observeImage: {
-        debounceTime: 500,
-      },
-      freeScroll: true,
-      scrollX: true,
-      scrollY: true,
-      zoom: zoomOption,
-      nestedScroll: {
-        groupId: 2,
-      },
-    });
+    bs.value = new BScroll(
+      contentVeiw.value as HTMLElement,
+      {
+        click: true,
+        pullUpLoad: true,
+        // 开启 observe-image 插件
+        observeImage: {
+          debounceTime: 500,
+        },
+        freeScroll: true,
+        scrollX: true,
+        scrollY: true,
+        zoom: zoomOption,
+        nestedScroll: {
+          groupId: 2,
+        },
+      } as Options
+    );
     // 监听上拉事件，执行相应回调函数
     bs.value.on("pullingUp", () => {
       pullingUpHandler();
@@ -125,18 +134,18 @@
   });
 
   // 判断当前阅读的章节
-  let boxes: any = [];
+  let boxes = null;
   onUpdated(() => {
     boxes = document.querySelectorAll(".imgItem");
-    boxes.forEach((box: any) => {
+    boxes.forEach((box) => {
       observer.observe(box);
     });
   });
   const observer = new IntersectionObserver(
-    (entries, observer) => {
+    (entries) => {
       entries.forEach((entry, index) => {
-        chapterListIndex = oldImgEpList.value.findIndex((item: any) => {
-          return item.id == entry.target.getAttribute("dataIndex");
+        chapterListIndex = oldImgEpList.value.findIndex((item) => {
+          return String(item.id) == entry.target.getAttribute("dataIndex");
         });
         console.log(index);
       });
@@ -151,9 +160,9 @@
   });
 
   // 操作面板显示与隐藏
-  let showBottom: any = ref<object | boolean>(false); // 操作面板
-  let isShowSlider: any = ref<object | boolean>(false); // 亮度调节
-  let speedSelectShow: any = ref<object | boolean>(false); // 自动播放速度调节
+  let showBottom = ref<object | boolean>(false); // 操作面板
+  let isShowSlider = ref<object | boolean>(false); // 亮度调节
+  let speedSelectShow = ref<object | boolean>(false); // 自动播放速度调节
   const showPopup = () => {
     showBottom.value = !showBottom.value;
     if (!showBottom.value) {
@@ -166,9 +175,9 @@
   };
   // 控制滑块调节亮度
   const value = ref<number>(0);
-  let mask: any = ref<object | null>(null);
-  const onChange = (value: any) => {
-    mask.value.style.backgroundColor = `rgba(0, 0, 0, ${-value / 100})`;
+  let mask = ref();
+  const onChange = (value: { style: object }) => {
+    mask.value!.style.backgroundColor = `rgba(0, 0, 0, ${-value / 100})`;
   };
 
   // 根据点击区域触发不同效果
@@ -196,7 +205,7 @@
 
   // 自动播放
   let autoPlayShow = ref(false);
-  let autoTimer: any = null;
+  let autoTimer: number | undefined = undefined;
   const autoTimeSelect = () => {
     speedSelectShow.value = !speedSelectShow.value;
   };
@@ -247,7 +256,7 @@
   };
 
   // 章节列表
-  let showListBottom: { value: boolean } | any = ref(false);
+  let showListBottom: { value: boolean } = ref(false);
   const showListPopup = () => {
     showListBottom.value = true;
     showPopup();
@@ -275,7 +284,7 @@
   let newIndex = 0;
   const readThisChapter = async (index: number) => {
     imgUrlTokenAll.value = [];
-    newIndex = imgEpList.value.findIndex((item: { id: any }) => {
+    newIndex = imgEpList.value.findIndex((item) => {
       return item.id == oldImgEpList.value[index].id;
     });
     chapterListIndex = index;
@@ -295,7 +304,7 @@
         v-for="(item, index) in imgUrlTokenAll"
         :key="index">
         <img
-          v-lazy="item.item.url + '?token=' + item.item.token"
+          v-lazy="item.item!.url + '?token=' + item.item!.token"
           class="w-100" />
       </div>
       <!-- 上拉提示 -->
@@ -326,7 +335,7 @@
           <div class="leftIcon d-flex align-items-center">
             <i class="bi bi-arrow-left-short" @click="$router.go(-1)"></i>
             <span class="epListTitle fs-3"
-              >第{{ oldImgEpList.length - chapterListIndex }}话</span
+              >第{{ oldImgEpList.length - chapterListIndex }}話</span
             >
           </div>
           <div
@@ -339,11 +348,12 @@
               @click="likeIt"></i>
             <i class="bi bi-share"></i>
             <i
-              class="iconfont icon-fangdajing1 fs-3 scaleIcon"
+              class="iconfont icon-fangdajing1 fs-2 scaleIcon"
+              style="height: 50%"
               v-show="isScale"
               @click="scaleOpen"></i>
             <i
-              class="iconfont icon-fangdajing1 fs-3 noScaleIcon position-relative"
+              class="iconfont icon-fangdajing1 fs-2 noScaleIcon position-relative"
               v-show="!isScale"
               @click="scaleOpen"></i>
           </div>
@@ -443,7 +453,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
   img[lazy="loading"] {
     /*your style here*/
     opacity: 0;

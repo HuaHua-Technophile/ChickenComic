@@ -188,18 +188,7 @@
   .RankingView img {
     margin-right: 10px !important;
   }
-  img[lazy="loading"] {
-    opacity: 0;
-    width: 97px !important;
-  }
-  img[lazy="error"] {
-    opacity: 1;
-    transition: 0.6s;
-  }
-  img[lazy="loaded"] {
-    opacity: 1;
-    transition: 0.6s;
-  }
+  
   .comicSlide {
     &:nth-child(1) {
       .rankNum {

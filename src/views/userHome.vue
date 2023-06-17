@@ -120,7 +120,7 @@
     </div>
   </div>
 </template>
-<style lang="scss">
+<style lang="scss" scoped>
   .collectItem {
     &:nth-child(odd) {
       margin: 0 6.66666667%;
