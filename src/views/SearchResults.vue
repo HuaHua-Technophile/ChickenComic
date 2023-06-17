@@ -14,8 +14,8 @@
       keyWord: keyWord.value,
       order: sort1.value,
       pageNum: pageNumber.value,
-      isFinish: isFinshVal.value,
-      isFree: isFreeVal.value,
+      isFinish: sort3.value,
+      isFree: sort4.value,
     });
     console.log("结果出来了", res);
     if (sort2.value == "-1") {
@@ -44,10 +44,11 @@
     }
   };
   //---------- 搜索框关键词 -------------
-  let keyWord = ref("");
-  watchEffect(() => {
-    keyWord.value = route.query.keyword + "";
-  });
+  let keyWord = ref("我推的孩子");
+  console.log(keyWord.value);
+  // watchEffect(() => {
+  //   keyWord.value = route.query.keyword + "";
+  // });
   // ---------------- 上拉加载更多-------------
   let pageNumber = ref(1);
   let LoadFinish = ref(false); // 加载开关,是否加载完毕
@@ -107,14 +108,20 @@
     SearchResultLoad();
   });
   // ------------分类数据 -------------
-  const sort1 = ref(-1);
+  const sort1 = ref("-1");
   const sort2 = ref("-1");
   const sort3 = ref("-1");
+  const sort4 = ref("-1");
+
+  watchEffect(() => {
+    console.log("===============", sort3.value);
+    console.log("**************", sort4.value);
+  });
   const option1 = [
-    { text: "黙認順序付け", value: -1 },
-    { text: "人気のおすすめ", value: 0 },
-    { text: "更新の時間", value: 1 },
-    { text: "店頭に並ぶ時間", value: 2 },
+    { text: "黙認順序付け", value: "-1" },
+    { text: "人気のおすすめ", value: "0" },
+    { text: "更新の時間", value: "1" },
+    { text: "店頭に並ぶ時間", value: "2" },
   ];
   const option2 = [
     { text: "全部です", value: "-1" },
@@ -137,10 +144,13 @@
   ];
   const option3 = [
     { text: "全部です", value: "-1" },
-    { text: "連載します", value: "连载" },
-    { text: "完結です", value: "完结" },
-    { text: "無料です", value: "免费" },
-    { text: "有料です", value: "付费" },
+    { text: "連載します", value: "0" },
+    { text: "完結です", value: "1" },
+  ];
+  const option4 = [
+    { text: "全部です", value: "-1" },
+    { text: "無料です", value: "0" },
+    { text: "有料です", value: "1" },
   ];
   // -----------------选择结果分类-----------------------
   const selectType = () => {
@@ -150,23 +160,7 @@
     SearchResult.value = [];
     SearchResultLoad();
   };
-  // ------根据连载进度/付费分类---------
-  let isFinshVal = ref(-1);
-  let isFreeVal = ref(-1);
-  watchEffect(() => {
-    if (sort3.value == "-1") {
-      isFinshVal.value = -1;
-      isFreeVal.value = -1;
-    } else if (sort3.value == "免费") {
-      isFreeVal.value = 1;
-    } else if (sort3.value == "付费") {
-      isFreeVal.value = 0;
-    } else if (sort3.value == "连载") {
-      isFinshVal.value = 0;
-    } else if (sort3.value == "完结") {
-      isFinshVal.value = 1;
-    }
-  });
+
   // 点击分类结果跳转对应的详情页
   const openContentView = (id: number) => {
     router.push({
@@ -206,6 +200,10 @@
       <van-dropdown-item
         v-model="sort3"
         :options="option3"
+        @change="selectType" />
+      <van-dropdown-item
+        v-model="sort4"
+        :options="option4"
         @change="selectType" />
     </van-dropdown-menu>
     <!-- 滚动容器 -->
