@@ -19,7 +19,7 @@
 </script>
 <template>
   <div
-    class="w-100 h-100 d-flex flex-grow-1 overflow-hidden"
+    class="w-100 h-100 d-flex flex-grow-1 overflow-hidden position-relative"
     style="padding: 5px 0"
     @click="toComicDetail">
     <!-- 封面 -->
@@ -72,7 +72,11 @@
           <span v-if="comicInfo?.last_ord">全{{ comicInfo?.last_ord }}話</span>
         </div>
         <!-- 等待免费看标签 -->
-        <div></div>
+        <div
+          v-if="comicInfo.allow_wait_free"
+          class="position-absolute top-0 start-0 z-3">
+          無料
+        </div>
       </div>
     </div>
   </div>
