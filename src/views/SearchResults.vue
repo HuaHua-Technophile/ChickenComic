@@ -6,94 +6,88 @@
   import throttle from "lodash/throttle"; //Lodash节流
   import { useRouter, useRoute } from "vue-router";
   import Pullup from "@better-scroll/pull-up";
-  let router: any = useRouter();
-  let route: any = useRoute();
-  // ---------------- 上啦加载更多-------------
-  let time: any = null; //节流
-  let pageNumber = ref(1);
-  let handelFunction = () => {
-    clearTimeout(time);
-    time = setTimeout(() => {
-      if (loadFlag) {
-        pageNumber.value++;
-        getSearchResultFun();
-      }
-    }, 500);
-    // getSearchResultFun(pageNumber.value);
-    bs.value.finishPullUp();
-    bs.value.refresh();
-  };
-  //------------------better scroll实例化相关-----------
-  BScroll.use(Pullup);
-  BScroll.use(ObserveImage);
-  let searchResultList: any = ref<object | null>(null);
-  let bs: { on: Function } | any = ref({}); //Better scroll实例化后对象的存储
-  onMounted(() => {
-    bs.value = new BScroll(searchResultList.value as HTMLElement, {
-      click: true,
-      observeImage: {
-        debounceTime: 500, // ms
-      },
-      pullUpLoad: true,
-    });
-    bs.value.on("pullingUp", handelFunction);
-  });
-  //---------- 搜索框关键词 -------------
-  let keyWord = ref("我推的孩子");
-  watchEffect(() => {
-    keyWord.value = route.query.keyword;
-  });
-  // --------若没有该分类数据，自动加载下一页进行匹配----------
-  const findDataInnextPage = () => {
-    pageNumber.value++;
-    tryAgainNum.value++;
-    if (tryAgainNum.value <= 20) {
-      getSearchResultFun();
-    } else {
-      loadFlag.value = false;
-      tryAgainNum.value = 0;
-    }
-  };
-  //-----------根据选择获取搜索结果数据-----------
-  let newData: any = ref(0); // 选项后符合条件的数据个数
-  let tryAgainNum: any = ref(0); // 自动加载次数
-  let SearchResult: any = ref([]); // 结果
-  let loadFlag = ref(true); // 加载开关
-  // 数据请求核心函数
-  let throttleFun = throttle(findDataInnextPage, 500);
-  const getSearchResultFun = async () => {
-    let data = await getSearchResult({
+  let router = useRouter();
+  let route = useRoute();
+  // -------------数据请求与渲染----------
+  const SearchResultLoad = async () => {
+    let res = await getSearchResult({
       keyWord: keyWord.value,
       order: sort1.value,
       pageNum: pageNumber.value,
       isFinish: isFinshVal.value,
       isFree: isFreeVal.value,
     });
+    console.log("结果出来了", res);
     if (sort2.value == "-1") {
-      newData.value += data.data.list.length;
+      newData.value += res.data.list.length;
       if (newData.value >= 10) {
-        SearchResult.value = SearchResult.value.concat(data.data.list);
+        SearchResult.value.push(...res.data.list);
         newData.value = 0;
-        tryAgainNum.value = 0;
+        retryTimes.value = 0;
       } else {
         findDataInnextPage();
       }
     } else {
-      data.data.list.forEach((n: any) => {
-        let index = n.styles.findIndex((item: any) => item == sort2.value);
+      res.data.list.forEach((i: { styles: Array<string> }) => {
+        let index = i.styles.findIndex((j) => j == sort2.value);
         if (index !== -1) {
-          SearchResult.value = SearchResult.value.concat(n);
+          SearchResult.value.push(i);
           newData.value++;
         }
       });
       if (newData.value >= 10) {
         newData.value = 0;
-        tryAgainNum.value = 0;
+        retryTimes.value = 0;
       } else {
-        throttleFun();
+        findDataInnextPage();
       }
     }
   };
+  //---------- 搜索框关键词 -------------
+  let keyWord = ref("");
+  watchEffect(() => {
+    keyWord.value = route.query.keyword + "";
+  });
+  // ---------------- 上拉加载更多-------------
+  let pageNumber = ref(1);
+  let LoadFinish = ref(false); // 加载开关,是否加载完毕
+  let newData = ref(0); // 选项后符合条件的数据个数
+  let retryTimes = ref(0); // 自动加载次数
+  let pullUpload = throttle(() => {
+    if (!LoadFinish) {
+      pageNumber.value++;
+      SearchResultLoad();
+    }
+    bs.value.finishPullUp();
+  }, 500);
+  //------------------better scroll实例化相关-----------
+  BScroll.use(Pullup);
+  BScroll.use(ObserveImage);
+  let searchResultList = ref();
+  let bs = ref(); //Better scroll实例化后对象的存储
+  onMounted(() => {
+    bs.value = new BScroll(searchResultList.value, {
+      click: true,
+      observeImage: {
+        debounceTime: 500, // ms
+      },
+      pullUpLoad: true,
+    });
+    bs.value.on("pullingUp", pullUpload);
+  });
+  // --------若没有该分类数据，自动加载下一页进行匹配----------
+  const findDataInnextPage = throttle(() => {
+    pageNumber.value++;
+    retryTimes.value++;
+    if (retryTimes.value <= 20) {
+      SearchResultLoad();
+    } else {
+      LoadFinish.value = true;
+      retryTimes.value = 0;
+    }
+  }, 500);
+  //-----------根据选择获取搜索结果数据-----------
+  let SearchResult = ref<Array<{ id?: number; styles: Array<string> }>>([]); // 结果
   //------------作者数据格式处理---------------
   const allAuthors = computed(() => {
     return function (val: Array<string>) {
@@ -110,7 +104,7 @@
   });
   // --------首次加载默认分类--------
   onMounted(() => {
-    getSearchResultFun();
+    SearchResultLoad();
   });
   // ------------分类数据 -------------
   const sort1 = ref(-1);
@@ -150,11 +144,11 @@
   ];
   // -----------------选择结果分类-----------------------
   const selectType = () => {
-    loadFlag.value = true;
+    LoadFinish.value = false;
     newData.value = 0;
     pageNumber.value = 1;
     SearchResult.value = [];
-    getSearchResultFun();
+    SearchResultLoad();
   };
   // ------根据连载进度/付费分类---------
   let isFinshVal = ref(-1);
@@ -219,31 +213,15 @@
       class="searchResultList w-100 flex-grow-1 overflow-hidden"
       ref="searchResultList">
       <!-- 滚动核心 -->
-      <ul style="min-height: calc(100% + 1px)">
-        <!-- <li
-          class="d-flex mt-4 overflow-hidden"
+      <ul style="min-height: calc(100% + 1px)" class="px-3">
+        <comic-item-component
           v-for="item in SearchResult"
           :key="item.id"
-          @click="openContentView(item.id)">
-          <div class="img-box mx-3">
-            <img :src="item.vertical_cover + '@100w_100h.jpg'" alt="" />
-          </div>
-          <div class="details d-fles w-100">
-            <div class="name my-2 van-ellipsis" v-html="item.title"></div>
-            <div class="fs-10 opacity-75 van-ellipsis w-50">
-              {{ allAuthors(item.author_name) }}
-            </div>
-            <div class="fs-10 opacity-75 van-ellipsis">
-              {{ allAuthors(item.styles) }}
-            </div>
-            <div class="fs-10 opacity-75 mt-1">
-              {{ item.is_finish === 0 ? "连载中" : "完结" }}
-            </div>
-          </div>
-        </li> -->
-        <li v-for="item in SearchResult" :key="item.id"></li>
+          :comicInfo="item"
+          :imgWidth="50"
+          class="mb-2"></comic-item-component>
         <li class="w-100 py-3 text-center">
-          <van-loading v-if="loadFlag" />
+          <van-loading v-if="!LoadFinish" />
           <p class="w-100 py-3 text-center opacity-50" v-else>
             これ以上ありません~
           </p>

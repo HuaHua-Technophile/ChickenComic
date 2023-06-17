@@ -4,10 +4,12 @@ export interface imgIndexUrl {
   };
 }
 export interface comicInfoCommonType {
+  allow_wait_free: boolean;
   id?: number;
   comic_id: number;
   title: string;
   author: string[];
+  author_name: Array<string>;
   styles: Array<{ name: string }>;
   is_finish: number;
   last_ord: number | string;

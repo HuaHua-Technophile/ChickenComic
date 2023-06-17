@@ -60,12 +60,11 @@
       },
     });
   });
-  //------------------------收藏相关/pinia判断是否已登录-------------------------
+  //------------------------收藏相关/pinia判断是否已登录/历史阅读-------------------------
   let { userInfo, Logged } = storeToRefs(useUserInfoStore());
-  const { setCollection } = useUserInfoStore();
   let collect = () => {
     if (Logged.value) {
-      setCollection([{ name: 123 }]);
+      userInfo.value?.collection.push(res.value);
     } else console.log("未登录");
   };
   //------------------子组件点击传出方法,阅读不同章节------------------

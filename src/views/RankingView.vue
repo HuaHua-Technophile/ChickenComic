@@ -22,8 +22,6 @@
     };
   }
 
-  //-------------设备像素比---------------
-  let DPR = window.devicePixelRatio;
   // -----------------注册swiper-------------------------
   register();
   // ------------------列表数据--------------------
@@ -177,7 +175,7 @@
             <!-- 导入漫画组件 -->
             <comicItemComponent
               :comicInfo="it"
-              :img-width="(97 * DPR).toFixed()"></comicItemComponent>
+              :img-width="97"></comicItemComponent>
           </swiper-slide>
         </swiper-container>
       </swiper-slide>
@@ -188,18 +186,7 @@
   .RankingView img {
     margin-right: 10px !important;
   }
-  img[lazy="loading"] {
-    opacity: 0;
-    width: 97px !important;
-  }
-  img[lazy="error"] {
-    opacity: 1;
-    transition: 0.6s;
-  }
-  img[lazy="loaded"] {
-    opacity: 1;
-    transition: 0.6s;
-  }
+  
   .comicSlide {
     &:nth-child(1) {
       .rankNum {

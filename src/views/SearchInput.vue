@@ -7,8 +7,6 @@
   import { useRouter } from "vue-router";
   import debounce from "lodash/debounce"; //导入lodash防抖
 
-  // ---------------设备像素比----------------
-  let DPR = window.devicePixelRatio;
   // -----------定时器ID数组------------
   let timeId: Array<number> = [];
   // -----------路由-------------
@@ -50,9 +48,9 @@
     if (keyword.value != "") getSuggestedWordFun();
     else suggestedWord.value = null;
   }, 500);
-  //-----------获取历史记录数据-----------
+  //-----------历史记录数据初始化-----------
   let searchHistoryData = ref<Array<string>>([]);
-  const starHistory = () => {
+  const initializationHistory = () => {
     if (!localStorage.getItem("searchHistory")) {
       localStorage.setItem(
         "searchHistory",
@@ -64,7 +62,7 @@
       );
     }
   };
-  starHistory();
+  initializationHistory();
   //-----------添加搜索历史----------
   const searchHistoryAdd = () => {
     let index = searchHistoryData.value.findIndex(
@@ -211,7 +209,7 @@
               <!-- 漫画Item -->
               <comic-item-component
                 :comicInfo="item"
-                :imgWidth="(70.4 * DPR).toFixed()"></comic-item-component>
+                :imgWidth="70.4"></comic-item-component>
             </li>
           </ul>
         </div>
