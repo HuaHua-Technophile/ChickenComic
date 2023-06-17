@@ -22,8 +22,6 @@
     };
   }
 
-  //-------------设备像素比---------------
-  let DPR = window.devicePixelRatio;
   // -----------------注册swiper-------------------------
   register();
   // ------------------列表数据--------------------
@@ -177,7 +175,7 @@
             <!-- 导入漫画组件 -->
             <comicItemComponent
               :comicInfo="it"
-              :img-width="(97 * DPR).toFixed()"></comicItemComponent>
+              :img-width="97"></comicItemComponent>
           </swiper-slide>
         </swiper-container>
       </swiper-slide>
