@@ -4,9 +4,11 @@
   import BScroll from "better-scroll"; //导入Better scroll核心
   import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
   import throttle from "lodash/throttle"; //Lodash节流
-  import { useRouter } from "vue-router";
+  import { useRouter, useRoute } from "vue-router";
   import Pullup from "@better-scroll/pull-up";
+
   let router = useRouter();
+  let route = useRoute();
 
   // -------------数据请求------------
   const SearchResultLoad = async () => {
@@ -43,10 +45,10 @@
     }
   };
   //---------- 搜索框关键词 ----------------
-  let keyWord = ref("我推的孩子");
-  // watchEffect(() => {
-  //   keyWord.value = route.query.keyword + "";
-  // });
+  let keyWord = ref();
+  watchEffect(() => {
+    keyWord.value = route.query.keyword + "";
+  });
   // ---------------- 上拉加载更多-------------
   let pageNumber = ref(1);
   let LoadFlag = ref(true); // 加载开关,是否显示loading
