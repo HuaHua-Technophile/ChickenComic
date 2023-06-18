@@ -68,8 +68,14 @@
     });
     if (result.data.list.length > 0) {
       res.value.push(...result.data.list);
-      if (result.data.list.length < 20) loadFinish = true;
-    } else loadFinish = true;
+      if (result.data.list.length < 20) {
+        loadFinish = true;
+        bs.value.closePullUp();
+      }
+    } else {
+      loadFinish = true;
+      bs.value.closePullUp();
+    }
   };
   onMounted(() => {
     SearchResultLoad();
@@ -81,11 +87,14 @@
   });
   // ---------------- 上拉加载更多-------------
   let pullUpload = () => {
-    isPullUpLoad.value = true;
-    pageNumber.value++;
-    SearchResultLoad();
-    isPullUpLoad.value = false;
-    bs.value.finishPullUp();
+    // 因为bs实例无法调用closePullUp方法关闭上拉回调，因此添加判断：如果没加载完
+    if (!loadFinish) {
+      isPullUpLoad.value = true;
+      pageNumber.value++;
+      SearchResultLoad();
+      isPullUpLoad.value = false;
+      bs.value.finishPullUp();
+    }
   };
   //------------------better scroll实例化相关-----------
   BScroll.use(Pullup);
