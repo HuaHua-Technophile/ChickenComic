@@ -163,11 +163,11 @@
         </div>
         <!-- 标签 -->
         <div
-          class="d-flex justify-content-between align-items-center flex-wrap ps-3 pe-3 mb-3 opacity-75">
+          class="d-flex align-items-center flex-wrap ps-3 pe-3 mb-3 opacity-75">
           <div class="mb-3">ラベル :</div>
           <div
             v-for="item in res?.data.story_elems"
-            class="bg-body-tertiary rounded mb-3 me-1 pt-1 pb-1 ps-3 pe-3 insetShadow-1-3">
+            class="bg-body-tertiary rounded mb-3 mx-1 py-1 px-3 insetShadow-1-3">
             {{ item.name }}
           </div>
         </div>
