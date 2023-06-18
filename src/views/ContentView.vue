@@ -6,6 +6,7 @@
   import NestedScroll from "@better-scroll/nested-scroll";
   import debounce from "lodash/debounce"; //lodash防抖
   import { showToast } from "vant";
+  import "vant/es/toast/style";
   import {
     onBeforeUnmount,
     onMounted,

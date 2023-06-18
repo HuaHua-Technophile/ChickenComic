@@ -9,8 +9,11 @@
   import BScroll from "better-scroll"; //导入Better scroll核心  // 从路由传参获取当前页面漫画的id
   import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
   import NestedScroll from "@better-scroll/nested-scroll"; //导入betterscroll嵌套
+  import { showToast } from "vant";
+  import "vant/es/toast/style";
   //---------------------主题-----------------------
   const { theme } = useThemeStore();
+  let router = useRouter();
   //----------------定义字符串替换方法----------------
   let updateTime = (str: string) => {
     str = str
@@ -63,12 +66,14 @@
   //------------------------收藏相关/pinia判断是否已登录/历史阅读-------------------------
   let { userInfo, Logged } = storeToRefs(useUserInfoStore());
   let collect = () => {
-    if (Logged.value) {
+    if (Logged && Logged.value) {
       userInfo.value?.collection.push(res.value);
-    } else console.log("未登录");
+    } else {
+      showToast("未登録です");
+      router.push({ name: "login" });
+    }
   };
   //------------------子组件点击传出方法,阅读不同章节------------------
-  let router = useRouter();
   let readThisChapter = (index: number) => {
     let params = JSON.stringify({
       index,
