@@ -128,13 +128,12 @@
                 <span
                   v-for="(item, index) in res?.data.author_name"
                   :key="index"
-                  :class="[
-                    {
-                      'me-2 position-relative 分隔符':
-                        index < res?.data.author_name.length - 1,
-                    },
-                  ]"
-                  >{{ item }}</span
+                  >{{ item
+                  }}<span
+                    class="opacity-50"
+                    v-if="index < res?.data.author_name.length - 1"
+                    >│</span
+                  ></span
                 >
               </span>
             </div>
@@ -201,16 +200,3 @@
     </div>
   </div>
 </template>
-<style lang="scss">
-  .分隔符::after {
-    content: "";
-    display: block;
-    position: absolute;
-    right: -0.5rem * 0.6;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 80%;
-    width: 1px;
-    background: rgba(255, 255, 255, 0.548);
-  }
-</style>

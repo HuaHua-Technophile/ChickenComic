@@ -209,7 +209,8 @@
               <!-- 漫画Item -->
               <comic-item-component
                 :comicInfo="item"
-                :imgWidth="70.4"></comic-item-component>
+                :imgWidth="70.4"
+                :fontSize="14.5"></comic-item-component>
             </li>
           </ul>
         </div>

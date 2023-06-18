@@ -8,12 +8,16 @@
   const props = defineProps<{
     comicInfo: comicInfoCommonType;
     imgWidth: number;
+    fontSize: number;
   }>();
   // 跳转到相应漫画详情页
-  const toComicDetail = (): void => {
+  const toComicDetail = () => {
+    let id = props.comicInfo.comic_id
+      ? props.comicInfo.comic_id
+      : props.comicInfo.id;
     router.push({
       name: "comicCover",
-      query: { id: props.comicInfo.comic_id },
+      query: { id },
     });
   };
 </script>
@@ -34,11 +38,14 @@
       " />
     <!-- 右侧文本区域 -->
     <div
-      class="overflow-hidden flex-grow-1 d-flex flex-column justify-content-between">
+      class="overflow-hidden flex-grow-1 d-flex flex-column justify-content-around">
       <!-- 漫画名 -->
-      <div class="fs-7 text-truncate" v-html="comicInfo?.title"></div>
+      <div
+        class="text-truncate"
+        :style="{ fontSize: fontSize + 'px' }"
+        v-html="comicInfo?.title"></div>
       <!-- 下方漫画信息区域 -->
-      <div class="fs-9 opacity-50">
+      <div class="opacity-50" :style="{ fontSize: fontSize * 0.8 + 'px' }">
         <!-- 作者信息 -->
         <div class="text-truncate">
           <!-- 多种数据适配 -->
@@ -74,7 +81,7 @@
         <!-- 等待免费看标签 -->
         <div
           v-if="comicInfo.allow_wait_free"
-          class="position-absolute top-0 start-0 z-3">
+          class="position-absolute top-0 start-0 z-3 bg-danger rounded">
           無料
         </div>
       </div>
