@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted } from "vue";
+  import { ref, onMounted, watchEffect } from "vue";
   import { useRoute, useRouter } from "vue-router";
   import chapterComponent from "@/components/chapterComponent.vue"; //引入组件
   import { useThemeStore } from "@/stores/theme";
@@ -24,12 +24,11 @@
   };
   //------------------数据请求-----------------------
   let route = useRoute();
-  let { id }: { id?: string } = route.query;
-
+  let { id } = route.query;
   let res = ref();
   let chapterList: Array<object> = [];
   let getData = async () => {
-    res.value = await getComicDetail(id!);
+    res.value = await getComicDetail(id + "");
     chapterList = res.value.data?.ep_list;
   };
   getData();
@@ -65,14 +64,26 @@
   });
   //------------------------收藏相关/pinia判断是否已登录/历史阅读-------------------------
   let { userInfo, Logged } = storeToRefs(useUserInfoStore());
+  let isCollection = ref<boolean | undefined>(false);
+  watchEffect(() => {
+    isCollection.value = userInfo?.value?.collection.some(
+      (i) => i.id == route.query.id
+    );
+  });
   let collect = () => {
     if (Logged && Logged.value) {
-      userInfo.value?.collection.push(res.value);
+      if (isCollection.value) {
+        let index = userInfo?.value?.collection.findIndex(
+          (i) => i.id == route.query.id
+        );
+        userInfo?.value?.collection.splice(index as number, 1);
+      } else userInfo.value?.collection.push(res.value.data);
     } else {
       showToast("未登録です");
       router.push({ name: "login" });
     }
   };
+
   //------------------子组件点击传出方法,阅读不同章节------------------
   let readThisChapter = (index: number) => {
     let params = JSON.stringify({
@@ -102,7 +113,8 @@
           style="width: 10vw; height: 10vw; right: 10%"
           @click="collect">
           <i
-            class="bi bi-heart text-danger fs-3"
+            class="bi text-danger fs-3"
+            :class="isCollection ? 'bi-heart-fill' : 'bi-heart'"
             style="text-shadow: 1.5px 1.5px 3px rgba(0, 0, 0, 0.5)"></i>
         </div>
         <!-- 主要信息 -->
