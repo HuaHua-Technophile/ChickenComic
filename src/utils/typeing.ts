@@ -4,6 +4,7 @@ export interface imgIndexUrl {
   };
 }
 export interface comicInfoCommonType {
+  allow_wait_free: boolean;
   id?: number;
   comic_id: number;
   title: string;

@@ -48,9 +48,9 @@
     if (keyword.value != "") getSuggestedWordFun();
     else suggestedWord.value = null;
   }, 500);
-  //-----------获取历史记录数据-----------
+  //-----------历史记录数据初始化-----------
   let searchHistoryData = ref<Array<string>>([]);
-  const starHistory = () => {
+  const initializationHistory = () => {
     if (!localStorage.getItem("searchHistory")) {
       localStorage.setItem(
         "searchHistory",
@@ -62,7 +62,7 @@
       );
     }
   };
-  starHistory();
+  initializationHistory();
   //-----------添加搜索历史----------
   const searchHistoryAdd = () => {
     let index = searchHistoryData.value.findIndex(
@@ -89,6 +89,7 @@
   let defaultKeyword = ref([]);
   const getSearchReferralFun = async () => {
     let data = await getSearchReferral({ num: 12 });
+    console.log(data);
     defaultKeyword.value = data.data[0].title;
     searchReferral.value = data.data?.slice(1, 11);
   };
@@ -208,7 +209,8 @@
               <!-- 漫画Item -->
               <comic-item-component
                 :comicInfo="item"
-                :imgWidth="70.4"></comic-item-component>
+                :imgWidth="70.4"
+                :fontSize="14.5"></comic-item-component>
             </li>
           </ul>
         </div>

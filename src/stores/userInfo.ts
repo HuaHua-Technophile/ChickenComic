@@ -7,6 +7,7 @@ export const useUserInfoStore = defineStore("global", () => {
     id: number;
     name: string;
     collection: Array<{
+      id: string;
       vertical_cover: string;
       title: string;
       last_ord: number;

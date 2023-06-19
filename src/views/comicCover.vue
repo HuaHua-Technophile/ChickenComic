@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted } from "vue";
+  import { ref, onMounted, watchEffect } from "vue";
   import { useRoute, useRouter } from "vue-router";
   import chapterComponent from "@/components/chapterComponent.vue"; //引入组件
   import { useThemeStore } from "@/stores/theme";
@@ -9,8 +9,11 @@
   import BScroll from "better-scroll"; //导入Better scroll核心  // 从路由传参获取当前页面漫画的id
   import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
   import NestedScroll from "@better-scroll/nested-scroll"; //导入betterscroll嵌套
+  import { showToast } from "vant";
+  import "vant/es/toast/style";
   //---------------------主题-----------------------
   const { theme } = useThemeStore();
+  let router = useRouter();
   //----------------定义字符串替换方法----------------
   let updateTime = (str: string) => {
     str = str
@@ -21,12 +24,11 @@
   };
   //------------------数据请求-----------------------
   let route = useRoute();
-  let { id }: { id?: string } = route.query;
-
+  let { id } = route.query;
   let res = ref();
   let chapterList: Array<object> = [];
   let getData = async () => {
-    res.value = await getComicDetail(id!);
+    res.value = await getComicDetail(id + "");
     chapterList = res.value.data?.ep_list;
   };
   getData();
@@ -62,13 +64,27 @@
   });
   //------------------------收藏相关/pinia判断是否已登录/历史阅读-------------------------
   let { userInfo, Logged } = storeToRefs(useUserInfoStore());
+  let isCollection = ref<boolean | undefined>(false);
+  watchEffect(() => {
+    isCollection.value = userInfo?.value?.collection.some(
+      (i) => i.id == route.query.id
+    );
+  });
   let collect = () => {
-    if (Logged.value) {
-      userInfo.value?.collection.push(res.value);
-    } else console.log("未登录");
+    if (Logged && Logged.value) {
+      if (isCollection.value) {
+        let index = userInfo?.value?.collection.findIndex(
+          (i) => i.id == route.query.id
+        );
+        userInfo?.value?.collection.splice(index as number, 1);
+      } else userInfo.value?.collection.push(res.value.data);
+    } else {
+      showToast("未登録です");
+      router.push({ name: "login" });
+    }
   };
+
   //------------------子组件点击传出方法,阅读不同章节------------------
-  let router = useRouter();
   let readThisChapter = (index: number) => {
     let params = JSON.stringify({
       index,
@@ -99,7 +115,8 @@
           style="width: 10vw; height: 10vw; right: 10%"
           @click="collect">
           <i
-            class="bi bi-heart text-danger fs-3"
+            class="bi text-danger fs-3"
+            :class="isCollection ? 'bi-heart-fill' : 'bi-heart'"
             style="text-shadow: 1.5px 1.5px 3px rgba(0, 0, 0, 0.5)"></i>
         </div>
         <!-- 主要信息 -->
@@ -130,13 +147,12 @@
                 <span
                   v-for="(item, index) in res?.data.author_name"
                   :key="index"
-                  :class="[
-                    {
-                      'me-2 position-relative 分隔符':
-                        index < res?.data.author_name.length - 1,
-                    },
-                  ]"
-                  >{{ item }}</span
+                  >{{ item
+                  }}<span
+                    class="opacity-50"
+                    v-if="index < res?.data.author_name.length - 1"
+                    >│</span
+                  ></span
                 >
               </span>
             </div>
@@ -166,11 +182,11 @@
         </div>
         <!-- 标签 -->
         <div
-          class="d-flex justify-content-between align-items-center flex-wrap ps-3 pe-3 mb-3 opacity-75">
+          class="d-flex align-items-center flex-wrap ps-3 pe-3 mb-3 opacity-75">
           <div class="mb-3">ラベル :</div>
           <div
             v-for="item in res?.data.story_elems"
-            class="bg-body-tertiary rounded mb-3 me-1 pt-1 pb-1 ps-3 pe-3 insetShadow-1-3">
+            class="bg-body-tertiary rounded mb-3 mx-1 py-1 px-3 insetShadow-1-3">
             {{ item.name }}
           </div>
         </div>
@@ -203,16 +219,3 @@
     </div>
   </div>
 </template>
-<style lang="scss">
-  .分隔符::after {
-    content: "";
-    display: block;
-    position: absolute;
-    right: -0.5rem * 0.6;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 80%;
-    width: 1px;
-    background: rgba(255, 255, 255, 0.548);
-  }
-</style>
