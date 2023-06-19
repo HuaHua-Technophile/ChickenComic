@@ -5,6 +5,7 @@ export const useUserInfoStore = defineStore("global", () => {
 
   let userInfo = ref<{
     id: number;
+    name: string;
     collection: Array<{
       vertical_cover: string;
       title: string;

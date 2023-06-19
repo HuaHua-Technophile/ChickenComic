@@ -1,0 +1,49 @@
+<script setup lang="ts">
+  import { useRouter } from "vue-router";
+
+  const router = useRouter();
+
+  // 跳转到搜索页
+  const toSearchInput = () => {
+    router.push("SearchInput");
+  };
+</script>
+
+<template>
+  <div
+    class="toSearchArea px-4 mt-5"
+    style="width: 100%; height: 48px"
+    @click="toSearchInput">
+    <!-- 搜索框 -->
+    <div
+      class="searchBar d-flex rounded-pill align-items-center px-3"
+      style="
+        height: 100%;
+        height: 100%;
+        box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.1);
+        background-image: radial-gradient(
+          circle,
+          transparent 0%,
+          transparent 40%,
+          rgba(255, 255, 255, 0.1) 100%
+        );
+      ">
+      <!-- 搜索icon -->
+      <div class="searchIcon text-center" style="width: 10%">
+        <i
+          class="bi bi-search fs-6"
+          style="color: rgba(255, 255, 255, 0.6)"></i>
+      </div>
+      <!-- 搜索tip -->
+      <div
+        class="toSearch fs-7 flex-grow-1 text-center"
+        style="color: rgba(255, 255, 255, 0.3)">
+        search manga
+      </div>
+      <!-- 占位 -->
+      <div class="slotArea" style="width: 10%"></div>
+    </div>
+  </div>
+</template>
+
+<style lang="scss"></style>

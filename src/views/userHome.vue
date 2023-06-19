@@ -23,14 +23,16 @@
     // 实例化bscroll并配置其配置项
     bs.value = new BScroll(userHome.value as HTMLElement, {
       click: true,
+      observeDOM: true,
       nestedScroll: {
-        groupId: "shared",
+        groupId: 1,
       },
     });
     bs2.value = new BScroll(bscroll2.value as HTMLElement, {
       click: true,
+      observeDOM: true,
       nestedScroll: {
-        groupId: "shared",
+        groupId: 1,
       },
     });
   };

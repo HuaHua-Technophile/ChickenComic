@@ -72,6 +72,8 @@
   let readThisChapter = (index: number) => {
     let params = JSON.stringify({
       index,
+      title: res.value.data.title,
+      square_cover: res.value.data.square_cover,
       chapterList,
     });
     router.push({ name: "content", state: { params } }); //注意：此处一定要用params

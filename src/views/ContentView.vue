@@ -14,6 +14,9 @@
     nextTick,
     onUpdated,
   } from "vue";
+  import { useRouter } from "vue-router";
+  import { storeToRefs } from "pinia";
+  import { useNowListStore } from "@/stores/nowList";
   import { getImageIndex, getImageToken } from "@/api/content";
   import chapterComponent from "@/components/chapterComponent.vue"; //引入组件
   import { type imgIndexUrl } from "@/utils/typeing";
@@ -22,6 +25,8 @@
     epId?: number;
     item?: { url: string; token: string };
   }
+
+  const router = useRouter();
 
   // 接收路由信息（包含当前漫画index和所有章节信息）
   const etid_data = history.state.params;
@@ -291,6 +296,20 @@
     await getContentData(imgEpList.value[newIndex].id);
     epListindex = newIndex;
   };
+
+  // 当前在看漫画章节
+  let { nowComicList } = storeToRefs(useNowListStore());
+  const comicListSave = () => {
+    let etidDataFormat = JSON.parse(etid_data);
+    etidDataFormat.index = chapterListIndex;
+    nowComicList.value = etidDataFormat;
+  };
+
+  // 返回上一页
+  const toBack = () => {
+    comicListSave();
+    router.go(-1);
+  };
 </script>
 
 <template>
@@ -333,7 +352,7 @@
           class="ps-3 pe-3 d-flex justify-content-between align-items-center text-light t-shadow-3"
           v-show="isShowSlider">
           <div class="leftIcon d-flex align-items-center">
-            <i class="bi bi-arrow-left-short" @click="$router.go(-1)"></i>
+            <i class="bi bi-arrow-left-short" @click="toBack"></i>
             <span class="epListTitle fs-3"
               >第{{ oldImgEpList.length - chapterListIndex }}話</span
             >

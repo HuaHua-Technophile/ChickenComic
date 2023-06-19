@@ -21,21 +21,33 @@ const router = createRouter({
       path: "/login",
       name: "login",
       component: () => import("@/views/loginView.vue"),
+      meta: {
+        comicReadShow: true,
+      },
     },
     {
       path: "/comicCover",
       name: "comicCover",
       component: () => import("@/views/comicCover.vue"),
+      meta: {
+        comicReadShow: true,
+      },
     },
     {
       path: "/content",
       name: "content",
       component: () => import("@/views/ContentView.vue"),
+      meta: {
+        comicReadShow: true,
+      },
     },
     {
       path: "/settingAbout",
       name: "settingAbout",
       component: () => import("@/views/SettingAbout.vue"),
+      meta: {
+        comicReadShow: true,
+      },
     },
     {
       path: "/SearchInput",
