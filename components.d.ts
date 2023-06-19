@@ -13,6 +13,7 @@ declare module '@vue/runtime-core' {
     ChapterComponent: typeof import('./src/components/chapterComponent.vue')['default']
     ComicItemComponent: typeof import('./src/components/comicItemComponent.vue')['default']
     ComicReadBar: typeof import('./src/components/ComicReadBar.vue')['default']
+    ElInput: typeof import('element-plus/es')['ElInput']
     RankingBar: typeof import('./src/components/RankingBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
@@ -24,5 +25,7 @@ declare module '@vue/runtime-core' {
     VanOverlay: typeof import('vant/es')['Overlay']
     VanSearch: typeof import('vant/es')['Search']
     VanSlider: typeof import('vant/es')['Slider']
+    VanTab: typeof import('vant/es')['Tab']
+    VanTabs: typeof import('vant/es')['Tabs']
   }
 }

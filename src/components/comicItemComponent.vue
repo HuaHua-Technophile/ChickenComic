@@ -8,7 +8,7 @@
   const props = defineProps<{
     comicInfo: comicInfoCommonType;
     imgWidth: number;
-    fontSize: number;
+    fontSize?: number;
   }>();
   // 跳转到相应漫画详情页
   const toComicDetail = () => {
@@ -45,7 +45,7 @@
         :style="{ fontSize: fontSize + 'px' }"
         v-html="comicInfo?.title"></div>
       <!-- 下方漫画信息区域 -->
-      <div class="opacity-50" :style="{ fontSize: fontSize * 0.8 + 'px' }">
+      <div class="opacity-50" :style="{ fontSize: fontSize! * 0.8 + 'px' }">
         <!-- 作者信息 -->
         <div class="text-truncate">
           <!-- 多种数据适配 -->
