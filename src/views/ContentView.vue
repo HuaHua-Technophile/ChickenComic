@@ -122,13 +122,13 @@
         freeScroll: true,
         scrollX: true,
         scrollY: true,
+        disableMouse: true,
+        useTransition: true,
         zoom: {
           start: 1,
           min: 0.5,
-          max: 2,
+          max: 3,
           initialOrigin: ["center", "center"],
-          // minimalZoomDistance: 3,
-          // bounceTime: 800, // ms
         },
         nestedScroll: {
           groupId: 2,
