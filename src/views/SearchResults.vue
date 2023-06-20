@@ -88,7 +88,10 @@
   watchEffect(() => {
     if (sort2.value == "-1")
       domList.value = res.value; //不做筛选，全部放入DOMList遍历
-    else domList.value = res.value.filter((i) => i.styles[0] == sort2.value); //做筛选后放入DOMList遍历
+    else {
+      console.log("判断到结果变化且不为'全部'");
+      domList.value = res.value.filter((i) => i.styles[0] == sort2.value);
+    } //做筛选后放入DOMList遍历
   });
   // ---------------- 上拉加载更多-------------
   let pullUpload = () => {
