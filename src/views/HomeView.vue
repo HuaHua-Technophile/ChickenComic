@@ -70,6 +70,7 @@
       <RankingBar :newComicRankInfoData="newComicRankInfoData"></RankingBar>
       <!-- 首页轮播图推荐模块 -->
       <RecommendBar :RecommendList="RecommendList"></RecommendBar>
+      <ClassificationComponent></ClassificationComponent>
     </div>
   </div>
 </template>
