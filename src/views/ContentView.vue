@@ -385,11 +385,8 @@
   // ---------------分享当前漫画----------------
   const showShare = ref(false); //控制分享面板的显/隐
   const options = [
-    { name: "微信", icon: "wechat" },
-    { name: "微博", icon: "weibo" },
-    { name: "复制链接", icon: "link" },
-    { name: "分享海报", icon: "poster" },
-    { name: "二维码", icon: "qrcode" },
+    { name: "ハイパーリンク", icon: "link" },
+    { name: "ＱＲコード", icon: "qrcode" },
   ];
 
   const onSelect = (option: object) => {
@@ -397,7 +394,7 @@
     showShare.value = false;
   };
   let share = () => {
-    console.log("object");
+    showShare.value = true;
   };
 </script>
 
@@ -459,7 +456,7 @@
               style="text-shadow: 1.5px 1.5px 3px rgba(0, 0, 0, 0.5)"
               @click="collect"></i>
             <!-- 分享按钮 -->
-            <i class="bi bi-share" @click="share"></i>
+            <i class="bi bi-share-fill" @click="share"></i>
             <!-- 启用/禁用双指缩放 -->
             <i
               class="iconfont icon-fangdajing1 fs-2 scaleIcon"
@@ -567,50 +564,61 @@
     <!-- 分享面板 -->
     <van-share-sheet
       v-model:show="showShare"
-      title="立即分享给好友"
+      title="この漫画を共有します"
       :options="options"
       @select="onSelect" />
   </div>
 </template>
 
-<style lang="scss" scoped>
-  img[lazy="loading"] {
-    opacity: 0;
-  }
-  img[lazy="error"] {
-    opacity: 1;
-    transition: 0.6s;
-  }
-  img[lazy="loaded"] {
-    opacity: 1;
-    transition: 0.6s;
-  }
-  .contract-enter-active,
-  .contract-leave-active {
-    transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-  }
-  .contract-enter-from,
-  .contract-leave-to {
-    width: 0px !important;
-  }
-  .scaleIcon {
-    position: relative;
-    font-weight: 600;
-  }
-  .noScaleIcon {
-    font-weight: 600;
-    &::after {
-      content: "";
-      width: 26px;
-      height: 2px;
-      background-color: rgb(254, 254, 254);
-      position: absolute;
-      top: 40%;
-      left: -9%;
-      transform: rotate(-45deg) translateY(-50%);
+<style lang="scss">
+  .contentView {
+    img[lazy="loading"] {
+      opacity: 0;
     }
-  }
-  .van-overlay {
-    height: calc(100% + 1px);
+    img[lazy="error"] {
+      opacity: 1;
+      transition: 0.6s;
+    }
+    img[lazy="loaded"] {
+      opacity: 1;
+      transition: 0.6s;
+    }
+    .contract-enter-active,
+    .contract-leave-active {
+      transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+    .contract-enter-from,
+    .contract-leave-to {
+      width: 0px !important;
+    }
+    .scaleIcon {
+      position: relative;
+      font-weight: 600;
+    }
+    .noScaleIcon {
+      font-weight: 600;
+      &::after {
+        content: "";
+        width: 26px;
+        height: 2px;
+        background-color: rgb(254, 254, 254);
+        position: absolute;
+        top: 40%;
+        left: -9%;
+        transform: rotate(-45deg) translateY(-50%);
+      }
+    }
+    .van-overlay {
+      height: calc(100% + 1px);
+    }
+    --van-share-sheet-title-color: var(--bs-body-color);
+    --van-share-sheet-option-name-color: var(--bs-body-color);
+    --van-background: var(--bs-tertiary-bg);
+    --van-popup-background: var(--bs-body-bg);
+    --van-share-sheet-cancel-button-background: var(--bs-body-bg);
+    .van-share-sheet__icon {
+      background: var(--bs-tertiary-bg);
+      color: var(--bs-body-color);
+    }
   }
 </style>
