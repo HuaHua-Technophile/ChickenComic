@@ -14,9 +14,11 @@
     toRefs,
     nextTick,
     onUpdated,
+    watchEffect,
   } from "vue";
   import { useRouter } from "vue-router";
   import { storeToRefs } from "pinia";
+  import { useUserInfoStore } from "@/stores/userInfo";
   import { useNowListStore } from "@/stores/nowList";
   import { getImageIndex, getImageToken } from "@/api/content";
   import chapterComponent from "@/components/chapterComponent.vue"; //引入组件
@@ -30,14 +32,14 @@
   const router = useRouter();
 
   // 接收路由信息（包含当前漫画index和所有章节信息）
-  const etid_data = history.state.params;
-  let { index, chapterList } = toRefs(JSON.parse(etid_data));
-  let nowEp = ref(chapterList.value[index.value]);
+  let etid_data = JSON.parse(history.state.params);
+  let { index, data } = toRefs(etid_data);
+  let nowEp = ref(data.value.ep_list[index.value]);
   let chapterListIndex = index.value;
 
   // 获取漫画章节内容图片&索引
   let oldImgEpList = ref<Array<{ id: number }>>(
-    chapterList.value.slice(0, chapterList.value.length)
+    data.value.ep_list.slice(0, data.value.ep_list.length)
   ); // copy一份旧章节数据
   let imgEpList = ref<Array<{ id: number }>>([]); // 章节id数组集合
   let imgIndexUrl = ref<imgIndexUrl>(); // 漫画章节内容图片&索引 api数据
@@ -64,7 +66,7 @@
   // 初始化章节内容及计数
   let epListindex = 0; // 章节计数
   const getComicEpList = () => {
-    imgEpList.value = chapterList.value;
+    imgEpList.value = data.value.ep_list;
     imgEpList.value.reverse();
     // 调用getContentData方法获取章节数据并对数据做处理
     getContentData(nowEp.value.id);
@@ -153,7 +155,6 @@
         chapterListIndex = oldImgEpList.value.findIndex((item) => {
           return String(item.id) == entry.target.getAttribute("dataIndex");
         });
-        console.log(index);
       });
     },
     {
@@ -203,12 +204,27 @@
     bs.value.scrollBy(0, -contentVeiwHeight, 500);
   };
 
-  // 收藏漫画
-  let isLike = ref(false);
-  const likeIt = () => {
-    isLike.value = !isLike.value;
+  let { userInfo, Logged } = storeToRefs(useUserInfoStore());
+  let isCollection = ref<boolean | undefined>(false);
+  watchEffect(() => {
+    isCollection.value = userInfo?.value?.collection.some(
+      (i) => i.id == data.value.id
+    );
+  });
+  let collect = () => {
+    console.log("点击了");
+    if (Logged && Logged.value) {
+      if (isCollection.value) {
+        let index = userInfo?.value?.collection.findIndex(
+          (i) => i.id == data.value.id
+        );
+        userInfo?.value?.collection.splice(index as number, 1);
+      } else userInfo.value?.collection.push(data.value);
+    } else {
+      showToast("未登録です");
+      router.push({ name: "login" });
+    }
   };
-
   // 自动播放
   let autoPlayShow = ref(false);
   let autoTimer: number | undefined = undefined;
@@ -301,9 +317,8 @@
   // 当前在看漫画章节
   let { nowComicList } = storeToRefs(useNowListStore());
   const comicListSave = () => {
-    let etidDataFormat = JSON.parse(etid_data);
-    etidDataFormat.index = chapterListIndex;
-    nowComicList.value = etidDataFormat;
+    etid_data.index = chapterListIndex;
+    nowComicList.value = etid_data;
   };
 
   // 返回上一页
@@ -361,11 +376,11 @@
           <div
             class="rightIcon fs-3 d-flex justify-content-between align-items-center"
             style="width: 30%">
-            <i class="bi bi-heart" v-show="!isLike" @click="likeIt"></i>
             <i
-              class="bi bi-heart-fill text-danger"
-              v-show="isLike"
-              @click="likeIt"></i>
+              class="bi text-danger fs-3"
+              :class="isCollection ? 'bi-heart-fill' : 'bi-heart'"
+              style="text-shadow: 1.5px 1.5px 3px rgba(0, 0, 0, 0.5)"
+              @click="collect"></i>
             <i class="bi bi-share"></i>
             <i
               class="iconfont icon-fangdajing1 fs-2 scaleIcon"

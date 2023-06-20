@@ -29,7 +29,7 @@
   let chapterList: Array<object> = [];
   let getData = async () => {
     res.value = await getComicDetail(id + "");
-    chapterList = res.value.data?.ep_list;
+    chapterList = res.value.data?.ep_list; //章节列表
   };
   getData();
   // ----------------Better scroll配置项相关---------------
@@ -88,9 +88,7 @@
   let readThisChapter = (index: number) => {
     let params = JSON.stringify({
       index,
-      title: res.value.data.title,
-      square_cover: res.value.data.square_cover,
-      chapterList,
+      data: res.value.data,
     });
     router.push({ name: "content", state: { params } }); //注意：此处一定要用params
   };
