@@ -110,21 +110,31 @@
   // 封装实例化bscroll及其配置项函数
   const bsMounted = () => {
     // 实例化bscroll并配置其配置项
-    bs.value = new BScroll(contentVeiw.value, {
-      click: true,
-      pullUpLoad: true,
-      // 开启 observe-image 插件
-      observeImage: {
-        debounceTime: 500,
-      },
-      freeScroll: true,
-      scrollX: true,
-      scrollY: true,
-      zoom: zoomOption,
-      nestedScroll: {
-        groupId: 2,
-      },
-    } as Options);
+    bs.value = new BScroll(
+      contentVeiw.value as HTMLElement,
+      {
+        click: true,
+        pullUpLoad: true,
+        // 开启 observe-image 插件
+        observeImage: {
+          debounceTime: 500,
+        },
+        freeScroll: true,
+        scrollX: true,
+        scrollY: true,
+        disableMouse: true,
+        useTransition: true,
+        zoom: {
+          start: 1,
+          min: 0.5,
+          max: 3,
+          initialOrigin: ["center", "center"],
+        },
+        nestedScroll: {
+          groupId: 2,
+        },
+      } as Options
+    );
     // 监听上拉事件，执行相应回调函数
     bs.value.on("pullingUp", () => {
       pullingUpHandler();
@@ -443,11 +453,11 @@
             <i
               class="iconfont icon-fangdajing1 fs-2 scaleIcon"
               style="height: 50%"
-              v-show="isScale"
+              v-show="!isScale"
               @click="scaleOpen"></i>
             <i
               class="iconfont icon-fangdajing1 fs-2 noScaleIcon position-relative"
-              v-show="!isScale"
+              v-show="isScale"
               @click="scaleOpen"></i>
           </div>
         </div>
