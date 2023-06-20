@@ -212,14 +212,17 @@
     );
   });
   let collect = () => {
-    console.log("点击了");
     if (Logged && Logged.value) {
       if (isCollection.value) {
         let index = userInfo?.value?.collection.findIndex(
           (i) => i.id == data.value.id
         );
         userInfo?.value?.collection.splice(index as number, 1);
-      } else userInfo.value?.collection.push(data.value);
+        showToast("好きを取り消す");
+      } else {
+        userInfo.value?.collection.push(data.value);
+        showToast("コレクション成功です");
+      }
     } else {
       showToast("未登録です");
       router.push({ name: "login" });
