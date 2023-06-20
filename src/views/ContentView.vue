@@ -462,7 +462,7 @@
         class="w-100 z-9 position-absolute top-0 bg-dark bg-opacity-75"
         style="height: calc(100vh + 1px)"
         v-if="showListBottom"
-        @touchstart.self="enShowListBottom">
+        @click="enShowListBottom">
         <!-- 列表区 -->
         <div
           class="h-50 ms-3 me-3 position-absolute bg-dark blur-5 bg-opacity-75 rounded-4 Z-10"
