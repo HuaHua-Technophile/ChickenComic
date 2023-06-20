@@ -73,7 +73,6 @@
       res.value.push(...result.data.list);
       pageNumber.value++;
       loadFinish = false; //用该变量暂时控制不再二次网络请求
-
       // 如果请求回来不足20条，说明没有下一页了
       if (result.data.list.length < 20) {
         loadFinish = true; //设置为加载完毕

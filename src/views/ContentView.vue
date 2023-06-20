@@ -329,7 +329,6 @@
     await getContentData(imgEpList.value[newIndex].id);
     epListindex = newIndex;
   };
-
   // 当前在看漫画章节
   let { nowComicList, nowIndex, nowListLength } = storeToRefs(
     useNowListStore()
@@ -338,13 +337,11 @@
     etid_data.index = chapterListIndex;
     nowComicList.value = etid_data;
   };
-
   // 返回上一页
   const toBack = () => {
     comicListSave();
     router.go(-1);
   };
-
   // ------------退出时存储历史记录数据----------------
   interface historyItemData {
     data: Array<object>;
@@ -385,6 +382,10 @@
   onBeforeUnmount(() => {
     // addHistory();
   });
+  // ---------------分享当前漫画----------------
+  let share = () => {
+    console.log("object");
+  };
 </script>
 
 <template>
@@ -427,20 +428,25 @@
           class="ps-3 pe-3 d-flex justify-content-between align-items-center text-light t-shadow-3"
           v-show="isShowSlider">
           <div class="leftIcon d-flex align-items-center">
+            <!-- 返回 -->
             <i class="bi bi-arrow-left-short" @click="toBack"></i>
+            <!-- 当前阅读章节 -->
             <span class="epListTitle fs-3"
               >第{{ oldImgEpList.length - chapterListIndex }}話</span
             >
           </div>
+          <!-- 右侧 -->
           <div
             class="rightIcon fs-3 d-flex justify-content-between align-items-center"
             style="width: 30%">
+            <!-- 收藏/取消收藏 -->
             <i
               class="bi text-danger fs-3"
               :class="isCollection ? 'bi-heart-fill' : 'bi-heart'"
               style="text-shadow: 1.5px 1.5px 3px rgba(0, 0, 0, 0.5)"
               @click="collect"></i>
-            <i class="bi bi-share"></i>
+            <!-- 分享按钮 -->
+            <i class="bi bi-share" @click="share"></i>
             <!-- 启用/禁用双指缩放 -->
             <i
               class="iconfont icon-fangdajing1 fs-2 scaleIcon"
