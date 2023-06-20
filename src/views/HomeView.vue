@@ -3,12 +3,13 @@
   import UserSetting from "@/components/UserSetting.vue";
   import SearchBar from "@/components/SearchBar.vue";
   import RankingBar from "@/components/RankingBar.vue";
+  import { storeToRefs } from "pinia";
   import BScroll from "better-scroll"; //导入Better scroll核心
   import ObserveDOM from "@better-scroll/observe-dom"; //dom变化自动重新实例化
   import ObserveImage from "@better-scroll/observe-image";
   import { useUserInfoStore } from "@/stores/userInfo";
-  import { storeToRefs } from "pinia";
   import { getRankInfo } from "@/api/ranking";
+  import { getRecommend } from "../api/Recommended"; //获取3条推荐漫画数据
   import { type comicInfoCommonType } from "@/utils/typeing";
   // ---------用户信息-------------
   let { userInfo, Logged } = storeToRefs(useUserInfoStore());
@@ -30,7 +31,7 @@
       observeImage: true,
     });
   };
-  // 请求新作榜数据封装函数
+  // --------------------------请求新作榜数据----------------------------------
   let newComicRankInfoData = ref<{
     data?: { list: Array<comicInfoCommonType> };
   }>({});
@@ -45,6 +46,14 @@
   onMounted(() => {
     bsMounted();
   });
+  //---------------------请求推荐模块------------------------------
+  let RecommendList = ref<Array<object>>();
+  const getRecommendFun = async () => {
+    let res = await getRecommend();
+    console.log(res);
+    RecommendList.value?.push(...res.data);
+  };
+  getRecommendFun();
 </script>
 <template>
   <div class="home w-100 h-100" ref="home">
@@ -54,8 +63,9 @@
       <UserSetting :userInfo="userInfo" :userId="userId"></UserSetting>
       <!-- 搜索区域 -->
       <SearchBar></SearchBar>
-      <!-- 排行榜 -->
+      <!-- 首页排行榜 -->
       <RankingBar :newComicRankInfoData="newComicRankInfoData"></RankingBar>
+      <!-- 首页轮播图推荐模块 -->
     </div>
   </div>
 </template>
