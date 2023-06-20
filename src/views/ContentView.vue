@@ -122,7 +122,14 @@
         freeScroll: true,
         scrollX: true,
         scrollY: true,
-        zoom: zoomOption,
+        zoom: {
+          start: 1,
+          min: 0.5,
+          max: 2,
+          initialOrigin: ["center", "center"],
+          // minimalZoomDistance: 3,
+          // bounceTime: 800, // ms
+        },
         nestedScroll: {
           groupId: 2,
         },
@@ -446,11 +453,11 @@
             <i
               class="iconfont icon-fangdajing1 fs-2 scaleIcon"
               style="height: 50%"
-              v-show="isScale"
+              v-show="!isScale"
               @click="scaleOpen"></i>
             <i
               class="iconfont icon-fangdajing1 fs-2 noScaleIcon position-relative"
-              v-show="!isScale"
+              v-show="isScale"
               @click="scaleOpen"></i>
           </div>
         </div>
