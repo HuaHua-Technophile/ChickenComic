@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-export const useThemeStore = defineStore("global", () => {
+export const useThemeStore = defineStore("Theme", () => {
   // 主题修改---------------
   let theme = ref("dark");
   let changeTheme = () => {

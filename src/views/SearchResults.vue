@@ -53,7 +53,7 @@
   ];
   let pageNumber = ref(1);
   let isPullUpLoad = ref(false); // 加载开关,是否显示loading
-  let loadFinish = false;
+  let loadFinish = false; //是否加载完毕全部相关漫画数据，用以禁止多余网络请求
   let res = ref<Array<{ styles: Array<string> }>>([]); //请求回来的原始数据
   let domList = ref(); //真正放入dom模板中遍历的数据.因为类型分类的存在,切换分类后直接从res中拿取符合分类结果的item放入domList中
   // -------------数据加载------------
@@ -65,10 +65,14 @@
       isFinish: sort3.value,
       isFree: sort4.value,
     });
+    // 如果数据存在或还有数据(大于0)
     if (result.data.list.length > 0) {
       res.value.push(...result.data.list);
+      pageNumber.value++;
+      // 如果请求回来不足20条，说明没有下一页了
       if (result.data.list.length < 20) {
-        loadFinish = true;
+        loadFinish = true; //设置为加载完毕
+        console.log("进入了");
         bs.value.closePullUp();
       }
     } else {
@@ -81,15 +85,15 @@
   });
   // -------------根据类型,筛选真实遍历数据------------------
   watchEffect(() => {
-    if (sort2.value == "-1") domList.value = res.value;
-    else domList.value = res.value.filter((i) => i.styles[0] == sort2.value);
+    if (sort2.value == "-1")
+      domList.value = res.value; //不做筛选，全部放入DOMList遍历
+    else domList.value = res.value.filter((i) => i.styles[0] == sort2.value); //做筛选后放入DOMList遍历
   });
   // ---------------- 上拉加载更多-------------
   let pullUpload = () => {
     // 因为bs实例无法调用closePullUp方法关闭上拉回调，因此添加判断：如果没加载完
     if (!loadFinish) {
       isPullUpLoad.value = true;
-      pageNumber.value++;
       SearchResultLoad();
       isPullUpLoad.value = false;
       bs.value.finishPullUp();
