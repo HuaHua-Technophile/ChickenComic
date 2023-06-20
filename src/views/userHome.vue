@@ -59,20 +59,22 @@
           <div
             class="userCover rounded-3 overflow-hidden"
             style="width: 100px; height: 100px">
-            <img src="../img/logo.png" alt="" />
+            <img
+              :src="`https://q.qlogo.cn/headimg_dl?dst_uin=${userInfo.id}&spec=3`"
+              alt="" />
           </div>
-          <div class="userName mt-3 text-center">一夜九次郎</div>
+          <div class="userName mt-3 text-center">{{ userInfo.name }}</div>
         </div>
       </div>
       <!-- 外层swiper -->
       <div class="btnArea d-flex justify-content-center">
         <div
-          class="btnL text-center"
+          class="btnL text-center mx-2"
           style="width: 100px; height: 50px; line-height: 50px">
           コレクション
         </div>
         <div
-          class="btnR text-center"
+          class="btnR text-center mx-2"
           style="width: 100px; height: 50px; line-height: 50px">
           レコード破り
         </div>
@@ -115,7 +117,7 @@
             </div>
           </div>
         </swiper-slide>
-        <swiper-slide style="height: 50vh">内容</swiper-slide>
+        <swiper-slide style="height: 50vh"> </swiper-slide>
       </swiper-container>
       <!-- 返回 -->
       <back-component class="position-fixed"></back-component>
