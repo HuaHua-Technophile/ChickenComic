@@ -8,6 +8,7 @@
   import { getComicDetail } from "@/api/comicCover";
   import BScroll from "better-scroll"; //导入Better scroll核心  // 从路由传参获取当前页面漫画的id
   import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
+  import ObserveDOM from "@better-scroll/observe-dom"; //同上
   import NestedScroll from "@better-scroll/nested-scroll"; //导入betterscroll嵌套
   import { showToast } from "vant";
   import "vant/es/toast/style";
@@ -34,6 +35,7 @@
   getData();
   // ----------------Better scroll配置项相关---------------
   BScroll.use(ObserveImage);
+  BScroll.use(ObserveDOM);
   BScroll.use(NestedScroll);
   let comicCover = ref(); //待实例化的DOM元素
   let chapterComponentDom = ref(); //待实例化的DOM元素
@@ -44,6 +46,7 @@
     if (comicCover.value) {
       bs.value = new BScroll(comicCover.value, {
         click: true,
+        observeDOM: true, // 开启 observe-dom 插件
         observeImage: {
           debounceTime: 500, // ms
         },
@@ -70,14 +73,21 @@
       (i) => i.id == route.query.id
     );
   });
-  let collect = () => {
+  let collect = (status: boolean) => {
     if (Logged && Logged.value) {
       if (isCollection.value) {
-        let index = userInfo?.value?.collection.findIndex(
-          (i) => i.id == route.query.id
-        );
-        userInfo?.value?.collection.splice(index as number, 1);
-      } else userInfo.value?.collection.push(res.value.data);
+        if (status) showToast("収蔵済みです");
+        else {
+          let index = userInfo?.value?.collection.findIndex(
+            (i) => i.id == route.query.id
+          );
+          userInfo?.value?.collection.splice(index as number, 1);
+          showToast("好きを取り消す");
+        }
+      } else {
+        userInfo.value?.collection.push(res.value.data);
+        showToast("コレクション成功です");
+      }
     } else {
       showToast("未登録です");
       router.push({ name: "login" });
@@ -111,7 +121,7 @@
         <div
           class="position-absolute top-0 translate-middle-y d-flex align-items-center justify-content-center bg-light rounded-3"
           style="width: 10vw; height: 10vw; right: 10%"
-          @click="collect">
+          @click="collect(false)">
           <i
             class="bi text-danger fs-3"
             :class="isCollection ? 'bi-heart-fill' : 'bi-heart'"
@@ -174,8 +184,9 @@
           </div>
           <div
             class="pt-3 pb-3 fs-5 fw-bold bg-secondary rounded-4 text-center t-shadow-3 bg-opacity-25 insetShadow-4-4"
-            style="width: 40%">
-            本棚に入れます
+            style="width: 40%"
+            @click="collect(true)">
+            納めます
           </div>
         </div>
         <!-- 标签 -->
