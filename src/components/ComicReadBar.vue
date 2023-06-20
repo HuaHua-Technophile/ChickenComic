@@ -16,9 +16,7 @@
     if (nowComicList.value) {
       let params = JSON.stringify({
         index,
-        title: nowComicList.value.title,
-        square_cover: nowComicList.value.square_cover,
-        chapterList: nowComicList.value.chapterList,
+        data: nowComicList.value.data,
       });
       router.push({ name: "content", state: { params } }); //注意：此处一定要用params
     }
@@ -54,7 +52,7 @@
       <img
         v-show="nowComicList"
         style="width: 100%; height: 100%; border-radius: 50%"
-        v-lazy="nowComicList?.square_cover + '@568w_319h'"
+        v-lazy="nowComicList?.data.square_cover + '@568w_319h'"
         alt="" />
       <img
         v-show="!nowComicList"
@@ -67,7 +65,7 @@
       style="margin-left: 10px"
       @click="toRead(nowIndex)">
       <div class="comicName text-truncate fs-6" v-show="nowComicList">
-        {{ nowComicList?.title }}
+        {{ nowComicList?.data.title }}
       </div>
       <div class="comicName text-truncate fs-6" v-show="!nowComicList">
         読み取りなし
