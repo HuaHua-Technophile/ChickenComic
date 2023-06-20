@@ -3,6 +3,7 @@
   import UserSetting from "@/components/UserSetting.vue";
   import SearchBar from "@/components/SearchBar.vue";
   import RankingBar from "@/components/RankingBar.vue";
+  import RecommendBar from "@/components/RecommendBar.vue";
   import { storeToRefs } from "pinia";
   import BScroll from "better-scroll"; //导入Better scroll核心
   import ObserveDOM from "@better-scroll/observe-dom"; //dom变化自动重新实例化
@@ -47,13 +48,15 @@
     bsMounted();
   });
   //---------------------请求推荐模块------------------------------
-  let RecommendList = ref<Array<object>>();
+  let RecommendList = ref<Array<{ season_id: number; vertical_cover: string }>>(
+    []
+  );
   const getRecommendFun = async () => {
     let res = await getRecommend();
-    console.log(res);
-    RecommendList.value?.push(...res.data);
+    RecommendList.value = res.data;
+    console.log(RecommendList.value);
   };
-  getRecommendFun();
+  getRecommendFun(); // 请求推荐数据
 </script>
 <template>
   <div class="home w-100 h-100" ref="home">
@@ -66,6 +69,7 @@
       <!-- 首页排行榜 -->
       <RankingBar :newComicRankInfoData="newComicRankInfoData"></RankingBar>
       <!-- 首页轮播图推荐模块 -->
+      <RecommendBar :RecommendList="RecommendList"></RecommendBar>
     </div>
   </div>
 </template>
