@@ -264,12 +264,13 @@
   };
 
   // 开启与关闭缩放功能
-  let isScale = ref(false);
+  let isScale = ref(true);
   let scaleTip = "ズーム機能が無効になっています";
   const scaleOpen = () => {
     isScale.value = !isScale.value;
     // 手动开启与关闭缩放功能
     if (isScale.value) {
+      console.log("ssss");
       zoomOption = {
         start: 1,
         min: 1,
@@ -451,11 +452,11 @@
             <i
               class="iconfont icon-fangdajing1 fs-2 scaleIcon"
               style="height: 50%"
-              v-show="!isScale"
+              v-show="isScale"
               @click="scaleOpen"></i>
             <i
               class="iconfont icon-fangdajing1 fs-2 noScaleIcon position-relative"
-              v-show="isScale"
+              v-show="!isScale"
               @click="scaleOpen"></i>
           </div>
         </div>
