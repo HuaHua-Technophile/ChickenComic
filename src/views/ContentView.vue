@@ -262,17 +262,31 @@
   const scaleOpen = () => {
     isScale.value = !isScale.value;
     // 手动开启与关闭缩放功能
-    zoomOption =
-      isScale.value === true
-        ? {
-            start: 1,
-            min: 1,
-            max: 2,
-            initialOrigin: ["center", "center"],
-            minimalZoomDistance: 3,
-            bounceTime: 800, // ms
-          }
-        : false;
+    if (isScale.value) {
+      zoomOption = {
+        start: 1,
+        min: 0.5,
+        max: 2,
+        initialOrigin: ["center", "center"],
+        minimalZoomDistance: 3,
+        bounceTime: 800, // ms
+      };
+      bsMounted();
+    } else {
+      zoomOption = false;
+      bsMounted();
+    }
+    // zoomOption =
+    //   isScale.value === true
+    //     ? {
+    //         start: 1,
+    //         min: 0.5,
+    //         max: 2,
+    //         initialOrigin: ["center", "center"],
+    //         minimalZoomDistance: 3,
+    //         bounceTime: 800, // ms
+    //       }
+    //     : false;
     scaleTip =
       isScale.value === true
         ? "ズーム機能が有効"
@@ -430,7 +444,7 @@
         class="w-100 z-9 position-absolute top-0 bg-dark bg-opacity-75"
         style="height: calc(100vh + 1px)"
         v-if="showListBottom"
-        @click="enShowListBottom">
+        @touchstart.self="enShowListBottom">
         <!-- 列表区 -->
         <div
           class="h-50 ms-3 me-3 position-absolute bg-dark blur-5 bg-opacity-75 rounded-4 Z-10"
