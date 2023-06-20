@@ -333,8 +333,15 @@
   };
 
   // ------------退出时存储历史记录数据----------------
-
-  onBeforeUnmount(() => {
+  interface historyItemData {
+    data: Array<object>;
+  }
+  interface historyItem {
+    historyIndex: number;
+    HistoryListLength: number;
+    historyComicList: historyItemData;
+  }
+  const addHistory = () => {
     let userId = localStorage.getItem("userId");
     if (userId) {
       let newHistory = {
@@ -343,16 +350,27 @@
         HistoryListLength: nowListLength.value,
       };
       if (!localStorage.getItem(`user${userId}`)) {
-        localStorage.setItem(`user${userId}`, JSON.stringify([]));
-        let nowHistoryLocalStorage = localStorage.getItem(
-          `user${userId}`
-        ) as string;
+        localStorage.setItem(`user${userId}`, JSON.stringify([newHistory]));
+      } else {
+        let nowHistoryLocalStorage = JSON.parse(
+          localStorage.getItem(`user${userId}`) as string
+        );
+        console.log(nowHistoryLocalStorage);
 
-        console.log(JSON.parse(nowHistoryLocalStorage));
-
-        // localStorage.setItem(`user${userId}`, JSON.stringify(newHistory));
+        // let nowHistoryLocalStorage = JSON.parse(
+        //   localStorage.getItem(`user${userId}`) as string
+        // );
+        // nowHistoryLocalStorage.push(newHistory);
+        // localStorage.setItem(
+        //   `user${userId}`,
+        //   JSON.stringify(nowHistoryLocalStorage)
+        // );
       }
     }
+  };
+
+  onBeforeUnmount(() => {
+    // addHistory();
   });
 </script>
 
