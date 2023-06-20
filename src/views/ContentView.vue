@@ -268,8 +268,8 @@
         min: 0.5,
         max: 2,
         initialOrigin: ["center", "center"],
-        minimalZoomDistance: 3,
-        bounceTime: 800, // ms
+        // minimalZoomDistance: 3,
+        // bounceTime: 800, // ms
       };
       bsMounted();
     } else {
