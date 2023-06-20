@@ -16,6 +16,17 @@ const router = createRouter({
       path: "/userHome",
       name: "userHome",
       component: () => import("@/views/userHome.vue"),
+      // 独享路由守卫
+      beforeEnter: (to, from, next) => {
+        let token = window.localStorage.getItem("userId");
+        // 判断是否登录
+        if (!token) {
+          next("/login");
+          return;
+        } else {
+          next();
+        }
+      },
     },
     {
       path: "/login",

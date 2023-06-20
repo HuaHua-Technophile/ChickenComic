@@ -18,9 +18,13 @@
       | undefined;
   }>();
 
-  // 跳转到用户主页
+  // 跳转到登录页或用户主页
   const toUserHome = () => {
-    router.push("userHome");
+    if (window.localStorage.getItem("userId")) {
+      router.push("userHome");
+    } else {
+      router.push("login");
+    }
   };
   // 跳转到设置页
   const toSettingAbout = () => {
