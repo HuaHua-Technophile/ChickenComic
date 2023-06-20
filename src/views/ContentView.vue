@@ -82,7 +82,12 @@
   BScroll.use(ObserveImage); // 自动重载插件
   BScroll.use(Zoom); // 注册缩放插件
   BScroll.use(NestedScroll); // 注册嵌套bscroll插件
-  let zoomOption: boolean | Options = false; // Zoom插件配置项（false为不启用缩放）
+  let zoomOption: boolean | Options = {
+    start: 1,
+    min: 1,
+    max: 3,
+    initialOrigin: ["center", "center"],
+  }; // Zoom插件配置项（false为不启用缩放）
   let bs = ref();
   let bs2 = ref();
   let contentVeiw = ref();
@@ -124,12 +129,7 @@
         scrollY: true,
         disableMouse: true,
         useTransition: true,
-        zoom: {
-          start: 1,
-          min: 1,
-          max: 3,
-          initialOrigin: ["center", "center"],
-        },
+        zoom: zoomOption,
         nestedScroll: {
           groupId: 2,
         },
@@ -280,6 +280,7 @@
       bsMounted();
     } else {
       zoomOption = false;
+      console.log("aaa");
       bsMounted();
     }
     // zoomOption =
