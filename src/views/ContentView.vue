@@ -270,7 +270,6 @@
     isScale.value = !isScale.value;
     // 手动开启与关闭缩放功能
     if (isScale.value) {
-      console.log("ssss");
       zoomOption = {
         start: 1,
         min: 1,
@@ -279,21 +278,14 @@
       };
       bsMounted();
     } else {
-      zoomOption = false;
-      console.log("aaa");
+      zoomOption = {
+        start: 1,
+        min: 1,
+        max: 1,
+        initialOrigin: ["center", "center"],
+      };
       bsMounted();
     }
-    // zoomOption =
-    //   isScale.value === true
-    //     ? {
-    //         start: 1,
-    //         min: 0.5,
-    //         max: 2,
-    //         initialOrigin: ["center", "center"],
-    //         minimalZoomDistance: 3,
-    //         bounceTime: 800, // ms
-    //       }
-    //     : false;
     scaleTip =
       isScale.value === true
         ? "ズーム機能が有効"
