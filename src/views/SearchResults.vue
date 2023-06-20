@@ -3,7 +3,6 @@
   import { getSearchResult } from "../api/search";
   import BScroll from "better-scroll"; //导入Better scroll核心
   import ObserveDOM from "@better-scroll/observe-dom"; //导入自动重新计算BS实例
-  import throttle from "lodash/throttle"; //Lodash节流
   import { useRoute } from "vue-router";
   import Pullup from "@better-scroll/pull-up";
   let route = useRoute();
