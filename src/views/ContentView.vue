@@ -383,6 +383,19 @@
     // addHistory();
   });
   // ---------------分享当前漫画----------------
+  const showShare = ref(false); //控制分享面板的显/隐
+  const options = [
+    { name: "微信", icon: "wechat" },
+    { name: "微博", icon: "weibo" },
+    { name: "复制链接", icon: "link" },
+    { name: "分享海报", icon: "poster" },
+    { name: "二维码", icon: "qrcode" },
+  ];
+
+  const onSelect = (option: object) => {
+    console.log(option);
+    showShare.value = false;
+  };
   let share = () => {
     console.log("object");
   };
@@ -551,6 +564,12 @@
       <div class="middleClickArea w-100 flex-grow-1" @click="showPopup"></div>
       <div class="footClickArea w-100 flex-grow-1" @click="downScroll"></div>
     </div>
+    <!-- 分享面板 -->
+    <van-share-sheet
+      v-model:show="showShare"
+      title="立即分享给好友"
+      :options="options"
+      @select="onSelect" />
   </div>
 </template>
 
