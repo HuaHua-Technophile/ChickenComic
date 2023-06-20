@@ -8,6 +8,7 @@
   import { getComicDetail } from "@/api/comicCover";
   import BScroll from "better-scroll"; //导入Better scroll核心  // 从路由传参获取当前页面漫画的id
   import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
+  import ObserveDOM from "@better-scroll/observe-dom"; //同上
   import NestedScroll from "@better-scroll/nested-scroll"; //导入betterscroll嵌套
   import { showToast } from "vant";
   import "vant/es/toast/style";
@@ -34,6 +35,7 @@
   getData();
   // ----------------Better scroll配置项相关---------------
   BScroll.use(ObserveImage);
+  BScroll.use(ObserveDOM);
   BScroll.use(NestedScroll);
   let comicCover = ref(); //待实例化的DOM元素
   let chapterComponentDom = ref(); //待实例化的DOM元素
@@ -44,6 +46,7 @@
     if (comicCover.value) {
       bs.value = new BScroll(comicCover.value, {
         click: true,
+        observeDOM: true, // 开启 observe-dom 插件
         observeImage: {
           debounceTime: 500, // ms
         },
