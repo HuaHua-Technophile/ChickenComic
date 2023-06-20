@@ -44,10 +44,9 @@
       bottom: 2%;
       transform: translateX(50%);
       box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
-      transition: all 0.8s;
+      transition: all 0.6s;
     "
-    ref="ComicReadBar"
-    @click="toRead(nowIndex)">
+    ref="ComicReadBar">
     <div
       class="comicListCover flex-shrink-0"
       style="width: 49px; height: 49px"
@@ -65,7 +64,8 @@
     </div>
     <div
       class="comicListMsg flex-grow-1 text-truncate"
-      style="margin-left: 10px">
+      style="margin-left: 10px"
+      @click="toRead(nowIndex)">
       <div class="comicName text-truncate fs-6" v-show="nowComicList">
         {{ nowComicList?.title }}
       </div>
@@ -78,7 +78,8 @@
     </div>
     <div
       class="toComicList flex-shrink-0 fs-1 text-center"
-      style="width: 50px; height: 50px; line-height: 50px">
+      style="width: 50px; height: 50px; line-height: 50px"
+      @click="toRead(nowIndex)">
       <i class="bi bi-play-fill"></i>
     </div>
   </div>
