@@ -1,11 +1,8 @@
 <script setup lang="ts">
   import { useRouter } from "vue-router";
   import { type comicInfoCommonType } from "@/utils/typeing";
-  import { showToast } from "vant";
   // ---------------设备像素比----------------
   let DPR = window.devicePixelRatio;
-  showToast(`当前设备缩放比为：${DPR}`);
-  console.log(`当前设备缩放比为：${DPR}`);
   // 调用导入的useRouter
   const router = useRouter();
   const props = defineProps<{

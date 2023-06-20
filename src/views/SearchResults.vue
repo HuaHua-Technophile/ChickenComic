@@ -232,8 +232,8 @@
     }
     img[lazy="error"] {
       opacity: 1;
-      width: 100px * 2 !important;
-      height: 133px * 2 !important;
+      width: 100px !important;
+      height: 133px !important;
       object-fit: cover;
     }
     img[lazy="loaded"] {
