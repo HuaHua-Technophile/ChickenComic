@@ -266,7 +266,7 @@
       isScale.value === true
         ? {
             start: 1,
-            min: 1,
+            min: 0.5,
             max: 2,
             initialOrigin: ["center", "center"],
             minimalZoomDistance: 3,
@@ -428,6 +428,7 @@
               style="text-shadow: 1.5px 1.5px 3px rgba(0, 0, 0, 0.5)"
               @click="collect"></i>
             <i class="bi bi-share"></i>
+            <!-- 启用/禁用双指缩放 -->
             <i
               class="iconfont icon-fangdajing1 fs-2 scaleIcon"
               style="height: 50%"

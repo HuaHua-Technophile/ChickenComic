@@ -45,6 +45,7 @@
       showToast("パスワードが規格外です");
       return;
     } else {
+      // 账号密码符合规范
       let accountData = JSON.parse(
         localStorage.getItem(`user${account.value}`) + ""
       );
@@ -84,7 +85,7 @@
       showToast(`アカウントを作成しました\nログインしてください`);
       return;
     } else {
-      // 成功创建
+      // 账号密码符合规范
       let res = <resType>(
         await axios.get(
           `https://cloud.qqshabi.cn/api/qqinfo.php?qq=${account1.value}`
