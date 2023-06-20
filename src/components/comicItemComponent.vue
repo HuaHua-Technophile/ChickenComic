@@ -38,8 +38,7 @@
       style="
         margin: 0 5px;
         box-shadow: 0px 0px 5px rgba(var(--bs-body-color-rgb), 0.5);
-      "
-      :style="{ width: `${props.imgWidth * DPR}px` }" />
+      " />
     <!-- 右侧文本区域 -->
     <div
       class="overflow-hidden flex-grow-1 d-flex flex-column justify-content-around">

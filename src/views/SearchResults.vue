@@ -165,7 +165,7 @@
           v-for="item in domList"
           :key="item.id"
           :comicInfo="item"
-          :imgWidth="50"
+          :imgWidth="100"
           :fontSize="18"
           class="mb-2"></comic-item-component>
         <li class="w-100 py-3 text-center">
@@ -223,6 +223,7 @@
       text-align: center;
     }
     img {
+      width: 100px;
       margin-right: 15px !important;
       transition: 0.6s;
     }
@@ -231,8 +232,8 @@
     }
     img[lazy="error"] {
       opacity: 1;
-      width: 100px !important;
-      height: 133px !important;
+      width: 100px * 2 !important;
+      height: 133px * 2 !important;
       object-fit: cover;
     }
     img[lazy="loaded"] {
