@@ -130,7 +130,6 @@
       margin: 0 6.66666667%;
     }
   }
-
   img[lazy="loading"] {
     opacity: 0;
     width: 40% !important;
