@@ -85,7 +85,7 @@
   let zoomOption: boolean | Options = false; // Zoom插件配置项（false为不启用缩放）
   let bs = ref();
   let bs2 = ref();
-  let contentVeiw = ref<object>({});
+  let contentVeiw = ref();
   let isPullUpLoad = ref<boolean>(false);
   // 上拉加载调用此函数，发送下一章请求
   let endList = ref("上拉进入下一章");
