@@ -14,11 +14,11 @@
     });
   });
   //--------------主题色修改------------------
-  let { theme } = storeToRefs(useThemeStore());
-  let { changeTheme } = useThemeStore();
+  let store = useThemeStore();
+  let { theme } = storeToRefs(store);
+  let { changeTheme } = store;
+  console.log(changeTheme);
   let settingChangeTheme = () => {
-    console.log("点击了按钮");
-    console.log(changeTheme);
     changeTheme();
   };
   //--------------遮罩层修改------------------

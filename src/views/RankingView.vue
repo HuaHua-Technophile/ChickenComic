@@ -140,8 +140,7 @@
       slides-per-view="auto"
       init="false"
       direction="vertical"
-      pagination="true"
-      history-key="slide">
+      pagination="true">
       <!-- 每中排行的swiper slide -->
       <swiper-slide
         class="mySwiper-slide"
@@ -186,7 +185,7 @@
   .RankingView img {
     margin-right: 10px !important;
   }
-  
+
   .comicSlide {
     &:nth-child(1) {
       .rankNum {
