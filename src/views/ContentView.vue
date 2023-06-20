@@ -318,7 +318,9 @@
   };
 
   // 当前在看漫画章节
-  let { nowComicList } = storeToRefs(useNowListStore());
+  let { nowComicList, nowIndex, nowListLength } = storeToRefs(
+    useNowListStore()
+  );
   const comicListSave = () => {
     etid_data.index = chapterListIndex;
     nowComicList.value = etid_data;
@@ -329,6 +331,29 @@
     comicListSave();
     router.go(-1);
   };
+
+  // ------------退出时存储历史记录数据----------------
+
+  onBeforeUnmount(() => {
+    let userId = localStorage.getItem("userId");
+    if (userId) {
+      let newHistory = {
+        historyComicList: nowComicList.value,
+        historyIndex: nowIndex.value,
+        HistoryListLength: nowListLength.value,
+      };
+      if (!localStorage.getItem(`user${userId}`)) {
+        localStorage.setItem(`user${userId}`, JSON.stringify([]));
+        let nowHistoryLocalStorage = localStorage.getItem(
+          `user${userId}`
+        ) as string;
+
+        console.log(JSON.parse(nowHistoryLocalStorage));
+
+        // localStorage.setItem(`user${userId}`, JSON.stringify(newHistory));
+      }
+    }
+  });
 </script>
 
 <template>
@@ -342,7 +367,7 @@
         v-for="(item, index) in imgUrlTokenAll"
         :key="index">
         <img
-          v-lazy="item.item!.url + '?token=' + item.item!.token"
+          v-lazy="item.item?.url + '?token=' + item.item?.token"
           class="w-100" />
       </div>
       <!-- 上拉提示 -->

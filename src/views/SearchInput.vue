@@ -217,10 +217,7 @@
       </transition>
       <!-- 搜索建议词 -->
       <transition name="sideUp100">
-        <ul
-          v-if="isFocus"
-          class="position-absolute t-shadow-1"
-          style="top：150px">
+        <ul v-if="isFocus" class="position-absolute" style="top：150px">
           <li
             class="p-3 d-flex align-items-center"
             v-for="(item, index) in suggestedWord"

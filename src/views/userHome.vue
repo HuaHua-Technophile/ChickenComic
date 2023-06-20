@@ -60,10 +60,10 @@
             class="userCover rounded-3 overflow-hidden"
             style="width: 100px; height: 100px">
             <img
-              :src="`https://q.qlogo.cn/headimg_dl?dst_uin=${userInfo.id}&spec=3`"
+              :src="`https://q.qlogo.cn/headimg_dl?dst_uin=${userInfo?.id}&spec=3`"
               alt="" />
           </div>
-          <div class="userName mt-3 text-center">{{ userInfo.name }}</div>
+          <div class="userName mt-3 text-center">{{ userInfo?.name }}</div>
         </div>
       </div>
       <!-- 外层swiper -->
