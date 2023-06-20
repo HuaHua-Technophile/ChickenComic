@@ -1,7 +1,8 @@
 <script setup lang="ts">
-  import { ref, onMounted, watchEffect, watch } from "vue";
+  import { ref, onMounted, watchEffect } from "vue";
   import { getSearchResult } from "../api/search";
   import BScroll from "better-scroll"; //导入Better scroll核心
+  import ObserveImage from "@better-scroll/observe-image";
   import ObserveDOM from "@better-scroll/observe-dom"; //导入自动重新计算BS实例
   import { useRoute } from "vue-router";
   import Pullup from "@better-scroll/pull-up";
@@ -58,6 +59,7 @@
   let domList = ref(); //真正放入dom模板中遍历的数据.因为类型分类的存在,切换分类后直接从res中拿取符合分类结果的item放入domList中
   // -------------数据加载------------
   const SearchResultLoad = async () => {
+    loadFinish = true; //用该变量暂时控制不再二次网络请求
     let result = await getSearchResult({
       keyWord: keyWord.value,
       order: sort1.value,
@@ -70,6 +72,8 @@
     if (result.data.list.length > 0) {
       res.value.push(...result.data.list);
       pageNumber.value++;
+      loadFinish = false; //用该变量暂时控制不再二次网络请求
+
       // 如果请求回来不足20条，说明没有下一页了
       if (result.data.list.length < 20) {
         loadFinish = true; //设置为加载完毕
@@ -106,11 +110,14 @@
   //------------------better scroll实例化相关-----------
   BScroll.use(Pullup);
   BScroll.use(ObserveDOM);
+
+  BScroll.use(ObserveImage);
   let searchResultList = ref();
   let bs = ref(); //Better scroll实例化后对象的存储
   onMounted(() => {
     bs.value = new BScroll(searchResultList.value, {
       click: true,
+      observeImage: true,
       observeDOM: true, // 开启 observe-dom 插件
       pullUpLoad: true,
     });

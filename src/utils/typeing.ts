@@ -18,6 +18,7 @@ export interface comicInfoCommonType {
   wiki: {
     id: number;
     title: string;
+    vertical_cover: string;
   };
   default: () => {};
 }

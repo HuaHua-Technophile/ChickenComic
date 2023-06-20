@@ -79,8 +79,11 @@
           <span>{{ comicInfo?.styles[0]?.name || comicInfo?.styles[0] }}</span>
         </div>
         <!-- 跟新或完结信息 -->
-        <div v-show="!comicInfo?.is_finish && comicInfo?.last_ord">
-          {{ comicInfo?.last_ord }}話に更新
+        <div v-show="!comicInfo?.is_finish">
+          <span v-if="comicInfo?.last_ord"
+            >{{ comicInfo?.last_ord }}話に更新</span
+          >
+          <span v-else>[連載]</span>
         </div>
         <div v-show="comicInfo.is_finish">
           [完結]
