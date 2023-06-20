@@ -27,7 +27,7 @@
   let route = useRoute();
   let { id } = route.query;
   let res = ref();
-  let chapterList: Array<object> = [];
+  let chapterList = [];
   let getData = async () => {
     res.value = await getComicDetail(id + "");
     chapterList = res.value.data?.ep_list; //章节列表
@@ -179,7 +179,7 @@
           <div
             class="pt-3 pb-3 fs-5 fw-bold bg-primary rounded-4 text-center t-shadow-3 bg-opacity-25 insetShadow-4-4"
             style="width: 40%"
-            @click="readThisChapter(0)">
+            @click="readThisChapter(chapterList.length - 1)">
             読み始めます
           </div>
           <div
