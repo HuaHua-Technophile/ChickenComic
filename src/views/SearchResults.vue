@@ -65,6 +65,7 @@
       isFinish: sort3.value,
       isFree: sort4.value,
     });
+    console.log(result);
     // 如果数据存在或还有数据(大于0)
     if (result.data.list.length > 0) {
       res.value.push(...result.data.list);
@@ -72,7 +73,7 @@
       // 如果请求回来不足20条，说明没有下一页了
       if (result.data.list.length < 20) {
         loadFinish = true; //设置为加载完毕
-        console.log("进入了");
+        console.log("没有下一页了");
         bs.value.closePullUp();
       }
     } else {
@@ -118,6 +119,7 @@
   // -----------------选择结果分类-----------------------
   const selectType = () => {
     pageNumber.value = 1; //除了修改"类型",其他都需要重新请求,因此页码归为1
+    res.value = [];
     SearchResultLoad();
   };
 </script>
@@ -222,6 +224,19 @@
     }
     img {
       margin-right: 15px !important;
+      transition: 0.6s;
+    }
+    img[lazy="loading"] {
+      opacity: 0;
+    }
+    img[lazy="error"] {
+      opacity: 1;
+      width: 100px !important;
+      height: 133px !important;
+      object-fit: cover;
+    }
+    img[lazy="loaded"] {
+      opacity: 1;
     }
   }
 </style>
