@@ -12,7 +12,7 @@ export const useNowListStore = defineStore("nowList", () => {
     nowComicList,
     () => {
       nowIndex.value = nowComicList.value.index;
-      nowListLength.value = nowComicList.value.chapterList.length;
+      nowListLength.value = nowComicList.value.data.ep_list.length;
     },
     { deep: true }
   );
