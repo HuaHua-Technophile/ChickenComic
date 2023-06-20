@@ -66,6 +66,7 @@
       <!-- 首页排行榜 -->
       <RankingBar :newComicRankInfoData="newComicRankInfoData"></RankingBar>
       <!-- 首页轮播图推荐模块 -->
+      <ClassificationComponent></ClassificationComponent>
     </div>
   </div>
 </template>

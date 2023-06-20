@@ -14,7 +14,9 @@
   const toComicDetail = () => {
     let id = props.comicInfo.comic_id
       ? props.comicInfo.comic_id
-      : props.comicInfo.id;
+      : props.comicInfo.id != 0
+      ? props.comicInfo.id
+      : props.comicInfo.wiki.id;
     router.push({
       name: "comicCover",
       query: { id },
@@ -30,7 +32,11 @@
     <img
       class="rounded-3 flex-shrink-0"
       v-lazy="
-        `${comicInfo?.vertical_cover}@${(props.imgWidth * DPR).toFixed()}w`
+        `${
+          comicInfo?.vertical_cover != ''
+            ? comicInfo?.vertical_cover
+            : comicInfo?.wiki.vertical_cover
+        }@${(props.imgWidth * DPR).toFixed()}w`
       "
       style="
         margin: 0 5px;
@@ -43,7 +49,9 @@
       <div
         class="text-truncate"
         :style="{ fontSize: fontSize + 'px' }"
-        v-html="comicInfo?.title"></div>
+        v-html="
+          comicInfo?.title != '' ? comicInfo?.title : comicInfo?.wiki.title
+        "></div>
       <!-- 下方漫画信息区域 -->
       <div class="opacity-50" :style="{ fontSize: fontSize! * 0.8 + 'px' }">
         <!-- 作者信息 -->
