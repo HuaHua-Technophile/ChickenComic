@@ -10,10 +10,6 @@
   import { storeToRefs } from "pinia";
   import { getRankInfo } from "@/api/ranking";
   import { type comicInfoCommonType } from "@/utils/typeing";
-  // 首页ts接口
-  interface newComicRankInfoDataType {
-    data?: { list: Array<comicInfoCommonType> };
-  }
   // ---------用户信息-------------
   let { userInfo, Logged } = storeToRefs(useUserInfoStore());
   let userId = localStorage.getItem("userId");
@@ -34,9 +30,10 @@
       observeImage: true,
     });
   };
-
   // 请求新作榜数据封装函数
-  let newComicRankInfoData = ref<newComicRankInfoDataType>({});
+  let newComicRankInfoData = ref<{
+    data?: { list: Array<comicInfoCommonType> };
+  }>({});
   const getNewComicRankInfo = async () => {
     newComicRankInfoData.value = await getRankInfo({
       id: "7",
@@ -44,14 +41,11 @@
       subId: "0",
     });
   };
-
   getNewComicRankInfo(); // 请求新作排行榜数据
-
   onMounted(() => {
     bsMounted();
   });
 </script>
-
 <template>
   <div class="home w-100 h-100" ref="home">
     <!-- 滚动内容 -->

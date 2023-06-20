@@ -85,7 +85,7 @@
   let zoomOption: boolean | Options = false; // Zoom插件配置项（false为不启用缩放）
   let bs = ref();
   let bs2 = ref();
-  let contentVeiw = ref<object>({});
+  let contentVeiw = ref();
   let isPullUpLoad = ref<boolean>(false);
   // 上拉加载调用此函数，发送下一章请求
   let endList = ref("上拉进入下一章");
@@ -110,24 +110,21 @@
   // 封装实例化bscroll及其配置项函数
   const bsMounted = () => {
     // 实例化bscroll并配置其配置项
-    bs.value = new BScroll(
-      contentVeiw.value as HTMLElement,
-      {
-        click: true,
-        pullUpLoad: true,
-        // 开启 observe-image 插件
-        observeImage: {
-          debounceTime: 500,
-        },
-        freeScroll: true,
-        scrollX: true,
-        scrollY: true,
-        zoom: zoomOption,
-        nestedScroll: {
-          groupId: 2,
-        },
-      } as Options
-    );
+    bs.value = new BScroll(contentVeiw.value, {
+      click: true,
+      pullUpLoad: true,
+      // 开启 observe-image 插件
+      observeImage: {
+        debounceTime: 500,
+      },
+      freeScroll: true,
+      scrollX: true,
+      scrollY: true,
+      zoom: zoomOption,
+      nestedScroll: {
+        groupId: 2,
+      },
+    } as Options);
     // 监听上拉事件，执行相应回调函数
     bs.value.on("pullingUp", () => {
       pullingUpHandler();
