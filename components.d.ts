@@ -24,6 +24,8 @@ declare module '@vue/runtime-core' {
     VanLoading: typeof import('vant/es')['Loading']
     VanOverlay: typeof import('vant/es')['Overlay']
     VanSearch: typeof import('vant/es')['Search']
+    VanShareSheet: typeof import('vant/es')['ShareSheet']
+    VanSlider: typeof import('vant/es')['Slider']
     VanTextEllipsis: typeof import('vant/es')['TextEllipsis']
   }
 }
