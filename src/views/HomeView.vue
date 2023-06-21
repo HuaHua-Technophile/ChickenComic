@@ -48,7 +48,7 @@
   onMounted(() => {
     bsMounted();
   });
-  //---------------------请求推荐模块------------------------------
+  //------------------------请求推荐模块---------------------------
   let RecommendList = ref<
     Array<{ season_id: number; horizontal_cover: string }>
   >([]);
@@ -59,8 +59,12 @@
   };
   getRecommendFun(); // 请求推荐数据
   // -----------------请求分类选项数据--------------
-  let res = await getAllLabel();
-  let classificationList = ref(res.data);
+  let classificationList = ref();
+  let AllLabelLoad = async () => {
+    let AllLabel = await getAllLabel();
+    classificationList.value = AllLabel.data;
+  };
+  AllLabelLoad();
 </script>
 <template>
   <div class="home w-100 h-100" ref="home">
@@ -75,6 +79,7 @@
       <!-- 首页轮播图推荐模块 -->
       <RecommendBar :RecommendList="RecommendList"></RecommendBar>
       <!-- 首页分类,不需要传值,无其余场景复用,不使用组件 -->
+      <div></div>
     </div>
   </div>
 </template>
