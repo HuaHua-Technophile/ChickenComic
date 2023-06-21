@@ -129,6 +129,7 @@
               <span
                 class="text-direction pt-3 fs-1 fw-bold"
                 style="
+                  font-family: inherit !important;
                   background: linear-gradient(
                     rgb(255, 193, 239),
                     rgb(187, 180, 255)
