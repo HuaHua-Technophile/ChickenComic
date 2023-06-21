@@ -216,20 +216,20 @@
   let { userInfo, Logged } = storeToRefs(useUserInfoStore());
   let isCollection = ref<boolean | undefined>(false);
   watchEffect(() => {
-    isCollection.value = userInfo?.value?.collection.some(
+    isCollection.value = userInfo?.value?.collection!.some(
       (i) => i.id == data.value.id
     );
   });
   let collect = () => {
     if (Logged && Logged.value) {
       if (isCollection.value) {
-        let index = userInfo?.value?.collection.findIndex(
+        let index = userInfo?.value?.collection!.findIndex(
           (i) => i.id == data.value.id
         );
-        userInfo?.value?.collection.splice(index as number, 1);
+        userInfo?.value?.collection!.splice(index as number, 1);
         showToast("好きを取り消す");
       } else {
-        userInfo.value?.collection.push(data.value);
+        userInfo.value?.collection!.push(data.value);
         showToast("コレクション成功です");
       }
     } else {
@@ -356,17 +356,18 @@
         historyIndex: nowIndex.value,
         HistoryListLength: nowListLength.value,
       };
-      let index: number | undefined = userInfo.value?.watchingHistory.findIndex(
-        (item) => item.id == newHistory.id
-      ) as number;
+      let index: number | undefined =
+        userInfo.value?.watchingHistory!.findIndex(
+          (item) => item.id == newHistory.id
+        ) as number;
 
       if (index == -1) {
-        userInfo.value?.watchingHistory.unshift(newHistory);
+        userInfo.value?.watchingHistory!.unshift(newHistory);
         // 添加历史记录
       } else {
         // 修改历史记录
-        userInfo.value?.watchingHistory.splice(index, 1);
-        userInfo.value?.watchingHistory.unshift(newHistory);
+        userInfo.value?.watchingHistory!.splice(index, 1);
+        userInfo.value?.watchingHistory!.unshift(newHistory);
       }
     }
   };
