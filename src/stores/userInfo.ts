@@ -4,15 +4,15 @@ export const useUserInfoStore = defineStore("global", () => {
   //登录信息----------------
 
   let userInfo = ref<{
-    id: number;
-    name: string;
-    collection: Array<{
+    id?: number;
+    name?: string;
+    collection?: Array<{
       id: string;
       vertical_cover: string;
       title: string;
       last_ord: number;
     }>;
-    watchingHistory: Array<{
+    watchingHistory?: Array<{
       id: number;
       historyIndex: number;
       HistoryListLength: number;
