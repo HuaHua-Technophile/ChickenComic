@@ -8,6 +8,8 @@
   import { storeToRefs } from "pinia";
   import { useUserInfoStore } from "@/stores/userInfo";
   import { useRouter } from "vue-router";
+  import { showToast } from "vant";
+  import type { FormItemRule } from "@nutui/nutui/dist/types/__VUE/formitem/types";
   const router = useRouter();
 
   // -----------------用户信息---------------------
@@ -80,7 +82,22 @@
     });
   });
 
-  // 记录跳转播放
+  //点击收藏跳转播放
+  const toRead2 = (
+    index: number,
+    data: {
+      title: string;
+      horizontal_cover: string;
+    }
+  ) => {
+    let params = JSON.stringify({
+      index,
+      data: data,
+    });
+    router.push({ name: "content", state: { params } }); //注意：此处一定要用params
+  };
+
+  // 点击历史记录跳转播放
   const toRead = (
     data: {
       title: string;
@@ -95,7 +112,31 @@
     router.push({ name: "content", state: { params } }); //注意：此处一定要用params
   };
 
-  console.log(userInfo.value);
+  // 设置
+  const showPopover = ref(false);
+  const actions = [
+    { text: "清除历史" },
+    { text: "清除收藏" },
+    { text: "退出登录" },
+  ];
+  const onselect = (action: { text: string }) => {
+    if (action.text == "清除历史") {
+      userInfo.value?.watchingHistory!.splice(
+        0,
+        userInfo.value?.watchingHistory!.length
+      );
+      showToast("清楚成功");
+    } else if (action.text == "清除收藏") {
+      userInfo.value?.collection!.splice(0, userInfo.value?.collection!.length);
+      showToast("清楚成功");
+    } else if (action.text == "退出登录") {
+      localStorage.clear();
+      userInfo.value = {};
+      router.push("/");
+      showToast("推出成功");
+    }
+  };
+
   // 点击tabs改变slide
   const changeBtn = (activeIndex: number) => {
     sw.value.swiper.slideTo(activeIndex);
@@ -117,6 +158,19 @@
               alt="" />
           </div>
           <div class="userName mt-3 text-center">{{ userInfo?.name }}</div>
+        </div>
+
+        <div class="setup position-absolute top-0 end-0 z-3">
+          <van-popover
+            v-model:show="showPopover"
+            :actions="actions"
+            placement="bottom-end"
+            theme="dark"
+            @select="onselect">
+            <template #reference>
+              <i class="bi bi-x-octagon fs-4 me-3 mt-3 z-3"></i>
+            </template>
+          </van-popover>
         </div>
       </div>
       <!-- 外层swiper -->
@@ -142,7 +196,7 @@
             style="
               width: 120px;
               height: 50px;
-              background-color: rgba(0, 0, 0, 0.1);
+              background-color: rgba(0, 0, 0, 0.2);
               left: 0%;
               transition: 0.4s;
             "></span>
@@ -163,6 +217,7 @@
                 class="collectItem"
                 v-for="(item, index) in userInfo?.collection"
                 :key="index"
+                @click="toRead2(index, item)"
                 style="width: 40%; height: 300px">
                 <div class="imageItemBox" style="width: 100%">
                   <img
