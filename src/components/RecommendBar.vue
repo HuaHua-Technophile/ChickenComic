@@ -51,9 +51,14 @@
         effect="cards"
         style="padding-top: 5px">
         <swiper-slide
+          class="rounded-4"
           v-for="(item, index) in RecommendList"
           :key="index"
-          style="width: 100%; height: 100%">
+          style="
+            width: 100%;
+            height: 100%;
+            box-shadow: 0px 0px 5px rgba(var(--bs-body-color-rgb), 0.5);
+          ">
           <div class="item" @click="toComicDetail(item.season_id)">
             <div class="imageItemBox" style="width: 100%">
               <img
