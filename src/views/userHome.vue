@@ -83,13 +83,7 @@
   });
 
   //点击收藏跳转播放
-  const toRead2 = (
-    index: number,
-    data: {
-      title: string;
-      horizontal_cover: string;
-    }
-  ) => {
+  const toRead2 = (index: number, data: {}) => {
     let params = JSON.stringify({
       index,
       data: data,
@@ -130,9 +124,12 @@
       userInfo.value?.collection!.splice(0, userInfo.value?.collection!.length);
       showToast("清楚成功");
     } else if (action.text == "退出登录") {
-      localStorage.clear();
-      userInfo.value = {};
+      // localStorage.clear();
+      // userInfo.value = {};
+
+      localStorage.removeItem("userId");
       router.push("/");
+
       showToast("推出成功");
     }
   };
