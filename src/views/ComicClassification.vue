@@ -1,12 +1,16 @@
 <script setup lang="ts">
-  import { ref, onMounted, toRef } from "vue";
+  import { ref, onMounted, toRef, watchEffect } from "vue";
   import { getAllLabel, getClassPage } from "@/api/category";
   import BScroll from "better-scroll"; //导入Better scroll核心
   import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
   import ObserveDOM from "@better-scroll/observe-dom"; //ObserveDOM插件
   import Pullup from "@better-scroll/pull-up";
-  import { useRouter } from "vue-router";
+  import { useRouter, useRoute } from "vue-router";
   import throttle from "lodash/throttle"; //Lodash节流
+
+  let router = useRouter();
+  let route = useRoute();
+
   interface activeListType {
     [name: string]: number;
   }
@@ -52,6 +56,14 @@
     status: -1,
     styles: -1,
   }); //请求参数
+
+  watchEffect(() => {
+    if (route.query.stylesId) {
+      console.log("had");
+      // activeList.value.styles = route.query;
+    }
+  });
+
   //------------获取分类筛选条件------------------
   const getAllLabelFun = async () => {
     let res = await getAllLabel();
@@ -110,7 +122,7 @@
     }
   };
   // -------------点击分类结果跳转对应的详情页------------------
-  let router = useRouter();
+
   const openContentView = (id: number) => {
     router.push({
       path: "/comicCover",
