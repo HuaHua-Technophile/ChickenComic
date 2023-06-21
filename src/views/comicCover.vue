@@ -195,7 +195,7 @@
           <div class="mb-3">ラベル :</div>
           <div
             v-for="item in res?.data.story_elems"
-            class="bg-body-tertiary rounded mb-3 mx-1 py-1 px-3 insetShadow-1-3">
+            class="bg-body-tertiary bg-opacity-50 rounded mb-3 mx-1 py-1 px-3 insetShadow-1-3">
             {{ item.name }}
           </div>
         </div>
