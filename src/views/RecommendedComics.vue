@@ -116,12 +116,33 @@
           v-for="card in item"
           :key="card.season_id"
           @click="goComicCoverPage(card.season_id || card.comic_id)">
-          <span class="w-100 text-direction pt-3 fs-1 fw-bold">{{
-            card.title
-          }}</span>
+          <div class="w-100 d-flex justify-content-end">
+            <div
+              style="
+                background: linear-gradient(
+                  90deg,
+                  transparent,
+                  rgba(0, 0, 0, 0.5) 30%,
+                  rgba(0, 0, 0, 0.5)
+                );
+              ">
+              <span
+                class="text-direction pt-3 fs-1 fw-bold"
+                style="
+                  font-family: inherit !important;
+                  background: linear-gradient(
+                    rgb(255, 193, 239),
+                    rgb(187, 180, 255)
+                  );
+                  -webkit-background-clip: text;
+                  color: transparent;
+                "
+                >{{ card.title }}</span
+              >
+            </div>
+          </div>
           <img
             :src="card.vertical_cover + '@300w_300h.jpg'"
-            alt=""
             class="w-100 h-100 position-absolute" />
         </li>
       </ul>
