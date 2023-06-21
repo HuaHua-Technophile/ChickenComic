@@ -57,7 +57,7 @@
     let res = await getAllLabel();
     allLabel.value = res.data;
     for (let key in allLabel.value) {
-      allLabel.value[key].unshift({ id: -1, name: "全部" });
+      allLabel.value[key].unshift({ id: -1, name: "ぜんぶ" });
     }
   };
   getAllLabelFun();
@@ -129,18 +129,18 @@
     <div class="scollContent" style="min-height: calc(100% + 1px)">
       <!-- 分类 -->
       <ul class="allLabel d-flex flex-wrap text-center justify-content-around">
-        <li
+        <div
           class="p-2 bg-body bg-opacity-50 rounded-3 m-2 insetShadow-1-5"
           v-for="item in allLabel.styles"
           :class="{ active: item.id == activeList.styles }"
           :key="item.id"
           @click="selectType('styles', item.id)">
           {{ item.name }}
-        </li>
+        </div>
       </ul>
       <!-- 筛选 -->
       <van-collapse v-model="activeNames" :border="false">
-        <van-collapse-item title="筛选" name="1">
+        <van-collapse-item title="選別" name="1">
           <ul class="typeList d-flex mb-3">
             <li
               v-for="item in allLabel.areas"
@@ -184,7 +184,6 @@
         </van-collapse-item>
       </van-collapse>
       <!-- 结果 -->
-
       <div class="resultList">
         <ul class="d-flex flex-wrap">
           <li
@@ -193,12 +192,20 @@
             @click="openContentView(item.season_id)">
             <img
               :src="item.vertical_cover + '@300w_300h.jpg'"
-              alt=""
-              class="w-100 mt-3" />
+              class="w-100 mt-3 rounded-3"
+              style="box-shadow: 0 0 4px rgba(var(--bs-body-color-rgb), 0.3)" />
             <div class="fs-8 my-2">
               <van-text-ellipsis :content="item.title" />
             </div>
-            <div class="fs-10 opacity-75 mb-3">{{ item.bottom_info }}</div>
+            <!-- 更新至xx话 -->
+            <div class="fs-10 opacity-75 mb-3">
+              {{
+                item.bottom_info
+                  .replace("完结", "完結")
+                  .replace("更新至", "")
+                  .replace("话", "話に更新")
+              }}
+            </div>
           </li>
         </ul>
       </div>
@@ -215,19 +222,20 @@
 <style lang="scss">
   .allLabel {
     padding-top: 67.5px;
-    li {
+    div {
       width: 20%;
       &:last-child {
         margin-right: 78% !important;
       }
       &.active {
-        color: red;
+        color: rgb(255, 23, 112);
       }
     }
   }
   .van-collapse-item__title,
   .van-collapse-item__content {
     background-color: rgba(var(--bs-body-bg-rgb), 0.5);
+    --van-cell-text-color: var(--bs-body-color);
   }
   .typeList {
     li {
@@ -235,7 +243,7 @@
     }
   }
   li.active {
-    color: red;
+    color: rgb(255, 23, 112);
   }
 
   .resultList {
