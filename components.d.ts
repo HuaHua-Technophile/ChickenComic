@@ -20,6 +20,8 @@ declare module 'vue' {
     VanCollapse: typeof import('vant/es')['Collapse']
     VanCollapseItem: typeof import('vant/es')['CollapseItem']
     VanLoading: typeof import('vant/es')['Loading']
+    VanOverlay: typeof import('vant/es')['Overlay']
+    VanSearch: typeof import('vant/es')['Search']
     VanTextEllipsis: typeof import('vant/es')['TextEllipsis']
   }
 }
