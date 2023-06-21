@@ -142,7 +142,7 @@
       <!-- 分类 -->
       <ul class="allLabel d-flex flex-wrap text-center justify-content-around">
         <li
-          class="p-2 bg-body m-2"
+          class="p-2 bg-body bg-opacity-50 rounded-3 m-2 insetShadow-1-5"
           v-for="item in allLabel.styles"
           :class="{ active: item.id == activeList.styles }"
           :key="item.id"
@@ -153,31 +153,31 @@
       <!-- 筛选 -->
       <van-collapse v-model="activeNames" :border="false">
         <van-collapse-item title="筛选" name="1">
-          <ul class="typeList d-flex">
+          <ul class="typeList d-flex mb-3">
             <li
               v-for="item in allLabel.areas"
               :key="item.id"
-              class="text-center py-3"
+              class="text-center"
               :class="{ active: item.id == activeList.areas }"
               @click="selectType('areas', item.id)">
               {{ item.name }}
             </li>
           </ul>
-          <ul class="typeList d-flex">
+          <ul class="typeList d-flex mb-3">
             <li
               v-for="item in allLabel.orders"
               :key="item.id"
-              class="text-center py-3"
+              class="text-center"
               :class="{ active: item.id == activeList.orders }"
               @click="selectType('orders', item.id)">
               {{ item.name }}
             </li>
           </ul>
-          <ul class="typeList d-flex">
+          <ul class="typeList d-flex mb-3">
             <li
               v-for="item in allLabel.prices"
               :key="item.id"
-              class="text-center py-3"
+              class="text-center"
               :class="{ active: item.id == activeList.prices }"
               @click="selectType('prices', item.id)">
               {{ item.name }}
@@ -187,7 +187,7 @@
             <li
               v-for="item in allLabel.status"
               :key="item.id"
-              class="text-center py-3"
+              class="text-center"
               :class="{ active: item.id == activeList.status }"
               @click="selectType('status', item.id)">
               {{ item.name }}
@@ -204,7 +204,7 @@
             :key="item.season_id"
             @click="openContentView(item.season_id)">
             <img
-              :src="item.vertical_cover + '@300w_300h.jpg'"
+              v-lazy="item.vertical_cover + '@300w_300h.jpg'"
               alt=""
               class="w-100 mt-3" />
             <div class="fs-8 my-2">
@@ -225,6 +225,20 @@
 </template>
 
 <style lang="scss">
+  img[lazy="loading"] {
+    opacity: 0;
+  }
+  img[lazy="loading"]:not([class^="notWidthTransition"]) {
+    opacity: 0;
+  }
+  img[lazy="error"] {
+    opacity: 1;
+    transition: 0.6s;
+  }
+  img[lazy="loaded"] {
+    opacity: 1;
+    transition: 0.6s;
+  }
   .allLabel {
     padding-top: 67.5px;
     li {
@@ -237,20 +251,13 @@
       }
     }
   }
-  .van-collapse-item__title {
-    background-color: #000;
-    opacity: 0.8;
-    color: #fff;
-  }
+  .van-collapse-item__title,
   .van-collapse-item__content {
-    background-color: #000;
-    opacity: 0.6;
-    color: #fff;
+    background-color: rgba(var(--bs-body-bg-rgb), 0.5);
   }
   .typeList {
     li {
       width: 20%;
-      border-radius: 100px;
     }
   }
   li.active {

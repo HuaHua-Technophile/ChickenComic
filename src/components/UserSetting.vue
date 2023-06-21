@@ -64,7 +64,7 @@
     <!-- 用户昵称&签名 -->
     <div class="userMsg flex-grow-1 text-truncate">
       <div class="userName fs-6 text-truncate opacity-50">uid:{{ userId }}</div>
-      <div class="subName text-truncate fs-5">
+      <div class="subName text-truncate fs-5" v-show="userId">
         {{ userInfo?.name }}
       </div>
     </div>
