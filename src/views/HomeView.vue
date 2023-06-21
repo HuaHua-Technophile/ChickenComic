@@ -30,7 +30,7 @@
     bs.value = new BScroll(home.value, {
       click: true,
       observeDOM: true,
-      observeImage: true,
+      observeImage: true, // 开启 observe-image 插件
     });
   };
   // --------------------------请求新作榜数据----------------------------------
@@ -79,7 +79,34 @@
       <!-- 首页轮播图推荐模块 -->
       <RecommendBar :RecommendList="RecommendList"></RecommendBar>
       <!-- 首页分类,不需要传值,无其余场景复用,不使用组件 -->
-      <div></div>
+      <div>
+        <!-- 标题 -->
+        <div
+          class="titleArea px-4 d-flex justify-content-between align-items-end">
+          <!-- 左侧标题 -->
+          <div class="title fs-4">カテゴリー</div>
+          <!-- 查看更多 -->
+          <div
+            class="more fs-6 opacity-50"
+            @click="$router.push({ name: 'ComicClassification' })">
+            <span class="moreTitle">もっと調べます</span>
+            <i class="bi bi-chevron-right" style="margin-left: 5px"></i>
+          </div>
+        </div>
+        <!-- 分类选项 -->
+        <swiper-container
+          class="mySwiper"
+          slides-per-view="auto"
+          space-between="0"
+          free-mode="true">
+          <swiper-slide
+            v-for="(item, index) in classificationList?.styles"
+            :key="index"
+            class="d-flex align-items-center justify-content-center">
+            {{ item.name }}</swiper-slide
+          >
+        </swiper-container>
+      </div>
     </div>
   </div>
 </template>
