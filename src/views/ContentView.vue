@@ -348,14 +348,26 @@
 
   const addHistory = () => {
     let userId = localStorage.getItem("userId");
-    let { userInfo, Logged } = storeToRefs(useUserInfoStore());
-
+    // 判断登录状态
     if (userId) {
       let newHistory = {
+        id: nowComicList.value.data.id,
         historyComicList: nowComicList.value.data,
         historyIndex: nowIndex.value,
         HistoryListLength: nowListLength.value,
       };
+      let index: number | undefined = userInfo.value?.watchingHistory.findIndex(
+        (item) => item.id == newHistory.id
+      ) as number;
+
+      if (index == -1) {
+        userInfo.value?.watchingHistory.unshift(newHistory);
+        // 添加历史记录
+      } else {
+        // 修改历史记录
+        userInfo.value?.watchingHistory.splice(index, 1);
+        userInfo.value?.watchingHistory.unshift(newHistory);
+      }
     }
   };
 
