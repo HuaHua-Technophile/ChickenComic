@@ -12,6 +12,15 @@ export const useUserInfoStore = defineStore("global", () => {
       title: string;
       last_ord: number;
     }>;
+    watchingHistory: Array<{
+      id: number;
+      historyIndex: number;
+      HistoryListLength: number;
+      historyComicList: {
+        title: string;
+        horizontal_cover: string;
+      };
+    }>;
   }>(); //用户信息
   let Logged = ref(false); //判断用户是否已登陆，多个组件中可导入使用
   watch(
