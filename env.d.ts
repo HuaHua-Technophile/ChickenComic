@@ -12,3 +12,5 @@ declare module "lodash/throttle";
 declare module "lodash/chunk";
 declare module "swiper/element/bundle";
 declare module "cube-ui";
+declare module "vue-qr";
+/// declare module "../../node_modules/clipboard/dist/clipboard.js";

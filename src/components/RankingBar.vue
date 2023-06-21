@@ -48,7 +48,7 @@
     <div
       class="rankingScroll mt-3"
       ref="rankingScroll"
-      style="width: 100%; height: 224px">
+      style="width: 100%; height: 240px">
       <!-- swiper -->
       <swiper-container
         class="rankingSwiper px-4"

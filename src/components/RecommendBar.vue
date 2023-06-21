@@ -13,7 +13,7 @@
 
   // 接收父组件参数
   defineProps<{
-    RecommendList: Array<{ season_id: number; vertical_cover: string }>;
+    RecommendList: Array<{ season_id: number; horizontal_cover: string }>;
   }>();
 
   // 跳转到排行榜页
@@ -42,7 +42,7 @@
     <div
       class="recommendScroll mt-3 mx-auto"
       ref="recommendScroll"
-      style="width: 240px; height: 280px">
+      style="width: 350px">
       <!-- swiper -->
       <swiper-container
         class="recommendSwiper px-4"
@@ -51,6 +51,7 @@
         effect="cards"
         style="padding-top: 5px">
         <swiper-slide
+          class="rounded-4"
           v-for="(item, index) in RecommendList"
           :key="index"
           style="width: 100%; height: 100%">
@@ -59,7 +60,7 @@
               <img
                 class="imageItem rounded-4"
                 style="width: 100%"
-                v-lazy="item.vertical_cover + '@568w_319h'"
+                v-lazy="item.horizontal_cover + '@568w_319h'"
                 alt="" />
             </div>
           </div>

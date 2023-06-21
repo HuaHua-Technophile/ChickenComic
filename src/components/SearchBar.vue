@@ -30,14 +30,10 @@
       ">
       <!-- 搜索icon -->
       <div class="searchIcon text-center" style="width: 10%">
-        <i
-          class="bi bi-search fs-6"
-          style="color: rgba(255, 255, 255, 0.6)"></i>
+        <i class="bi bi-search fs-6 opacity-50"></i>
       </div>
       <!-- 搜索tip -->
-      <div
-        class="toSearch fs-7 flex-grow-1 text-center"
-        style="color: rgba(255, 255, 255, 0.3)">
+      <div class="toSearch fs-7 flex-grow-1 text-center opacity-50">
         search manga
       </div>
       <!-- 占位 -->
