@@ -127,7 +127,7 @@
               style="height: 80px; width: 80px"
               :style="bgStyle"
               @click="toClassification(item?.id)">
-              <img src="../img/itemBg.png" class="w-100 h-100" />
+              <img src="../img/itemBg.png" class="w-100 h-100 opacity-75" />
               <span
                 class="position-absolute top-50 start-50 translate-middle text-nowrap fw-bold"
                 >{{ item.name }}</span
