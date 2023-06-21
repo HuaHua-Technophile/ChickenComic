@@ -9,6 +9,8 @@
   import { useUserInfoStore } from "@/stores/userInfo";
   import { useRouter } from "vue-router";
   import { showToast } from "vant";
+  import "vant/es/toast/style";
+
   import type { FormItemRule } from "@nutui/nutui/dist/types/__VUE/formitem/types";
   const router = useRouter();
 
@@ -156,19 +158,6 @@
           </div>
           <div class="userName mt-3 text-center">{{ userInfo?.name }}</div>
         </div>
-
-        <div class="setup position-absolute top-0 end-0 z-3">
-          <van-popover
-            v-model:show="showPopover"
-            :actions="actions"
-            placement="bottom-end"
-            theme="dark"
-            @select="onselect">
-            <template #reference>
-              <i class="bi bi-x-octagon fs-4 me-3 mt-3 z-3"></i>
-            </template>
-          </van-popover>
-        </div>
       </div>
       <!-- 外层swiper -->
       <div class="btnArea d-flex justify-content-center">
@@ -266,7 +255,24 @@
         </swiper-slide>
       </swiper-container>
       <!-- 返回 -->
-      <back-component class="position-fixed"></back-component>
+      <back-component class="position-fixed">
+        <template #searchInput>
+          <div class="d-flex justify-content-end">
+            <div class="setup d-inline-block">
+              <van-popover
+                v-model:show="showPopover"
+                :actions="actions"
+                placement="bottom-end"
+                theme="dark"
+                @select="onselect">
+                <template #reference>
+                  <i class="bi bi-x-octagon fs-4 me-3 mt-3 z-3"></i>
+                </template>
+              </van-popover>
+            </div>
+          </div>
+        </template>
+      </back-component>
     </div>
   </div>
 </template>

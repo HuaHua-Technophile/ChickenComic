@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, onMounted, toRef } from "vue";
-  import { getAllLabel, getClassPage } from "@/api/category";
+  import { getAllLabel, getClassPage } from "@/api/Category";
   import BScroll from "better-scroll"; //导入Better scroll核心
   import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
   import ObserveDOM from "@better-scroll/observe-dom"; //ObserveDOM插件
