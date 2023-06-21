@@ -14,13 +14,20 @@ declare module '@vue/runtime-core' {
     ClassificationComponent: typeof import('./src/components/ClassificationComponent.vue')['default']
     ComicItemComponent: typeof import('./src/components/comicItemComponent.vue')['default']
     ComicReadBar: typeof import('./src/components/ComicReadBar.vue')['default']
+    ElInput: typeof import('element-plus/es')['ElInput']
     RankingBar: typeof import('./src/components/RankingBar.vue')['default']
     RecommendBar: typeof import('./src/components/RecommendBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchBar: typeof import('./src/components/SearchBar.vue')['default']
     UserSetting: typeof import('./src/components/UserSetting.vue')['default']
+<<<<<<< HEAD
     VanShareSheet: typeof import('vant/es')['ShareSheet']
     VanSlider: typeof import('vant/es')['Slider']
+=======
+    VanSearch: typeof import('vant/es')['Search']
+    VanTab: typeof import('vant/es')['Tab']
+    VanTabs: typeof import('vant/es')['Tabs']
+>>>>>>> a7685853e4fb3cea488cdcfdf4bbf607bf95bd58
   }
 }
