@@ -100,15 +100,15 @@
       <p
         :style="{ opacity: topOpacity }"
         class="fs-2 top fw-bold text-end pe-3 w-100 position-absolute z-n1">
-        暂无<br />
-        订阅作品<br />
+        なし<br />
+        作品を購読する<br />
       </p>
       <p
         :style="{ opacity: bottomOpacity }"
         class="fs-2 bottom fw-bold text-end pe-3 w-100 position-absolute z-n1">
-        惊喜探索<br />
-        更多作品盲盒<br />
-        等你开启<br />
+        サプライズ探索<br />
+        その他の作品<br />
+        詳細を開く<br />
       </p>
       <ul v-for="(item, index) in RecommendLists" :key="index">
         <li
