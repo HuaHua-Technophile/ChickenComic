@@ -333,44 +333,22 @@
   };
 
   // ------------退出时存储历史记录数据----------------
-  interface historyItemData {
-    data: Array<object>;
-  }
-  interface historyItem {
-    historyIndex: number;
-    HistoryListLength: number;
-    historyComicList: historyItemData;
-  }
+
   const addHistory = () => {
     let userId = localStorage.getItem("userId");
+    let { userInfo, Logged } = storeToRefs(useUserInfoStore());
+
     if (userId) {
       let newHistory = {
-        historyComicList: nowComicList.value,
+        historyComicList: nowComicList.value.data,
         historyIndex: nowIndex.value,
         HistoryListLength: nowListLength.value,
       };
-      if (!localStorage.getItem(`user${userId}`)) {
-        localStorage.setItem(`user${userId}`, JSON.stringify([newHistory]));
-      } else {
-        let nowHistoryLocalStorage = JSON.parse(
-          localStorage.getItem(`user${userId}`) as string
-        );
-        console.log(nowHistoryLocalStorage);
-
-        // let nowHistoryLocalStorage = JSON.parse(
-        //   localStorage.getItem(`user${userId}`) as string
-        // );
-        // nowHistoryLocalStorage.push(newHistory);
-        // localStorage.setItem(
-        //   `user${userId}`,
-        //   JSON.stringify(nowHistoryLocalStorage)
-        // );
-      }
     }
   };
 
   onBeforeUnmount(() => {
-    // addHistory();
+    addHistory();
   });
 </script>
 
