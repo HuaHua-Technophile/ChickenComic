@@ -31,10 +31,10 @@
     <!-- 标题 -->
     <div class="titleArea px-4 d-flex justify-content-between align-items-end">
       <!-- 左侧标题 -->
-      <div class="title fs-4">推薦作品</div>
+      <div class="title fs-4">推す</div>
       <!-- 查看更多 -->
       <div class="more fs-6 opacity-50" @click="toRecommendedComics">
-        <span class="moreTitle">推奨事項</span>
+        <span class="moreTitle">もっと調べます</span>
         <i class="bi bi-chevron-right" style="margin-left: 5px"></i>
       </div>
     </div>

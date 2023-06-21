@@ -2,6 +2,8 @@
   import { ref, onMounted, toRef } from "vue";
   import { getAllLabel, getClassPage } from "@/api/category";
   import BScroll from "better-scroll"; //导入Better scroll核心
+  import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
+
   import ObserveDOM from "@better-scroll/observe-dom"; //ObserveDOM插件
   import Pullup from "@better-scroll/pull-up";
   import { useRouter } from "vue-router";
@@ -24,12 +26,15 @@
   //------------Better scroll实例化-----------
   let ComicClassification = ref();
   BScroll.use(Pullup);
+  BScroll.use(ObserveImage);
+
   BScroll.use(ObserveDOM); // 自动重载插件
   let bs = ref();
   onMounted(() => {
     bs.value = new BScroll(ComicClassification.value, {
       click: true,
       observeDOM: true,
+      observeImage: true,
       pullUpLoad: true,
     });
     bs.value.on("pullingUp", handelFunction);
