@@ -89,7 +89,6 @@
     resultList.value!.push(...data.data);
   };
   getClassPageFun();
-
   //----------------上啦加载更多----------------
   const findDataInnextPage = () => {
     pageNumber.value++;
@@ -110,7 +109,6 @@
   onMounted(() => {
     bs.value.on("scrollStart", closeTyoeFun);
   });
-
   // -------------=筛选框自动缩回----------------
   const closeTyoeFun = () => {
     if (activeNames.value.length !== 1) {
@@ -119,7 +117,6 @@
       }, 300);
     }
   };
-
   // -------------点击分类结果跳转对应的详情页------------------
   let router = useRouter();
   const openContentView = (id: number) => {

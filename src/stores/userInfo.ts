@@ -12,8 +12,8 @@ export const useUserInfoStore = defineStore("global", () => {
       title: string;
       last_ord: number;
     }>;
-  }>();
-  let Logged = ref(false);
+  }>(); //用户信息
+  let Logged = ref(false); //判断用户是否已登陆，多个组件中可导入使用
   watch(
     userInfo,
     (newV) => {
@@ -21,7 +21,7 @@ export const useUserInfoStore = defineStore("global", () => {
       localStorage.setItem(`user${newV?.id}`, JSON.stringify(newV));
     },
     { deep: true }
-  );
+  ); //数据持久化
   return {
     userInfo,
     Logged,

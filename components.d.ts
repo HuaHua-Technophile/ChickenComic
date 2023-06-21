@@ -11,16 +11,17 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     BackComponent: typeof import('./src/components/backComponent.vue')['default']
     ChapterComponent: typeof import('./src/components/chapterComponent.vue')['default']
+    ClassificationComponent: typeof import('./src/components/ClassificationComponent.vue')['default']
     ComicItemComponent: typeof import('./src/components/comicItemComponent.vue')['default']
     ComicReadBar: typeof import('./src/components/ComicReadBar.vue')['default']
     ElInput: typeof import('element-plus/es')['ElInput']
     RankingBar: typeof import('./src/components/RankingBar.vue')['default']
+    RecommendBar: typeof import('./src/components/RecommendBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchBar: typeof import('./src/components/SearchBar.vue')['default']
     UserSetting: typeof import('./src/components/UserSetting.vue')['default']
     VanSearch: typeof import('vant/es')['Search']
-    VanSlider: typeof import('vant/es')['Slider']
     VanTab: typeof import('vant/es')['Tab']
     VanTabs: typeof import('vant/es')['Tabs']
   }

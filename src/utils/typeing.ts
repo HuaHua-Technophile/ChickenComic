@@ -15,5 +15,10 @@ export interface comicInfoCommonType {
   last_ord: number | string;
   vertical_cover: string;
   type: object;
+  wiki: {
+    id: number;
+    title: string;
+    vertical_cover: string;
+  };
   default: () => {};
 }

@@ -82,10 +82,15 @@
   BScroll.use(ObserveImage); // 自动重载插件
   BScroll.use(Zoom); // 注册缩放插件
   BScroll.use(NestedScroll); // 注册嵌套bscroll插件
-  let zoomOption: boolean | Options = false; // Zoom插件配置项（false为不启用缩放）
+  let zoomOption: boolean | Options = {
+    start: 1,
+    min: 1,
+    max: 3,
+    initialOrigin: ["center", "center"],
+  }; // Zoom插件配置项（false为不启用缩放）
   let bs = ref();
   let bs2 = ref();
-  let contentVeiw = ref<object>({});
+  let contentVeiw = ref();
   let isPullUpLoad = ref<boolean>(false);
   // 上拉加载调用此函数，发送下一章请求
   let endList = ref("上拉进入下一章");
@@ -122,6 +127,8 @@
         freeScroll: true,
         scrollX: true,
         scrollY: true,
+        disableMouse: true,
+        useTransition: true,
         zoom: zoomOption,
         nestedScroll: {
           groupId: 2,
@@ -257,22 +264,28 @@
   };
 
   // 开启与关闭缩放功能
-  let isScale = ref(false);
+  let isScale = ref(true);
   let scaleTip = "ズーム機能が無効になっています";
   const scaleOpen = () => {
     isScale.value = !isScale.value;
     // 手动开启与关闭缩放功能
-    zoomOption =
-      isScale.value === true
-        ? {
-            start: 1,
-            min: 1,
-            max: 2,
-            initialOrigin: ["center", "center"],
-            minimalZoomDistance: 3,
-            bounceTime: 800, // ms
-          }
-        : false;
+    if (isScale.value) {
+      zoomOption = {
+        start: 1,
+        min: 1,
+        max: 3,
+        initialOrigin: ["center", "center"],
+      };
+      bsMounted();
+    } else {
+      zoomOption = {
+        start: 1,
+        min: 1,
+        max: 1,
+        initialOrigin: ["center", "center"],
+      };
+      bsMounted();
+    }
     scaleTip =
       isScale.value === true
         ? "ズーム機能が有効"
@@ -316,7 +329,6 @@
     await getContentData(imgEpList.value[newIndex].id);
     epListindex = newIndex;
   };
-
   // 当前在看漫画章节
   let { nowComicList, nowIndex, nowListLength } = storeToRefs(
     useNowListStore()
@@ -325,13 +337,11 @@
     etid_data.index = chapterListIndex;
     nowComicList.value = etid_data;
   };
-
   // 返回上一页
   const toBack = () => {
     comicListSave();
     router.go(-1);
   };
-
   // ------------退出时存储历史记录数据----------------
 
   const addHistory = () => {
@@ -350,6 +360,20 @@
   onBeforeUnmount(() => {
     addHistory();
   });
+  // ---------------分享当前漫画----------------
+  const showShare = ref(false); //控制分享面板的显/隐
+  const options = [
+    { name: "ハイパーリンク", icon: "link" },
+    { name: "ＱＲコード", icon: "qrcode" },
+  ];
+
+  const onSelect = (option: object) => {
+    console.log(option);
+    showShare.value = false;
+  };
+  let share = () => {
+    showShare.value = true;
+  };
 </script>
 
 <template>
@@ -392,20 +416,26 @@
           class="ps-3 pe-3 d-flex justify-content-between align-items-center text-light t-shadow-3"
           v-show="isShowSlider">
           <div class="leftIcon d-flex align-items-center">
+            <!-- 返回 -->
             <i class="bi bi-arrow-left-short" @click="toBack"></i>
+            <!-- 当前阅读章节 -->
             <span class="epListTitle fs-3"
               >第{{ oldImgEpList.length - chapterListIndex }}話</span
             >
           </div>
+          <!-- 右侧 -->
           <div
             class="rightIcon fs-3 d-flex justify-content-between align-items-center"
             style="width: 30%">
+            <!-- 收藏/取消收藏 -->
             <i
               class="bi text-danger fs-3"
               :class="isCollection ? 'bi-heart-fill' : 'bi-heart'"
               style="text-shadow: 1.5px 1.5px 3px rgba(0, 0, 0, 0.5)"
               @click="collect"></i>
-            <i class="bi bi-share"></i>
+            <!-- 分享按钮 -->
+            <i class="bi bi-share-fill" @click="share"></i>
+            <!-- 启用/禁用双指缩放 -->
             <i
               class="iconfont icon-fangdajing1 fs-2 scaleIcon"
               style="height: 50%"
@@ -509,47 +539,64 @@
       <div class="middleClickArea w-100 flex-grow-1" @click="showPopup"></div>
       <div class="footClickArea w-100 flex-grow-1" @click="downScroll"></div>
     </div>
+    <!-- 分享面板 -->
+    <van-share-sheet
+      v-model:show="showShare"
+      title="この漫画を共有します"
+      :options="options"
+      @select="onSelect" />
   </div>
 </template>
 
-<style lang="scss" scoped>
-  img[lazy="loading"] {
-    opacity: 0;
-  }
-  img[lazy="error"] {
-    opacity: 1;
-    transition: 0.6s;
-  }
-  img[lazy="loaded"] {
-    opacity: 1;
-    transition: 0.6s;
-  }
-  .contract-enter-active,
-  .contract-leave-active {
-    transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-  }
-  .contract-enter-from,
-  .contract-leave-to {
-    width: 0px !important;
-  }
-  .scaleIcon {
-    position: relative;
-    font-weight: 600;
-  }
-  .noScaleIcon {
-    font-weight: 600;
-    &::after {
-      content: "";
-      width: 26px;
-      height: 2px;
-      background-color: rgb(254, 254, 254);
-      position: absolute;
-      top: 40%;
-      left: -9%;
-      transform: rotate(-45deg) translateY(-50%);
+<style lang="scss">
+  .contentView {
+    img[lazy="loading"] {
+      opacity: 0;
     }
-  }
-  .van-overlay {
-    height: calc(100% + 1px);
+    img[lazy="error"] {
+      opacity: 1;
+      transition: 0.6s;
+    }
+    img[lazy="loaded"] {
+      opacity: 1;
+      transition: 0.6s;
+    }
+    .contract-enter-active,
+    .contract-leave-active {
+      transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+    .contract-enter-from,
+    .contract-leave-to {
+      width: 0px !important;
+    }
+    .scaleIcon {
+      position: relative;
+      font-weight: 600;
+    }
+    .noScaleIcon {
+      font-weight: 600;
+      &::after {
+        content: "";
+        width: 26px;
+        height: 2px;
+        background-color: rgb(254, 254, 254);
+        position: absolute;
+        top: 40%;
+        left: -9%;
+        transform: rotate(-45deg) translateY(-50%);
+      }
+    }
+    .van-overlay {
+      height: calc(100% + 1px);
+    }
+    --van-share-sheet-title-color: var(--bs-body-color);
+    --van-share-sheet-option-name-color: var(--bs-body-color);
+    --van-background: var(--bs-tertiary-bg);
+    --van-popup-background: var(--bs-body-bg);
+    --van-share-sheet-cancel-button-background: var(--bs-body-bg);
+    .van-share-sheet__icon {
+      background: var(--bs-tertiary-bg);
+      color: var(--bs-body-color);
+    }
   }
 </style>

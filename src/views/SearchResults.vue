@@ -1,7 +1,8 @@
 <script setup lang="ts">
-  import { ref, onMounted, watchEffect, watch } from "vue";
+  import { ref, onMounted, watchEffect } from "vue";
   import { getSearchResult } from "../api/search";
   import BScroll from "better-scroll"; //导入Better scroll核心
+  import ObserveImage from "@better-scroll/observe-image";
   import ObserveDOM from "@better-scroll/observe-dom"; //导入自动重新计算BS实例
   import { useRoute } from "vue-router";
   import Pullup from "@better-scroll/pull-up";
@@ -58,6 +59,7 @@
   let domList = ref(); //真正放入dom模板中遍历的数据.因为类型分类的存在,切换分类后直接从res中拿取符合分类结果的item放入domList中
   // -------------数据加载------------
   const SearchResultLoad = async () => {
+    loadFinish = true; //用该变量暂时控制不再二次网络请求
     let result = await getSearchResult({
       keyWord: keyWord.value,
       order: sort1.value,
@@ -65,14 +67,16 @@
       isFinish: sort3.value,
       isFree: sort4.value,
     });
+    console.log(result);
     // 如果数据存在或还有数据(大于0)
     if (result.data.list.length > 0) {
       res.value.push(...result.data.list);
       pageNumber.value++;
+      loadFinish = false; //用该变量暂时控制不再二次网络请求
       // 如果请求回来不足20条，说明没有下一页了
       if (result.data.list.length < 20) {
         loadFinish = true; //设置为加载完毕
-        console.log("进入了");
+        console.log("没有下一页了");
         bs.value.closePullUp();
       }
     } else {
@@ -87,7 +91,10 @@
   watchEffect(() => {
     if (sort2.value == "-1")
       domList.value = res.value; //不做筛选，全部放入DOMList遍历
-    else domList.value = res.value.filter((i) => i.styles[0] == sort2.value); //做筛选后放入DOMList遍历
+    else {
+      console.log("判断到结果变化且不为'全部'");
+      domList.value = res.value.filter((i) => i.styles[0] == sort2.value);
+    } //做筛选后放入DOMList遍历
   });
   // ---------------- 上拉加载更多-------------
   let pullUpload = () => {
@@ -102,11 +109,14 @@
   //------------------better scroll实例化相关-----------
   BScroll.use(Pullup);
   BScroll.use(ObserveDOM);
+
+  BScroll.use(ObserveImage);
   let searchResultList = ref();
   let bs = ref(); //Better scroll实例化后对象的存储
   onMounted(() => {
     bs.value = new BScroll(searchResultList.value, {
       click: true,
+      observeImage: true,
       observeDOM: true, // 开启 observe-dom 插件
       pullUpLoad: true,
     });
@@ -115,6 +125,7 @@
   // -----------------选择结果分类-----------------------
   const selectType = () => {
     pageNumber.value = 1; //除了修改"类型",其他都需要重新请求,因此页码归为1
+    res.value = [];
     SearchResultLoad();
   };
 </script>
@@ -160,7 +171,7 @@
           v-for="item in domList"
           :key="item.id"
           :comicInfo="item"
-          :imgWidth="50"
+          :imgWidth="100"
           :fontSize="18"
           class="mb-2"></comic-item-component>
         <li class="w-100 py-3 text-center">
@@ -218,7 +229,21 @@
       text-align: center;
     }
     img {
+      width: 100px;
       margin-right: 15px !important;
+      transition: 0.6s;
+    }
+    img[lazy="loading"] {
+      opacity: 0;
+    }
+    img[lazy="error"] {
+      opacity: 1;
+      width: 100px !important;
+      height: 133px !important;
+      object-fit: cover;
+    }
+    img[lazy="loaded"] {
+      opacity: 1;
     }
   }
 </style>
