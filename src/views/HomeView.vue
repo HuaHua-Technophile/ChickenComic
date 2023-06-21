@@ -75,7 +75,7 @@
 <template>
   <div class="home w-100 h-100" ref="home">
     <!-- 滚动内容 -->
-    <div style="min-height: calc(100% + 1px)">
+    <div style="min-height: calc(100% + 1px)" class="overflow-hidden">
       <!-- 用户信息/设置 -->
       <UserSetting :userInfo="userInfo" :userId="userId"></UserSetting>
       <!-- 搜索区域 -->
