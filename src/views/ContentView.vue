@@ -1,12 +1,4 @@
 <script setup lang="ts">
-  import BScroll, { type Options } from "better-scroll"; //导入Better scroll核心
-  import Pullup from "@better-scroll/pull-up";
-  import Zoom from "@better-scroll/zoom";
-  import ObserveImage from "@better-scroll/observe-image";
-  import NestedScroll from "@better-scroll/nested-scroll";
-  import debounce from "lodash/debounce"; //lodash防抖
-  import { showToast } from "vant";
-  import "vant/es/toast/style";
   import {
     onBeforeUnmount,
     onMounted,
@@ -20,6 +12,16 @@
   import { storeToRefs } from "pinia";
   import { useUserInfoStore } from "@/stores/userInfo";
   import { useNowListStore } from "@/stores/nowList";
+  import BScroll, { type Options } from "better-scroll"; //导入Better scroll核心
+  import Pullup from "@better-scroll/pull-up";
+  import Zoom from "@better-scroll/zoom";
+  import ObserveImage from "@better-scroll/observe-image";
+  import NestedScroll from "@better-scroll/nested-scroll";
+  import debounce from "lodash/debounce"; //lodash防抖
+  import { showToast } from "vant";
+  import "vant/es/toast/style";
+  import vueQr from "vue-qr/src/packages/vue-qr.vue"; //VueQr 的 vue2与vue3的引入方式不一样
+  // import { clipboardjS } from "../../node_modules/clipboard/dist/clipboard.min.js"; //剪贴板无法通过iport导入,因此在index.html中使用 script标签引入
   import { getImageIndex, getImageToken } from "@/api/content";
   import chapterComponent from "@/components/chapterComponent.vue"; //引入组件
   import { type imgIndexUrl } from "@/utils/typeing";
@@ -294,7 +296,7 @@
   };
 
   // 章节列表
-  let showListBottom: { value: boolean } = ref(false);
+  let showListBottom = ref(false);
   const showListPopup = () => {
     showListBottom.value = true;
     showPopup();
@@ -387,15 +389,26 @@
   const options = [
     { name: "ハイパーリンク", icon: "link" },
     { name: "ＱＲコード", icon: "qrcode" },
-  ];
-
-  const onSelect = (option: object) => {
-    console.log(option);
-    showShare.value = false;
+  ]; //分享面板配置项
+  let QRshow = ref(false); //二维码+vant遮罩层的显/隐
+  let cli = ref(); //剪切板对象
+  const onSelect = (option: { name: string }) => {
+    showShare.value = false; //选择分享方式后,分享面板隐藏
+    showPopup(); //选择分享方式后,其余操作面板隐藏
+    if (option.name == "ＱＲコード") {
+      QRshow.value = true;
+    }
+    if (option.name == "ハイパーリンク") {
+      // 因为全局剪贴板只能通过script标签引入,因此TS找不到 ClipboardJS
+      cli.value = new ClipboardJS(".van-share-sheet__option", {
+        text: () => `https://manga.bilibili.com/detail/mc${data.value.id}`,
+      });
+    }
   };
   let share = () => {
     showShare.value = true;
   };
+  onBeforeUnmount(() => {});
 </script>
 
 <template>
@@ -548,7 +561,7 @@
         </div>
       </div>
     </transition>
-    <!-- 阴影蒙版 -->
+    <!-- 亮度蒙版 -->
     <div
       class="mask position-absolute top-0"
       style="width: 100vw; height: 101%; pointer-events: none"
@@ -567,6 +580,23 @@
       title="この漫画を共有します"
       :options="options"
       @select="onSelect" />
+    <!-- vant遮罩层+二维码 -->
+    <van-overlay
+      :show="QRshow"
+      @click="QRshow = false"
+      class="justify-content-center align-items-center">
+      <vue-qr
+        v-if="QRshow"
+        :size="250"
+        :margin="10"
+        :auto-color="true"
+        :dot-scale="1"
+        :text="`https://manga.bilibili.com/detail/mc${data.id}`"
+        colorDark="#1a1a23"
+        colorLight="#e8e8e8"
+        whiteMargin="false"
+        class="rounded-4 d-block"></vue-qr>
+    </van-overlay>
   </div>
 </template>
 
@@ -619,6 +649,9 @@
     .van-share-sheet__icon {
       background: var(--bs-tertiary-bg);
       color: var(--bs-body-color);
+    }
+    .van-overlay {
+      display: flex;
     }
   }
 </style>
