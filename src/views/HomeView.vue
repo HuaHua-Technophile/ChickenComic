@@ -65,11 +65,17 @@
     classificationList.value = AllLabel.data;
   };
   AllLabelLoad();
+  const itemBg = new URL("./img/itemBg.png", import.meta.url).href;
+  let bgStyle = {
+    backgroundImage: itemBg + "",
+    // 不能完全使用变量，前置地址必须是静态地址，否则会报错
+    backgroundSize: "100%",
+  }; //样式
 </script>
 <template>
   <div class="home w-100 h-100" ref="home">
     <!-- 滚动内容 -->
-    <div style="min-height: calc(100% + 1px)">
+    <div style="min-height: calc(100% + 1px)" class="overflow-hidden">
       <!-- 用户信息/设置 -->
       <UserSetting :userInfo="userInfo" :userId="userId"></UserSetting>
       <!-- 搜索区域 -->
@@ -79,7 +85,7 @@
       <!-- 首页轮播图推荐模块 -->
       <RecommendBar :RecommendList="RecommendList"></RecommendBar>
       <!-- 首页分类,不需要传值,无其余场景复用,不使用组件 -->
-      <div>
+      <div class="mt-4">
         <!-- 标题 -->
         <div
           class="titleArea px-4 d-flex justify-content-between align-items-end">
@@ -95,16 +101,23 @@
         </div>
         <!-- 分类选项 -->
         <swiper-container
-          class="mySwiper"
+          class="mySwiper mt-3 px-3"
           slides-per-view="auto"
-          space-between="0"
+          space-between="30"
           free-mode="true">
           <swiper-slide
             v-for="(item, index) in classificationList?.styles"
             :key="index"
-            class="d-flex align-items-center justify-content-center">
-            {{ item.name }}</swiper-slide
-          >
+            class="d-flex align-items-center justify-content-center"
+            style="width: 80px">
+            <div style="height: 80px; width: 80px" :style="bgStyle">
+              <img src="../img/itemBg.png" class="w-100 h-100" />
+              <span
+                class="position-absolute top-50 start-50 translate-middle text-nowrap fw-bold"
+                >{{ item.name }}</span
+              >
+            </div>
+          </swiper-slide>
         </swiper-container>
       </div>
     </div>
