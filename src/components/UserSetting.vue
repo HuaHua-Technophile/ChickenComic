@@ -5,12 +5,21 @@
     userId: string | null;
     userInfo:
       | {
-          id: number;
-          name: string;
-          collection: Array<{
+          id?: number;
+          name?: string;
+          collection?: Array<{
             vertical_cover: string;
             title: string;
             last_ord: number;
+          }>;
+          watchingHistory?: Array<{
+            id: number;
+            historyIndex: number;
+            HistoryListLength: number;
+            historyComicList: {
+              title: string;
+              horizontal_cover: string;
+            };
           }>;
         }
       | undefined;
