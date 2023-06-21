@@ -54,15 +54,8 @@
     orders: -1,
     prices: -1,
     status: -1,
-    styles: -1,
+    styles: Number(route.query.id) || -1,
   }); //请求参数
-
-  watchEffect(() => {
-    if (route.query.stylesId) {
-      console.log("had");
-      // activeList.value.styles = route.query;
-    }
-  });
 
   //------------获取分类筛选条件------------------
   const getAllLabelFun = async () => {
