@@ -48,9 +48,9 @@
     bsMounted();
   });
   //---------------------请求推荐模块------------------------------
-  let RecommendList = ref<Array<{ season_id: number; vertical_cover: string }>>(
-    []
-  );
+  let RecommendList = ref<
+    Array<{ season_id: number; horizontal_cover: string }>
+  >([]);
   const getRecommendFun = async () => {
     let res = await getRecommend();
     RecommendList.value = res.data;
