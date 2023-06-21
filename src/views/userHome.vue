@@ -4,7 +4,7 @@
   import ObserveDOM from "@better-scroll/observe-dom";
   import NestedScroll from "@better-scroll/nested-scroll";
   import { register } from "swiper/element/bundle";
-  import { ref, onMounted } from "vue";
+  import { ref, onMounted, nextTick } from "vue";
   import { storeToRefs } from "pinia";
   import { useUserInfoStore } from "@/stores/userInfo";
   // -----------------用户信息---------------------
@@ -44,9 +44,34 @@
   BScroll.use(Pullup); // 注册上拉懒加载插件
   BScroll.use(ObserveDOM); // 自动重载插件
 
+  let slidePag = ref();
+
   onMounted(() => {
     bsMounted();
+
+    // 监听swiper的slide改变移动tabs
+    nextTick(() => {
+      sw.value.addEventListener(
+        "swiperFirstBox-slidechange",
+        (event: {
+          detail: Array<{
+            activeIndex: number;
+          }>;
+        }) => {
+          if (event.detail[0].activeIndex == 0) {
+            slidePag.value.style.left = "0%";
+          } else {
+            slidePag.value.style.left = "50%";
+          }
+        }
+      );
+    });
   });
+
+  // 点击tabs改变slide
+  const changeBtn = (activeIndex: number) => {
+    sw.value.swiper.slideTo(activeIndex);
+  };
 </script>
 <template>
   <div class="userHome w-100 h-100" ref="userHome">
@@ -69,14 +94,30 @@
       <!-- 外层swiper -->
       <div class="btnArea d-flex justify-content-center">
         <div
-          class="btnL text-center mx-2"
-          style="width: 100px; height: 50px; line-height: 50px">
-          コレクション
-        </div>
-        <div
-          class="btnR text-center mx-2"
-          style="width: 100px; height: 50px; line-height: 50px">
-          レコード破り
+          class="d-flex justify-content-center position-relative"
+          style="width: 240px">
+          <div
+            class="btnL text-center px-2"
+            style="width: 120px; height: 50px; line-height: 50px"
+            @click="changeBtn(0)">
+            コレクション
+          </div>
+          <div
+            class="btnR text-center px-2"
+            style="width: 120px; height: 50px; line-height: 50px"
+            @click="changeBtn(1)">
+            レコード破り
+          </div>
+          <span
+            class="d-inline-flex px-2 position-absolute rounded-pill"
+            ref="slidePag"
+            style="
+              width: 120px;
+              height: 50px;
+              background-color: rgba(0, 0, 0, 0.1);
+              left: 0%;
+              transition: 0.4s;
+            "></span>
         </div>
       </div>
       <swiper-container

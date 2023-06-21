@@ -33,7 +33,7 @@
 </script>
 
 <template>
-  <div class="rankingTo mt-4">
+  <div class="rankingTo mt-4 overflow-hidden">
     <!-- 标题 -->
     <div class="titleArea px-4 d-flex justify-content-between align-items-end">
       <!-- 左侧标题 -->
@@ -48,7 +48,7 @@
     <div
       class="rankingScroll mt-3"
       ref="rankingScroll"
-      style="width: 100%; height: 190px">
+      style="width: 100%; height: 240px">
       <!-- swiper -->
       <swiper-container
         class="rankingSwiper px-4"

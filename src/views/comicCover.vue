@@ -27,7 +27,7 @@
   let route = useRoute();
   let { id } = route.query;
   let res = ref();
-  let chapterList = [];
+  let chapterList: Array<object> = [];
   let getData = async () => {
     res.value = await getComicDetail(id + "");
     chapterList = res.value.data?.ep_list; //章节列表
