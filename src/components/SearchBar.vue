@@ -16,11 +16,8 @@
     @click="toSearchInput">
     <!-- 搜索框 -->
     <div
-      class="searchBar d-flex rounded-pill align-items-center px-3"
+      class="searchBar h-100 d-flex rounded-pill align-items-center px-3 insetShadow-4-4"
       style="
-        height: 100%;
-        height: 100%;
-        box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.1);
         background-image: radial-gradient(
           circle,
           transparent 0%,

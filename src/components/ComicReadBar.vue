@@ -57,7 +57,7 @@
       <img
         v-show="!nowComicList"
         style="width: 100%; height: 100%; border-radius: 50%"
-        src="../img//EqEgKAXC_400x400.png"
+        src="../img/EqEgKAXC_400x400.png"
         alt="" />
     </div>
     <div

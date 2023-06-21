@@ -11,6 +11,7 @@
   import { useUserInfoStore } from "@/stores/userInfo";
   import { getRankInfo } from "@/api/ranking";
   import { getRecommend } from "../api/Recommended"; //获取3条推荐漫画数据
+  import { getAllLabel } from "@/api/category"; //获取分类选项
   import { type comicInfoCommonType } from "@/utils/typeing";
   // ---------用户信息-------------
   let { userInfo, Logged } = storeToRefs(useUserInfoStore());
@@ -20,16 +21,16 @@
     userInfo.value = JSON.parse(localStorage.getItem(`user${userId}`) + "");
   }
   //------------------------ bscroll实例化函数----------------------------
-  const home = ref();
-  const bs = ref();
+  let home = ref();
+  let bs = ref();
   BScroll.use(ObserveImage);
   BScroll.use(ObserveDOM); // 自动重载插件
   const bsMounted = () => {
     // 实例化bscroll并配置其配置项
-    bs.value = new BScroll(home.value as HTMLElement, {
+    bs.value = new BScroll(home.value, {
       click: true,
       observeDOM: true,
-      observeImage: true,
+      observeImage: true, // 开启 observe-image 插件
     });
   };
   // --------------------------请求新作榜数据----------------------------------
@@ -47,7 +48,7 @@
   onMounted(() => {
     bsMounted();
   });
-  //---------------------请求推荐模块------------------------------
+  //------------------------请求推荐模块---------------------------
   let RecommendList = ref<
     Array<{ season_id: number; horizontal_cover: string }>
   >([]);
@@ -57,11 +58,24 @@
     console.log(RecommendList.value);
   };
   getRecommendFun(); // 请求推荐数据
+  // -----------------请求分类选项数据--------------
+  let classificationList = ref();
+  let AllLabelLoad = async () => {
+    let AllLabel = await getAllLabel();
+    classificationList.value = AllLabel.data;
+  };
+  AllLabelLoad();
+  const itemBg = new URL("./img/itemBg.png", import.meta.url).href;
+  let bgStyle = {
+    backgroundImage: itemBg + "",
+    // 不能完全使用变量，前置地址必须是静态地址，否则会报错
+    backgroundSize: "100%",
+  }; //样式
 </script>
 <template>
   <div class="home w-100 h-100" ref="home">
     <!-- 滚动内容 -->
-    <div style="min-height: calc(100% + 1px)">
+    <div style="min-height: calc(100% + 1px)" class="overflow-hidden">
       <!-- 用户信息/设置 -->
       <UserSetting :userInfo="userInfo" :userId="userId"></UserSetting>
       <!-- 搜索区域 -->
@@ -71,7 +85,7 @@
       <!-- 首页轮播图推荐模块 -->
       <RecommendBar :RecommendList="RecommendList"></RecommendBar>
       <!-- 首页分类,不需要传值,无其余场景复用,不使用组件 -->
-      <div>
+      <div class="mt-4">
         <!-- 标题 -->
         <div
           class="titleArea px-4 d-flex justify-content-between align-items-end">
@@ -86,7 +100,25 @@
           </div>
         </div>
         <!-- 分类选项 -->
-        <div></div>
+        <swiper-container
+          class="mySwiper mt-3 px-3"
+          slides-per-view="auto"
+          space-between="30"
+          free-mode="true">
+          <swiper-slide
+            v-for="(item, index) in classificationList?.styles"
+            :key="index"
+            class="d-flex align-items-center justify-content-center"
+            style="width: 80px">
+            <div style="height: 80px; width: 80px" :style="bgStyle">
+              <img src="../img/itemBg.png" class="w-100 h-100" />
+              <span
+                class="position-absolute top-50 start-50 translate-middle text-nowrap fw-bold"
+                >{{ item.name }}</span
+              >
+            </div>
+          </swiper-slide>
+        </swiper-container>
       </div>
     </div>
   </div>
