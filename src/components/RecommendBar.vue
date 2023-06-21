@@ -54,18 +54,16 @@
           class="rounded-4 w-100 h-100 p-1 d-flex justify-content-center align-items-center"
           v-for="(item, index) in RecommendList"
           :key="index">
-          <div
-            @click="toComicDetail(item.season_id)"
-            class="w-100 rounded-4 overflow-hidden"
-            style="box-shadow: 0 0 3px rgba(0, 0, 0, 0.2)">
-            <img class="w-100" v-lazy="item.horizontal_cover + '@568w_319h'" />
+          <div @click="toComicDetail(item.season_id)" class="w-100">
+            <img
+              class="w-100 rounded-4"
+              v-lazy="item.horizontal_cover + '@568w_319h'" />
           </div>
         </swiper-slide>
       </swiper-container>
     </div>
   </div>
 </template>
-
 <style lang="scss" scoped>
   img[lazy="loading"] {
     opacity: 0;
