@@ -4,6 +4,7 @@
   import SearchBar from "@/components/SearchBar.vue";
   import RankingBar from "@/components/RankingBar.vue";
   import RecommendBar from "@/components/RecommendBar.vue";
+  import { useRouter } from "vue-router";
   import { storeToRefs } from "pinia";
   import BScroll from "better-scroll"; //导入Better scroll核心
   import ObserveDOM from "@better-scroll/observe-dom"; //dom变化自动重新实例化
@@ -13,6 +14,9 @@
   import { getRecommend } from "../api/Recommended"; //获取3条推荐漫画数据
   import { getAllLabel } from "@/api/category"; //获取分类选项
   import { type comicInfoCommonType } from "@/utils/typeing";
+
+  const router = useRouter();
+
   // ---------用户信息-------------
   let { userInfo, Logged } = storeToRefs(useUserInfoStore());
   let userId = localStorage.getItem("userId");
@@ -71,6 +75,13 @@
     // 不能完全使用变量，前置地址必须是静态地址，否则会报错
     backgroundSize: "100%",
   }; //样式
+
+  // 跳转到分类
+  let sw = ref();
+  const toClassification = (id: number) => {
+    console.log("aaaaa");
+    router.push({ name: "ComicClassification", query: { id } });
+  };
 </script>
 <template>
   <div class="home w-100 h-100" ref="home">
@@ -102,6 +113,8 @@
         <!-- 分类选项 -->
         <swiper-container
           class="mySwiper mt-3 px-3"
+          ref="classificationSwiper"
+          events-prefix="swiperFirstBox-"
           slides-per-view="auto"
           space-between="30"
           free-mode="true">
@@ -110,7 +123,10 @@
             :key="index"
             class="d-flex align-items-center justify-content-center"
             style="width: 80px">
-            <div style="height: 80px; width: 80px" :style="bgStyle">
+            <div
+              style="height: 80px; width: 80px"
+              :style="bgStyle"
+              @click="toClassification(item?.id)">
               <img src="../img/itemBg.png" class="w-100 h-100" />
               <span
                 class="position-absolute top-50 start-50 translate-middle text-nowrap fw-bold"

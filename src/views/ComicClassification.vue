@@ -192,7 +192,7 @@
             :key="item.season_id"
             @click="openContentView(item.season_id)">
             <img
-              :src="item.vertical_cover + '@300w_300h.jpg'"
+              v-lazy="item.vertical_cover + '@300w_300h.jpg'"
               alt=""
               class="w-100 mt-3" />
             <div class="fs-8 my-2">
@@ -213,6 +213,20 @@
 </template>
 
 <style lang="scss">
+  img[lazy="loading"] {
+    opacity: 0;
+  }
+  img[lazy="loading"]:not([class^="notWidthTransition"]) {
+    opacity: 0;
+  }
+  img[lazy="error"] {
+    opacity: 1;
+    transition: 0.6s;
+  }
+  img[lazy="loaded"] {
+    opacity: 1;
+    transition: 0.6s;
+  }
   .allLabel {
     padding-top: 67.5px;
     li {
