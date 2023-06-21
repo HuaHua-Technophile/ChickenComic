@@ -51,18 +51,14 @@
         effect="cards"
         style="padding-top: 5px">
         <swiper-slide
-          class="rounded-4"
+          class="rounded-4 w-100 h-100 p-1 d-flex justify-content-center align-items-center"
           v-for="(item, index) in RecommendList"
-          :key="index"
-          style="width: 100%; height: 100%">
-          <div class="item" @click="toComicDetail(item.season_id)">
-            <div class="imageItemBox" style="width: 100%">
-              <img
-                class="imageItem rounded-4"
-                style="width: 100%"
-                v-lazy="item.horizontal_cover + '@568w_319h'"
-                alt="" />
-            </div>
+          :key="index">
+          <div
+            @click="toComicDetail(item.season_id)"
+            class="w-100 rounded-4 overflow-hidden"
+            style="box-shadow: 0 0 3px rgba(0, 0, 0, 0.2)">
+            <img class="w-100" v-lazy="item.horizontal_cover + '@568w_319h'" />
           </div>
         </swiper-slide>
       </swiper-container>
