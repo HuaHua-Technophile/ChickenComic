@@ -21,13 +21,13 @@
     userInfo.value = JSON.parse(localStorage.getItem(`user${userId}`) + "");
   }
   //------------------------ bscroll实例化函数----------------------------
-  const home = ref();
-  const bs = ref();
+  let home = ref();
+  let bs = ref();
   BScroll.use(ObserveImage);
   BScroll.use(ObserveDOM); // 自动重载插件
   const bsMounted = () => {
     // 实例化bscroll并配置其配置项
-    bs.value = new BScroll(home.value as HTMLElement, {
+    bs.value = new BScroll(home.value, {
       click: true,
       observeDOM: true,
       observeImage: true,
@@ -59,7 +59,6 @@
   };
   getRecommendFun(); // 请求推荐数据
   // -----------------请求分类选项数据--------------
-
   let res = await getAllLabel();
   let classificationList = ref(res.data);
 </script>
@@ -76,23 +75,6 @@
       <!-- 首页轮播图推荐模块 -->
       <RecommendBar :RecommendList="RecommendList"></RecommendBar>
       <!-- 首页分类,不需要传值,无其余场景复用,不使用组件 -->
-      <div>
-        <!-- 标题 -->
-        <div
-          class="titleArea px-4 d-flex justify-content-between align-items-end">
-          <!-- 左侧标题 -->
-          <div class="title fs-4">カテゴリー</div>
-          <!-- 查看更多 -->
-          <div
-            class="more fs-6 opacity-50"
-            @click="$router.push({ name: 'ComicClassification' })">
-            <span class="moreTitle">もっと調べます</span>
-            <i class="bi bi-chevron-right" style="margin-left: 5px"></i>
-          </div>
-        </div>
-        <!-- 分类选项 -->
-        <div></div>
-      </div>
     </div>
   </div>
 </template>
