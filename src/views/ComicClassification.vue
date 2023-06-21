@@ -3,7 +3,6 @@
   import { getAllLabel, getClassPage } from "@/api/category";
   import BScroll from "better-scroll"; //导入Better scroll核心
   import ObserveImage from "@better-scroll/observe-image"; //导入自动重新计算Better scroll
-
   import ObserveDOM from "@better-scroll/observe-dom"; //ObserveDOM插件
   import Pullup from "@better-scroll/pull-up";
   import { useRouter } from "vue-router";
@@ -27,7 +26,6 @@
   let ComicClassification = ref();
   BScroll.use(Pullup);
   BScroll.use(ObserveImage);
-
   BScroll.use(ObserveDOM); // 自动重载插件
   let bs = ref();
   onMounted(() => {
@@ -37,7 +35,7 @@
       observeImage: true,
       pullUpLoad: true,
     });
-    bs.value.on("pullingUp", handelFunction);
+    bs.value.on("pullingUp", pullUpLoad);
   });
   // -----------分类项--------------
   let allLabel = ref<allLabelType>({
@@ -47,43 +45,36 @@
     status: [],
     styles: [],
   });
-  //请求参数
   let activeList = ref<activeListType>({
     areas: -1,
     orders: -1,
     prices: -1,
     status: -1,
     styles: -1,
-  });
-  //------------获取分了项数据------------------
-
+  }); //请求参数
+  //------------获取分类筛选条件------------------
   const getAllLabelFun = async () => {
-    let data = await getAllLabel();
-    allLabel.value = data.data;
-
-    for (const key in allLabel.value) {
+    let res = await getAllLabel();
+    allLabel.value = res.data;
+    for (let key in allLabel.value) {
       allLabel.value[key].unshift({ id: -1, name: "全部" });
     }
   };
   getAllLabelFun();
-
   // ------------------选择分类更换参数重新请求数据-----------------------
   const selectType = (name: string, id: number) => {
     activeList.value[name] = id;
     // 初始化
     loadFlag.value = true;
-    pageNumber.value = 1;
-    resultList.value = [];
-    getClassPageFun();
+    pageNumber.value = 1; //页码归位
+    resultList.value = []; //更换分类后清空数据存放
+    getClassPageFun(); //获取数据
   };
-
   // -------------- 获取分类后的漫画数据-------------------
-  // 页数
-  let pageNumber = ref(1);
-  // 结果
-  let resultList = ref<Array<resultListType>>([]);
+  let pageNumber = ref(1); // 页数
+  let resultList = ref<Array<resultListType>>([]); // 存放待遍历数据
   const getClassPageFun = async () => {
-    let data = await getClassPage({
+    let res = await getClassPage({
       styleId: activeList.value.styles,
       areaId: activeList.value.areas,
       isFinish: activeList.value.status,
@@ -91,29 +82,25 @@
       isFree: activeList.value.prices,
       pageNum: pageNumber.value,
     });
-    resultList.value!.push(...data.data);
+    resultList.value!.push(...res.data);
   };
-  getClassPageFun();
+  getClassPageFun(); //首页加载时请求一次默认数据
   //----------------上啦加载更多----------------
-  const findDataInnextPage = () => {
+  const findDataInnextPage = throttle(() => {
     pageNumber.value++;
     getClassPageFun();
-  };
-  let throttleFun = throttle(findDataInnextPage, 2000); //节流
-  let handelFunction = () => {
+  }, 2000);
+  let pullUpLoad = () => {
     loadFlag.value = true;
-    throttleFun();
+    findDataInnextPage();
     bs.value.finishPullUp();
     bs.value.refresh();
   };
-  // loading 显示开关
-  const loadFlag = ref(false);
-  // 帅选框开关
-  const activeNames = toRef(["0"]);
-  //添加滚动事件
+  let loadFlag = ref(false); // loading 显示开关
+  let activeNames = toRef(["0"]); // 筛选框开关
   onMounted(() => {
     bs.value.on("scrollStart", closeTyoeFun);
-  });
+  }); //添加滚动事件
   // -------------=筛选框自动缩回----------------
   const closeTyoeFun = () => {
     if (activeNames.value.length !== 1) {
