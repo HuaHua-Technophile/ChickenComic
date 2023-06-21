@@ -22,7 +22,7 @@
           circle,
           transparent 0%,
           transparent 40%,
-          rgba(255, 255, 255, 0.1) 100%
+          rgba(255, 255, 255, 0.2) 100%
         );
       ">
       <!-- 搜索icon -->
