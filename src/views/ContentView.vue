@@ -71,9 +71,9 @@
     imgEpList.value = data.value.ep_list;
     imgEpList.value.reverse();
     // 调用getContentData方法获取章节数据并对数据做处理
-    getContentData(nowEp.value.id);
+    getContentData(nowEp.value?.id);
     epListindex = imgEpList.value.findIndex((item) => {
-      return item.id == nowEp.value.id;
+      return item.id == nowEp.value?.id;
     });
   };
 
@@ -351,7 +351,7 @@
     // 判断登录状态
     if (userId) {
       let newHistory = {
-        id: nowComicList.value.data.id,
+        id: nowComicList.value?.data.id,
         historyComicList: nowComicList.value.data,
         historyIndex: nowIndex.value,
         HistoryListLength: nowListLength.value,
@@ -360,7 +360,6 @@
         userInfo.value?.watchingHistory!.findIndex(
           (item) => item.id == newHistory.id
         ) as number;
-
       if (index == -1) {
         userInfo.value?.watchingHistory!.unshift(newHistory);
         // 添加历史记录

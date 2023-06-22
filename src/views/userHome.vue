@@ -59,12 +59,10 @@
   // 实例化bscroll并注册插件
   BScroll.use(Pullup); // 注册上拉懒加载插件
   BScroll.use(ObserveDOM); // 自动重载插件
-
+  // ----------------监听swiper变化,改变上方分页器------------------
   let slidePag = ref();
-
   onMounted(() => {
     bsMounted();
-
     // 监听swiper的slide改变移动tabs
     nextTick(() => {
       sw.value.addEventListener(
@@ -145,49 +143,70 @@
   <div class="userHome w-100 h-100" ref="userHome">
     <!-- 外部bscroll滚动区域 -->
     <div class="bsContent w-100" style="min-height: calc(100% + 1px)">
-      <div class="userInfoArea position-relative" style="height: 30vh">
-        <div
-          class="info position-absolute start-50 translate-middle-x"
-          style="bottom: 12%">
-          <div
-            class="userCover rounded-3 overflow-hidden"
-            style="width: 100px; height: 100px">
-            <img
-              :src="`https://q.qlogo.cn/headimg_dl?dst_uin=${userInfo?.id}&spec=3`"
-              alt="" />
+      <!-- 返回 -->
+      <back-component>
+        <template #searchInput>
+          <div class="d-flex justify-content-end">
+            <div class="setup d-inline-block">
+              <van-popover
+                v-model:show="showPopover"
+                :actions="actions"
+                placement="bottom-end"
+                theme="dark"
+                @select="onselect">
+                <template #reference>
+                  <i class="bi bi-x-octagon fs-4 me-3 mt-3 z-3"></i>
+                </template>
+              </van-popover>
+            </div>
           </div>
+        </template>
+      </back-component>
+      <!-- 用户头像+用户名 -->
+      <div
+        class="userInfoArea d-flex align-items-center justify-content-center"
+        style="height: 190px">
+        <div class="info">
+          <!-- 头像 -->
+          <img
+            class="rounded-3"
+            style="width: 100px; height: 100px"
+            :src="`https://q.qlogo.cn/headimg_dl?dst_uin=${userInfo?.id}&spec=3`" />
+          <!-- 用户名 -->
           <div class="userName mt-3 text-center">{{ userInfo?.name }}</div>
         </div>
       </div>
-      <!-- 外层swiper -->
-      <div class="btnArea d-flex justify-content-center">
+      <!-- 外层swiper的分页器指示 -->
+      <div
+        class="d-flex justify-content-center position-relative mx-auto"
+        style="width: 240px">
+        <!-- 漫画收藏 -->
         <div
-          class="d-flex justify-content-center position-relative"
-          style="width: 240px">
-          <div
-            class="btnL text-center px-2"
-            style="width: 120px; height: 50px; line-height: 50px"
-            @click="changeBtn(0)">
-            コレクション
-          </div>
-          <div
-            class="btnR text-center px-2"
-            style="width: 120px; height: 50px; line-height: 50px"
-            @click="changeBtn(1)">
-            レコード破り
-          </div>
-          <span
-            class="d-inline-flex px-2 position-absolute rounded-pill"
-            ref="slidePag"
-            style="
-              width: 120px;
-              height: 50px;
-              background-color: rgba(0, 0, 0, 0.2);
-              left: 0%;
-              transition: 0.4s;
-            "></span>
+          class="text-center px-2 d-flex align-items-center"
+          style="width: 120px; height: 50px"
+          @click="changeBtn(0)">
+          コレクション
         </div>
+        <!-- 阅读历史 -->
+        <div
+          class="text-center px-2 d-flex align-items-center"
+          style="width: 120px; height: 50px"
+          @click="changeBtn(1)">
+          レコード破り
+        </div>
+        <!-- 指示滑块 -->
+        <span
+          class="d-inline-flex px-2 position-absolute rounded-pill"
+          ref="slidePag"
+          style="
+            width: 120px;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.2);
+            left: 0%;
+            transition: 0.4s;
+          "></span>
       </div>
+      <!-- 下方收藏/阅读历史的横滑swiper -->
       <swiper-container
         class="mySwiper1 w-100 overflow-hidden position-relative"
         style="height: 55vh; margin-top: 20px; padding-top: 5px"
@@ -254,25 +273,6 @@
           </div>
         </swiper-slide>
       </swiper-container>
-      <!-- 返回 -->
-      <back-component class="position-fixed">
-        <template #searchInput>
-          <div class="d-flex justify-content-end">
-            <div class="setup d-inline-block">
-              <van-popover
-                v-model:show="showPopover"
-                :actions="actions"
-                placement="bottom-end"
-                theme="dark"
-                @select="onselect">
-                <template #reference>
-                  <i class="bi bi-x-octagon fs-4 me-3 mt-3 z-3"></i>
-                </template>
-              </van-popover>
-            </div>
-          </div>
-        </template>
-      </back-component>
     </div>
   </div>
 </template>

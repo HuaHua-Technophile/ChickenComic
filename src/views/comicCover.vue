@@ -93,9 +93,12 @@
       router.push({ name: "login" });
     }
   };
-
   //------------------子组件点击传出方法,阅读不同章节------------------
   let readThisChapter = (index: number) => {
+    if (index == -1) {
+      // userInfo.value?.watchingHistory?.forEach((i) => i.id);
+      // index =
+    }
     let params = JSON.stringify({
       index,
       data: res.value.data,
@@ -179,7 +182,7 @@
           <div
             class="pt-3 pb-3 fs-5 fw-bold bg-primary rounded-4 text-center t-shadow-3 bg-opacity-25 insetShadow-4-4"
             style="width: 40%"
-            @click="readThisChapter(chapterList.length - 1)">
+            @click="readThisChapter(-1)">
             読み始めます
           </div>
           <div

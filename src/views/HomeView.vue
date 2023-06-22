@@ -79,7 +79,6 @@
   // 跳转到分类
   let sw = ref();
   const toClassification = (id: number) => {
-    console.log("aaaaa");
     router.push({ name: "ComicClassification", query: { id } });
   };
 </script>
