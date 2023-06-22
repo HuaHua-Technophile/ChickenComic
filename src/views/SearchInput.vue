@@ -195,7 +195,7 @@
         <div class="searchReferral mt-4 transition-5" v-show="!isFocus">
           <p class="my-2 ms-3 opacity-50">人気検索</p>
           <ul class="w-100 mt-3 text-body d-flex flex-wrap">
-            <li
+            <di第v】
               class="w-50 mb-2 d-flex align-items-center"
               v-for="(item, index) in searchReferral"
               :key="item.season_id"
@@ -211,7 +211,7 @@
                 :comicInfo="item"
                 :imgWidth="70.4"
                 :fontSize="14.5"></comic-item-component>
-            </li>
+            </div>
           </ul>
         </div>
       </transition>

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-  import { ref, onMounted, watchEffect } from "vue";
-  import { getSearchResult } from "../api/search";
-  import BScroll from "better-scroll"; //导入Better scroll核心
-  import ObserveImage from "@better-scroll/observe-image";
   import ObserveDOM from "@better-scroll/observe-dom"; //导入自动重新计算BS实例
-  import { useRoute } from "vue-router";
-  import Pullup from "@better-scroll/pull-up";
+import ObserveImage from "@better-scroll/observe-image";
+import Pullup from "@better-scroll/pull-up";
+import BScroll from "better-scroll"; //导入Better scroll核心
+import { onMounted, ref, watchEffect } from "vue";
+import { useRoute } from "vue-router";
+import { getSearchResult } from "../api/search";
   let route = useRoute();
   //---------- 搜索框关键词 ----------------
   let keyWord = ref();
@@ -174,12 +174,12 @@
           :imgWidth="100"
           :fontSize="18"
           class="mb-2"></comic-item-component>
-        <li class="w-100 py-3 text-center">
+        <div class="w-100 py-3 text-center">
           <van-loading v-if="isPullUpLoad" />
           <p class="w-100 py-3 text-center opacity-50" v-else>
             これ以上ありません~
           </p>
-        </li>
+        </div>
       </ul>
     </div>
   </div>

@@ -93,7 +93,7 @@
   let bs = ref();
   let bs2 = ref();
   let contentVeiw = ref();
-  let isPullUpLoad = ref<boolean>(false);
+  let isPullUpLoad = ref(false);
   // 上拉加载调用此函数，发送下一章请求
   let endList = ref("上拉进入下一章");
   const pullingUpHandler = debounce(async function () {
@@ -390,7 +390,7 @@
       QRshow.value = true;
     }
     if (option.name == "ハイパーリンク") {
-      // 因为全局剪贴板只能通过script标签引入,因此TS找不到 ClipboardJS
+      // 因为全局剪贴板框架只能通过script标签引入,因此TS找不到 ClipboardJS
       cli.value = new ClipboardJS(".van-share-sheet__option", {
         text: () => `https://manga.bilibili.com/detail/mc${data.value.id}`,
       });

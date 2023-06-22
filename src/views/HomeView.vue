@@ -12,7 +12,7 @@
   import { useUserInfoStore } from "@/stores/userInfo";
   import { getRankInfo } from "@/api/ranking";
   import { getRecommend } from "../api/Recommended"; //获取3条推荐漫画数据
-  import { getAllLabel } from "@/api/Category"; //获取分类选项
+  import { getAllLabel } from "@/api/category"; //获取分类选项
   import { type comicInfoCommonType } from "@/utils/typeing";
 
   const router = useRouter();
