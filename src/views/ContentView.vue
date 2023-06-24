@@ -97,7 +97,7 @@
   let contentVeiw = ref();
   let isPullUpLoad = ref(false);
   // 上拉加载调用此函数，发送下一章请求
-  let endList = ref("上拉进入下一章");
+  let endList = ref("プルアップは次の章に続きます");
   const pullingUpHandler = debounce(async function () {
     isPullUpLoad.value = true;
     if (
