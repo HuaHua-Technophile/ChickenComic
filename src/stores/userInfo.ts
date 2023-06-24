@@ -9,7 +9,6 @@ export const useUserInfoStore = defineStore("global", () => {
   watch(
     userInfo,
     (newV) => {
-      console.log("pinia用户信息更改了", newV);
       localStorage.setItem(`user${newV?.id}`, JSON.stringify(newV));
     },
     { deep: true }

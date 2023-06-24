@@ -14,7 +14,6 @@
 
   // -----------------用户信息---------------------
   const { userInfo } = storeToRefs(useUserInfoStore());
-  // console.log(userInfo.value);
   // 获取userHome对象
   let userHome = ref();
   let bscroll2 = ref();

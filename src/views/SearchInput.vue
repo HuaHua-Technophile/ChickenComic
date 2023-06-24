@@ -89,7 +89,6 @@
   let defaultKeyword = ref([]);
   const getSearchReferralFun = async () => {
     let data = await getSearchReferral({ num: 12 });
-    console.log(data);
     defaultKeyword.value = data.data[0].title;
     searchReferral.value = data.data?.slice(1, 11);
   };
