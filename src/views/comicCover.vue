@@ -96,12 +96,14 @@
   //------------------子组件点击传出方法,阅读不同章节------------------
   let readThisChapter = (index: number) => {
     if (index == -1) {
-      // userInfo.value?.watchingHistory?.forEach((i) => i.id);
-      // index =
+      index = res.value?.data.ep_list.length - 1;
+      userInfo.value?.watchingHistory?.forEach((i) => {
+        if (i.data.id == res.value.data.id) index = i.index;
+      });
     }
     let params = JSON.stringify({
       index,
-      data: res.value.data,
+      data: res.value?.data,
     });
     router.push({ name: "content", state: { params } }); //注意：此处一定要用params
   };

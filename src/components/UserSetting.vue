@@ -1,28 +1,10 @@
 <script setup lang="ts">
   import { useRouter } from "vue-router";
+  import { type userInfoType } from "@/utils/typeing";
   const router = useRouter();
   defineProps<{
     userId: string | null;
-    userInfo:
-      | {
-          id?: number;
-          name?: string;
-          collection?: Array<{
-            vertical_cover: string;
-            title: string;
-            last_ord: number;
-          }>;
-          watchingHistory?: Array<{
-            id: number;
-            historyIndex: number;
-            HistoryListLength: number;
-            historyComicList: {
-              title: string;
-              horizontal_cover: string;
-            };
-          }>;
-        }
-      | undefined;
+    userInfo: userInfoType | undefined;
   }>();
 
   // 跳转到登录页或用户主页

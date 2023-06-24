@@ -10,8 +10,6 @@
   import { useRouter } from "vue-router";
   import { showToast } from "vant";
   import "vant/es/toast/style";
-
-  import type { FormItemRule } from "@nutui/nutui/dist/types/__VUE/formitem/types";
   const router = useRouter();
 
   // -----------------用户信息---------------------
@@ -60,7 +58,7 @@
   BScroll.use(Pullup); // 注册上拉懒加载插件
   BScroll.use(ObserveDOM); // 自动重载插件
   // ----------------监听swiper变化,改变上方分页器------------------
-  let slidePag = ref();
+  let activeIndex = ref(0);
   onMounted(() => {
     bsMounted();
     // 监听swiper的slide改变移动tabs
@@ -72,16 +70,11 @@
             activeIndex: number;
           }>;
         }) => {
-          if (event.detail[0].activeIndex == 0) {
-            slidePag.value.style.left = "0%";
-          } else {
-            slidePag.value.style.left = "50%";
-          }
+          activeIndex.value = event.detail[0].activeIndex;
         }
       );
     });
   });
-
   //点击收藏跳转播放
   const toRead2 = (index: number, data: {}) => {
     let params = JSON.stringify({
@@ -90,18 +83,11 @@
     });
     router.push({ name: "content", state: { params } }); //注意：此处一定要用params
   };
-
   // 点击历史记录跳转播放
-  const toRead = (
-    data: {
-      title: string;
-      horizontal_cover: string;
-    },
-    index: number
-  ) => {
+  const toRead = (res: { index: number; data: object }) => {
     let params = JSON.stringify({
-      index,
-      data: data,
+      index: res.index,
+      data: res.data,
     });
     router.push({ name: "content", state: { params } }); //注意：此处一定要用params
   };
@@ -109,28 +95,24 @@
   // 设置
   const showPopover = ref(false);
   const actions = [
-    { text: "清除历史" },
-    { text: "清除收藏" },
-    { text: "退出登录" },
+    { text: "歴史を一掃します" },
+    { text: "コレクションを一掃します" },
+    { text: "ログアウトします" },
   ];
   const onselect = (action: { text: string }) => {
-    if (action.text == "清除历史") {
+    if (action.text == "歴史を一掃します") {
       userInfo.value?.watchingHistory!.splice(
         0,
         userInfo.value?.watchingHistory!.length
       );
-      showToast("清楚成功");
-    } else if (action.text == "清除收藏") {
+      showToast("除去成功です");
+    } else if (action.text == "コレクションを一掃します") {
       userInfo.value?.collection!.splice(0, userInfo.value?.collection!.length);
-      showToast("清楚成功");
-    } else if (action.text == "退出登录") {
-      // localStorage.clear();
-      // userInfo.value = {};
-
+      showToast("除去成功です");
+    } else if (action.text == "ログアウトします") {
       localStorage.removeItem("userId");
       router.push("/");
-
-      showToast("推出成功");
+      showToast("ログアウトしました");
     }
   };
 
@@ -142,9 +124,11 @@
 <template>
   <div class="userHome w-100 h-100" ref="userHome">
     <!-- 外部bscroll滚动区域 -->
-    <div class="bsContent w-100" style="min-height: calc(100% + 1px)">
+    <div
+      class="bsContent w-100 d-flex flex-column"
+      style="height: calc(100% + 1px)">
       <!-- 返回 -->
-      <back-component>
+      <back-component class="flex-shrink-0">
         <template #searchInput>
           <div class="d-flex justify-content-end">
             <div class="setup d-inline-block">
@@ -164,7 +148,7 @@
       </back-component>
       <!-- 用户头像+用户名 -->
       <div
-        class="userInfoArea d-flex align-items-center justify-content-center"
+        class="userInfoArea flex-shrink-0 d-flex align-items-center justify-content-center"
         style="height: 190px">
         <div class="info">
           <!-- 头像 -->
@@ -178,96 +162,106 @@
       </div>
       <!-- 外层swiper的分页器指示 -->
       <div
-        class="d-flex justify-content-center position-relative mx-auto"
-        style="width: 240px">
+        class="flex-shrink-0 d-flex position-relative mx-auto rounded-pill"
+        style="
+          width: 330px;
+          height: 45px;
+          background: rgba(0, 0, 0, 0.3);
+          color: rgb;
+        ">
         <!-- 漫画收藏 -->
         <div
-          class="text-center px-2 d-flex align-items-center"
-          style="width: 120px; height: 50px"
+          class="px-2 w-50 d-flex align-items-center justify-content-center"
+          :class="{ 'text-white': activeIndex == 0 }"
+          style="width: 120px"
           @click="changeBtn(0)">
           コレクション
         </div>
         <!-- 阅读历史 -->
         <div
-          class="text-center px-2 d-flex align-items-center"
-          style="width: 120px; height: 50px"
+          class="px-2 w-50 d-flex align-items-center justify-content-center"
+          :class="{ 'text-white': activeIndex == 1 }"
+          style="width: 120px"
           @click="changeBtn(1)">
           レコード破り
         </div>
         <!-- 指示滑块 -->
-        <span
-          class="d-inline-flex px-2 position-absolute rounded-pill"
-          ref="slidePag"
-          style="
-            width: 120px;
-            height: 50px;
-            background-color: rgba(0, 0, 0, 0.2);
-            left: 0%;
-            transition: 0.4s;
-          "></span>
+        <div
+          class="position-absolute z-n1 h-100 w-50 transition-4 p-2"
+          :class="activeIndex == 0 ? 'start-0' : 'start-50'">
+          <div class="w-100 h-100 rounded-pill bg-danger opacity-50"></div>
+        </div>
       </div>
       <!-- 下方收藏/阅读历史的横滑swiper -->
       <swiper-container
-        class="mySwiper1 w-100 overflow-hidden position-relative"
-        style="height: 55vh; margin-top: 20px; padding-top: 5px"
+        class="mySwiper1 flex-grow-1 w-100 mt-4 pt-1 position-relative"
         events-prefix="swiperFirstBox-"
         ref="sw">
-        <swiper-slide style="height: 55vh">
+        <swiper-slide>
           <!-- 里层bscroll -->
-          <div class="bs2Box" style="height: 100%" ref="bscroll2">
-            <div
-              class="bscroll2 d-flex flex-wrap"
-              style="min-height: calc(100% + 1px)">
+          <div class="bs2Box h-100 w-100">
+            <div class="h-100 w-100" ref="bscroll2">
               <div
-                class="collectItem"
-                v-for="(item, index) in userInfo?.collection"
-                :key="index"
-                @click="toRead2(index, item)"
-                style="width: 40%; height: 300px">
-                <div class="imageItemBox" style="width: 100%">
-                  <img
-                    class="imageItem rounded-3"
-                    style="
-                      width: 100%;
-                      box-shadow: 0px 0px 5px
-                        rgba(var(--bs-body-color-rgb), 0.5);
-                    "
-                    v-lazy="item.vertical_cover + '@568w_319h'"
-                    alt="" />
-                </div>
-                <div class="comicTitle text-truncate fs-5 pt-1">
-                  {{ item.title }}
-                </div>
-                <!-- 更新或完结信息 -->
-                <div class="finish fs-6 opacity-50">
-                  {{ item.last_ord }}話に更新
+                class="w-100 bscroll2 d-flex flex-wrap"
+                style="min-height: calc(100% + 1px)">
+                <div
+                  class="collectItem"
+                  v-for="(item, index) in userInfo?.collection"
+                  :key="index"
+                  @click="toRead2(index, item)"
+                  style="width: 40%; height: 300px">
+                  <div class="imageItemBox" style="width: 100%">
+                    <img
+                      class="imageItem rounded-3"
+                      style="
+                        width: 100%;
+                        box-shadow: 0px 0px 5px
+                          rgba(var(--bs-body-color-rgb), 0.5);
+                      "
+                      v-lazy="item.vertical_cover + '@568w_319h'"
+                      alt="" />
+                  </div>
+                  <div class="comicTitle text-truncate fs-5 pt-1">
+                    {{ item.title }}
+                  </div>
+                  <!-- 更新或完结信息 -->
+                  <div class="finish fs-6 opacity-50">
+                    {{ item.last_ord }}話に更新
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </swiper-slide>
-        <swiper-slide style="height: 50vh">
-          <div class="bs2Box2" style="height: 100%" ref="bscroll3">
+        <swiper-slide>
+          <div class="bs2Box2 h-100" ref="bscroll3">
             <ul style="min-height: calc(100% + 1px)">
               <li
-                class="d-flex align-items-center bg-body bg-opacity-75 my-2 overflow-hidden"
+                class="d-flex align-items-center mb-4"
                 v-for="item in userInfo?.watchingHistory"
-                :key="item.id"
-                @click="toRead(item.historyComicList, item.historyIndex)">
+                :key="item.data.id"
+                @click="toRead(item)"
+                style="
+                  background: linear-gradient(
+                    transparent,
+                    rgba(var(--bs-body-bg-rgb), 0.5) 20%,
+                    rgba(var(--bs-body-bg-rgb), 0.5) 80%,
+                    transparent
+                  );
+                ">
                 <img
-                  :src="item.historyComicList.horizontal_cover"
-                  alt=""
-                  class="w-50 px-2" />
-                <div>
-                  <div class="fs-6 van-text-ellipsis">
-                    {{ item.historyComicList.title }}
+                  :src="item.data.horizontal_cover"
+                  class="w-50 mx-2 rounded-3" />
+                <div class="flex-grow-1 overflow-hidden">
+                  <div class="text-truncate mb-2">
+                    {{ item.data.title }}
                   </div>
-                  <div class="opacity-75 fs-8">
-                    看到第{{ item.HistoryListLength - item.historyIndex }} 话 /
-                    {{ item.HistoryListLength }}话
+                  <div class="opacity-50 fs-8">
+                    {{ item.data.ep_list?.length - item.index }} /
+                    {{ item.data.ep_list?.length }}を見ます
                   </div>
                 </div>
-                <i class="bi bi-chevron-right fs-2 flex-grow-1 text-center"></i>
+                <i class="bi bi-chevron-right fs-2 me-2"></i>
               </li>
             </ul>
           </div>

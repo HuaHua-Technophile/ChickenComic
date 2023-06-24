@@ -20,7 +20,7 @@
   // ---------用户信息-------------
   let { userInfo, Logged } = storeToRefs(useUserInfoStore());
   let userId = localStorage.getItem("userId");
-  if (userId) {
+  if (userId && !Logged.value) {
     Logged.value = true;
     userInfo.value = JSON.parse(localStorage.getItem(`user${userId}`) + "");
   }
@@ -59,7 +59,6 @@
   const getRecommendFun = async () => {
     let res = await getRecommend();
     RecommendList.value = res.data;
-    console.log(RecommendList.value);
   };
   getRecommendFun(); // 请求推荐数据
   // -----------------请求分类选项数据--------------
