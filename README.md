@@ -1,4 +1,4 @@
-[![VI7nFL.png](https://i.imgloc.com/2023/06/24/VI7nFL.png)](https://github.com/HuaHua-Technophile/ChickenComic)
+[![VIFBj8.png](https://i.imgloc.com/2023/06/25/VIFBj8.png)](https://github.com/HuaHua-Technophile/ChickenComic)
 
 <h1 align="center" style="color:pink;">「 紙櫻漫畫(ChickenComic) 」</h1>
 
@@ -49,6 +49,7 @@
 - ## VUE ^3.3.2(最新)
 - ## VUE-Router ^4.2.0(最新)
 - ## Pina ^2.0.36(最新)
+- ## TypeScript ^5.0.4(最新)
 - ## axios ^1.4.0(最新)
 
 ---
