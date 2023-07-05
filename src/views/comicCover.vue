@@ -93,12 +93,17 @@
       router.push({ name: "login" });
     }
   };
-
   //------------------子组件点击传出方法,阅读不同章节------------------
   let readThisChapter = (index: number) => {
+    if (index == -1) {
+      index = res.value?.data.ep_list.length - 1;
+      userInfo.value?.watchingHistory?.forEach((i) => {
+        if (i.data.id == res.value.data.id) index = i.index;
+      });
+    }
     let params = JSON.stringify({
       index,
-      data: res.value.data,
+      data: res.value?.data,
     });
     router.push({ name: "content", state: { params } }); //注意：此处一定要用params
   };
@@ -179,7 +184,7 @@
           <div
             class="pt-3 pb-3 fs-5 fw-bold bg-primary rounded-4 text-center t-shadow-3 bg-opacity-25 insetShadow-4-4"
             style="width: 40%"
-            @click="readThisChapter(chapterList.length - 1)">
+            @click="readThisChapter(-1)">
             読み始めます
           </div>
           <div
@@ -195,7 +200,7 @@
           <div class="mb-3">ラベル :</div>
           <div
             v-for="item in res?.data.story_elems"
-            class="bg-body-tertiary rounded mb-3 mx-1 py-1 px-3 insetShadow-1-3">
+            class="bg-body-tertiary bg-opacity-50 rounded mb-3 mx-1 py-1 px-3 insetShadow-1-3">
             {{ item.name }}
           </div>
         </div>

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-  import { ref, onMounted, watchEffect } from "vue";
-  import { getSearchResult } from "../api/search";
-  import BScroll from "better-scroll"; //导入Better scroll核心
-  import ObserveImage from "@better-scroll/observe-image";
   import ObserveDOM from "@better-scroll/observe-dom"; //导入自动重新计算BS实例
-  import { useRoute } from "vue-router";
+  import ObserveImage from "@better-scroll/observe-image";
   import Pullup from "@better-scroll/pull-up";
+  import BScroll from "better-scroll"; //导入Better scroll核心
+  import { onMounted, ref, watchEffect } from "vue";
+  import { useRoute } from "vue-router";
+  import { getSearchResult } from "../api/search";
   let route = useRoute();
   //---------- 搜索框关键词 ----------------
   let keyWord = ref();
@@ -67,7 +67,6 @@
       isFinish: sort3.value,
       isFree: sort4.value,
     });
-    console.log(result);
     // 如果数据存在或还有数据(大于0)
     if (result.data.list.length > 0) {
       res.value.push(...result.data.list);
@@ -76,7 +75,6 @@
       // 如果请求回来不足20条，说明没有下一页了
       if (result.data.list.length < 20) {
         loadFinish = true; //设置为加载完毕
-        console.log("没有下一页了");
         bs.value.closePullUp();
       }
     } else {
@@ -92,7 +90,6 @@
     if (sort2.value == "-1")
       domList.value = res.value; //不做筛选，全部放入DOMList遍历
     else {
-      console.log("判断到结果变化且不为'全部'");
       domList.value = res.value.filter((i) => i.styles[0] == sort2.value);
     } //做筛选后放入DOMList遍历
   });
@@ -174,12 +171,12 @@
           :imgWidth="100"
           :fontSize="18"
           class="mb-2"></comic-item-component>
-        <li class="w-100 py-3 text-center">
+        <div class="w-100 py-3 text-center">
           <van-loading v-if="isPullUpLoad" />
           <p class="w-100 py-3 text-center opacity-50" v-else>
             これ以上ありません~
           </p>
-        </li>
+        </div>
       </ul>
     </div>
   </div>

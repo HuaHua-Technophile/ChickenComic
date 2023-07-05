@@ -1,4 +1,4 @@
-export interface imgIndexUrl {
+export interface imgIndexUrlType {
   data: {
     images: Array<{ path: string }>;
   };
@@ -21,4 +21,23 @@ export interface comicInfoCommonType {
     vertical_cover: string;
   };
   default: () => {};
+}
+export interface userInfoType {
+  id?: number;
+  name?: string;
+  collection?: Array<{
+    id: string;
+    vertical_cover: string;
+    title: string;
+    last_ord: number;
+  }>;
+  watchingHistory?: Array<{
+    index: number;
+    data: {
+      id: number;
+      title: string;
+      horizontal_cover: string;
+      ep_list: Array<object>;
+    };
+  }>;
 }

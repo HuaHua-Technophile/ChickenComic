@@ -78,7 +78,6 @@
   //--------------跳转详情页------------
   let router = useRouter();
   const goComicCoverPage = (id: number) => {
-    console.log(id);
     router.push({
       path: "comicCover",
       query: {

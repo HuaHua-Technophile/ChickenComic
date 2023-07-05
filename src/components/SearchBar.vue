@@ -31,7 +31,7 @@
       </div>
       <!-- 搜索tip -->
       <div class="toSearch fs-7 flex-grow-1 text-center opacity-50">
-        search manga
+        検索したいのです
       </div>
       <!-- 占位 -->
       <div class="slotArea" style="width: 10%"></div>

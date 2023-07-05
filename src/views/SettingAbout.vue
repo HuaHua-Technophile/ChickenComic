@@ -17,7 +17,6 @@
   let store = useThemeStore();
   let { theme } = storeToRefs(store);
   let { changeTheme } = store;
-  console.log(changeTheme);
   let settingChangeTheme = () => {
     changeTheme();
   };

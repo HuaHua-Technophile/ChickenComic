@@ -95,7 +95,6 @@
       }) => {
         // swiper slide 改变后执行回调并发送当前排行的请求
         // rankInfoData.value = []; // 清空漫画列表数组，避免视觉上造成覆盖效果
-        // console.log(event.detail[0].activeIndex);
         activeIndex = event.detail[0].activeIndex;
         // 判断saveArr中是否存在已缓存标识，不存在则发送请求
         if (

@@ -24,7 +24,7 @@
   // import { clipboardjS } from "../../node_modules/clipboard/dist/clipboard.min.js"; //剪贴板无法通过iport导入,因此在index.html中使用 script标签引入
   import { getImageIndex, getImageToken } from "@/api/content";
   import chapterComponent from "@/components/chapterComponent.vue"; //引入组件
-  import { type imgIndexUrl } from "@/utils/typeing";
+  import { type imgIndexUrlType } from "@/utils/typeing";
 
   interface imgUrlTokenAllType {
     epId?: number;
@@ -33,7 +33,7 @@
 
   const router = useRouter();
 
-  // 接收路由信息（包含当前漫画index和所有章节信息）
+  // 接收路由信息（包含当前漫画所有信息和传入的(应该阅读哪一章)）
   let etid_data = JSON.parse(history.state.params);
   let { index, data } = toRefs(etid_data);
   let nowEp = ref(data.value.ep_list[index.value]);
@@ -42,15 +42,17 @@
   // 获取漫画章节内容图片&索引
   let oldImgEpList = ref<Array<{ id: number }>>(
     data.value.ep_list.slice(0, data.value.ep_list.length)
-  ); // copy一份旧章节数据
+  ); // copy一份章节数据的备份副本
   let imgEpList = ref<Array<{ id: number }>>([]); // 章节id数组集合
-  let imgIndexUrl = ref<imgIndexUrl>(); // 漫画章节内容图片&索引 api数据
+  let imgIndexUrl = ref<imgIndexUrlType>(); // 漫画章节内容图片&索引 api数据
   let imgBaseUrl = ref("https://manga.hdslb.com"); // 漫画章节内容图片拼接地址
   let imgUrlArr = ref<Array<string>>([]); // 漫画章节内容图片数据(整合为数组)
   let imgUrlToken = ref(); // 漫画章节内容图片Token api数据
   let imgUrlTokenAll = ref<Array<imgUrlTokenAllType>>([]); // 漫画所有章节内容图片Token api数据
   const getContentData = async (epId: number) => {
-    imgIndexUrl.value = (await getImageIndex({ epId: epId })) as imgIndexUrl; // 请求漫画章节内容图片&索引数据
+    imgIndexUrl.value = (await getImageIndex({
+      epId: epId,
+    })) as imgIndexUrlType; // 请求漫画章节内容图片&索引数据
     // imgBaseUrl.value = imgIndexUrl.value.data.host;
     // 根据图片基地址 图片url 图片格式 拼接为图片token接口的请求参数
     imgUrlArr.value = imgIndexUrl.value!.data.images.map(
@@ -71,15 +73,15 @@
     imgEpList.value = data.value.ep_list;
     imgEpList.value.reverse();
     // 调用getContentData方法获取章节数据并对数据做处理
-    getContentData(nowEp.value.id);
+    getContentData(nowEp.value?.id);
     epListindex = imgEpList.value.findIndex((item) => {
-      return item.id == nowEp.value.id;
+      return item.id == nowEp.value?.id;
     });
   };
 
   getComicEpList(); // 进入内容页调用初始化方法
 
-  // 实例化bscroll并给阅读页添加滚动处理
+  // ------------------实例化bscroll并给阅读页添加滚动处理--------------------
   BScroll.use(Pullup); // 注册上拉懒加载插件
   BScroll.use(ObserveImage); // 自动重载插件
   BScroll.use(Zoom); // 注册缩放插件
@@ -93,9 +95,9 @@
   let bs = ref();
   let bs2 = ref();
   let contentVeiw = ref();
-  let isPullUpLoad = ref<boolean>(false);
+  let isPullUpLoad = ref(false);
   // 上拉加载调用此函数，发送下一章请求
-  let endList = ref("上拉进入下一章");
+  let endList = ref("プルアップは次の章に続きます");
   const pullingUpHandler = debounce(async function () {
     isPullUpLoad.value = true;
     if (
@@ -113,7 +115,6 @@
     isPullUpLoad.value = false;
   }, 1000);
 
-  let timer: number | undefined = undefined;
   // 封装实例化bscroll及其配置项函数
   const bsMounted = () => {
     // 实例化bscroll并配置其配置项
@@ -150,29 +151,25 @@
     bsMounted();
   });
 
-  // 判断当前阅读的章节
+  // -----------用新API判断当前阅读的章节-------------------
   let boxes = null;
-  onUpdated(() => {
-    boxes = document.querySelectorAll(".imgItem");
-    boxes.forEach((box) => {
-      observer.observe(box);
-    });
-  });
   const observer = new IntersectionObserver(
     (entries) => {
-      entries.forEach((entry, index) => {
-        chapterListIndex = oldImgEpList.value.findIndex((item) => {
-          return String(item.id) == entry.target.getAttribute("dataIndex");
-        });
+      entries.forEach((entry) => {
+        chapterListIndex = oldImgEpList.value.findIndex(
+          (item) => String(item.id) == entry.target.getAttribute("dataIndex")
+        );
       });
     },
     {
       threshold: [1],
     }
   );
-  onBeforeUnmount(() => {
-    // 清除延时器
-    clearInterval(timer);
+  onUpdated(() => {
+    boxes = document.querySelectorAll(".imgItem");
+    boxes.forEach((box) => {
+      observer.observe(box);
+    });
   });
 
   // 操作面板显示与隐藏
@@ -189,6 +186,7 @@
   const showSlider = () => {
     isShowSlider.value = !isShowSlider.value;
   };
+
   // 控制滑块调节亮度
   const value = ref<number>(0);
   let mask = ref();
@@ -316,7 +314,6 @@
   };
   // 隐藏章节列表
   const enShowListBottom = () => {
-    // bsMounted();
     showListBottom.value = false;
   };
 
@@ -335,6 +332,7 @@
   let { nowComicList, nowIndex, nowListLength } = storeToRefs(
     useNowListStore()
   );
+  // 当前在读数据保存
   const comicListSave = () => {
     etid_data.index = chapterListIndex;
     nowComicList.value = etid_data;
@@ -345,33 +343,16 @@
     router.go(-1);
   };
   // ------------退出时存储历史记录数据----------------
-
   const addHistory = () => {
-    let userId = localStorage.getItem("userId");
     // 判断登录状态
-    if (userId) {
-      let newHistory = {
-        id: nowComicList.value.data.id,
-        historyComicList: nowComicList.value.data,
-        historyIndex: nowIndex.value,
-        HistoryListLength: nowListLength.value,
-      };
-      let index: number | undefined =
-        userInfo.value?.watchingHistory!.findIndex(
-          (item) => item.id == newHistory.id
-        ) as number;
-
-      if (index == -1) {
-        userInfo.value?.watchingHistory!.unshift(newHistory);
-        // 添加历史记录
-      } else {
-        // 修改历史记录
-        userInfo.value?.watchingHistory!.splice(index, 1);
-        userInfo.value?.watchingHistory!.unshift(newHistory);
-      }
+    if (Logged && Logged.value) {
+      // 如果观看历史里面有这个漫画，就删掉再添加。进行换位
+      userInfo.value!.watchingHistory = userInfo.value?.watchingHistory?.filter(
+        (i) => i.data.id != etid_data.data.id
+      );
+      userInfo.value?.watchingHistory?.unshift(etid_data);
     }
   };
-
   onBeforeUnmount(() => {
     addHistory();
   });
@@ -390,7 +371,7 @@
       QRshow.value = true;
     }
     if (option.name == "ハイパーリンク") {
-      // 因为全局剪贴板只能通过script标签引入,因此TS找不到 ClipboardJS
+      // 因为全局剪贴板框架只能通过script标签引入,因此TS找不到 ClipboardJS
       cli.value = new ClipboardJS(".van-share-sheet__option", {
         text: () => `https://manga.bilibili.com/detail/mc${data.value.id}`,
       });
