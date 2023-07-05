@@ -69,7 +69,7 @@
   let { userInfo, Logged } = storeToRefs(useUserInfoStore());
   let isCollection = ref<boolean | undefined>(false);
   watchEffect(() => {
-    isCollection.value = userInfo?.value?.collection.some(
+    isCollection.value = userInfo?.value?.collection!.some(
       (i) => i.id == route.query.id
     );
   });
@@ -78,14 +78,14 @@
       if (isCollection.value) {
         if (status) showToast("収蔵済みです");
         else {
-          let index = userInfo?.value?.collection.findIndex(
+          let index = userInfo?.value?.collection!.findIndex(
             (i) => i.id == route.query.id
           );
-          userInfo?.value?.collection.splice(index as number, 1);
+          userInfo?.value?.collection!.splice(index as number, 1);
           showToast("好きを取り消す");
         }
       } else {
-        userInfo.value?.collection.push(res.value.data);
+        userInfo.value?.collection!.push(res.value.data);
         showToast("コレクション成功です");
       }
     } else {
