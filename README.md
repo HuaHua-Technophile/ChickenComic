@@ -1,5 +1,3 @@
-[![VIFBj8.png](https://i.imgloc.com/2023/06/25/VIFBj8.png)](https://github.com/HuaHua-Technophile/ChickenComic)
-
 <h1 align="center" style="color:pink;">「 紙櫻漫畫(ChickenComic) 」</h1>
 
 <h4 align="center" style="color:#ED93AD;">霓虹就像紙上綻放的櫻花，觸手可得</h4>
@@ -39,8 +37,6 @@
 5. 在命令终端中执行`npm run dev`,启动服务器(请耐心等待).
 
 > 该项目基于移动端设计.请在浏览器中<kbd>右键</kbd>,选择最下方的`检查`.然后按下<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd>切换至移动端模式.并选择合适的"设备尺寸"(推荐 iPhone XR),然后在右侧'缩放比例'中选择'适合窗口大小'
->
-> <div style="display:flex;align-items:center;"><img src="https://i.imgloc.com/2023/05/31/VWgTPv.png"style="width:25%"/><img src="https://i.imgloc.com/2023/05/31/VWg1W3.png"style="width:25%"/><img src="https://i.imgloc.com/2023/05/31/VWgu48.png"style="width:25%"/><img src="https://i.imgloc.com/2023/05/31/VWxZNZ.png"style="width:25%"/></div>
 
 # 技术栈
 
